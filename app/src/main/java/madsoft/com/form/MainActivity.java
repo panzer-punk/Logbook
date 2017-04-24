@@ -1,6 +1,7 @@
 package madsoft.com.form;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MainActivity extends Activity {
     private static  String LIST = "arrayList";
@@ -36,9 +39,18 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> lisView, View view, int position, long id) {
 
-                Log.d("list_item clicked", arrayList.get((int)id));
-                Log.d("Links test", links.get(0).text());
+              //  Log.d("list_item clicked", );
+                Document doc = Jsoup.parse(links.get((int) id).outerHtml());
+                Element link = doc.select("a").first();
+                String linkHref = link.attr("href");
 
+                Toast toast = Toast.makeText(getApplicationContext(),
+                      "Тема " + arrayList.get((int)id) + " Html: " + linkHref , Toast.LENGTH_LONG);
+                toast.show();
+
+                Intent intent = new Intent(MainActivity.this, ThemeActivity.class);
+                intent.putExtra(Assets.CONTENT, linkHref);
+                startActivity(intent);
             }
         };
 
@@ -64,19 +76,34 @@ public class MainActivity extends Activity {
     public class NewThread extends AsyncTask<String, Void, String>{
         @Override
         protected  String doInBackground(String ... arg){
-            Document doc;
+          //   doc;
 
             try{
 
-                doc = Jsoup.connect("http://matankkep.ru/formul/").get();
+                Document doc = Jsoup.connect(Assets.PATH).get();
                 links = doc.select("a[href]");
                 arrayList.clear();
 
                 for( Element link : links)
                     if(link.toString().contains("formul") && link.toString().contains(".html"))
-                    arrayList.add(link.text());
+                        arrayList.add(link.text());
+                 //   else
+                 //      links.remove(link.html());
 
-            }catch (Exception exp){}
+                Iterator<Element> iterator = links.iterator();
+
+                while (iterator.hasNext()){
+
+                    Element el = iterator.next();
+
+                    if (!el.toString().contains(".html"))
+                        iterator.remove();
+                }
+
+
+                //Log.d("Links size", "" + links.size());
+
+            }catch (Exception exp){ exp.printStackTrace();}
 
             return null;
         }
