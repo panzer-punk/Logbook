@@ -39,14 +39,10 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> lisView, View view, int position, long id) {
 
-              //  Log.d("list_item clicked", );
+
                 Document doc = Jsoup.parse(links.get((int) id).outerHtml());
                 Element link = doc.select("a").first();
                 String linkHref = link.attr("href");
-
-                Toast toast = Toast.makeText(getApplicationContext(),
-                      "Тема " + arrayList.get((int)id) + " Html: " + linkHref , Toast.LENGTH_LONG);
-                toast.show();
 
                 Intent intent = new Intent(MainActivity.this, ThemeActivity.class);
                 intent.putExtra(Assets.CONTENT, linkHref);
@@ -76,7 +72,6 @@ public class MainActivity extends Activity {
     public class NewThread extends AsyncTask<String, Void, String>{
         @Override
         protected  String doInBackground(String ... arg){
-          //   doc;
 
             try{
 
@@ -87,8 +82,6 @@ public class MainActivity extends Activity {
                 for( Element link : links)
                     if(link.toString().contains("formul") && link.toString().contains(".html"))
                         arrayList.add(link.text());
-                 //   else
-                 //      links.remove(link.html());
 
                 Iterator<Element> iterator = links.iterator();
 
@@ -100,8 +93,7 @@ public class MainActivity extends Activity {
                         iterator.remove();
                 }
 
-
-                //Log.d("Links size", "" + links.size());
+                Log.d("Size", "" + links.size());
 
             }catch (Exception exp){ exp.printStackTrace();}
 

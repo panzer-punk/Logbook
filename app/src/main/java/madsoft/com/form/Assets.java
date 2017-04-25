@@ -13,5 +13,6 @@ public class Assets {
     public static String PATH = "http://matankkep.ru/formul/";
     public static String THEME_PATH = "http://matankkep.ru/";
     public static String CONTENT = "content";
-
+    public static String TEXT = "text";
+    public static  String TITLE = "title";
 }

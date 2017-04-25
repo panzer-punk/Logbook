@@ -11,6 +11,19 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="madsoft.com.form.ThemeActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"
+        android:textStyle="bold"
+        android:textSize="21dip"
+        android:layout_gravity="center"
+        android:layout_marginBottom="2.5dip"
+        android:layout_marginLeft="2.5dip"
+        android:layout_marginRight="2.5dip"
+        />
+
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_content"
-        android:textSize="16dip"
+        android:textSize="18dip"
         android:padding="15dip"
         android:textStyle="italic"
         />
