@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,10 +19,12 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+
 public class MainActivity extends Activity {
-    private static  String LIST = "arrayList";
+    private   String list = "arrayList";
+    private  String path = "http://matankkep.ru/formul/";
     public Elements links; // сохраняется в Assets
-    public static ArrayList<String> arrayList = new ArrayList<String>();
+    public  ArrayList<String> arrayList = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
     private ListView listView;
 
@@ -59,23 +61,25 @@ public class MainActivity extends Activity {
                 R.id.pro_item,
                 arrayList);
         if(savedInstanceState != null) {
-           arrayList = savedInstanceState.getStringArrayList(LIST);
+           arrayList = savedInstanceState.getStringArrayList(list);
             listView.setAdapter(adapter);
             links = Assets.LINKS;
         }else
-        new NewThread().execute();
+        new Loader().execute();
 
 
 
     }
 
-    public class NewThread extends AsyncTask<String, Void, String>{
+    public class Loader extends AsyncTask<String, Void, String>{
         @Override
         protected  String doInBackground(String ... arg){
 
             try{
 
-                Document doc = Jsoup.connect(Assets.PATH).get();
+
+
+                Document doc = Jsoup.connect(path).get();
                 links = doc.select("a[href]");
                 arrayList.clear();
 
@@ -112,7 +116,7 @@ public class MainActivity extends Activity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
 
-        savedInstanceState.putStringArrayList(LIST, arrayList);
+        savedInstanceState.putStringArrayList(list, arrayList);
         Assets.LINKS = links;
 
 

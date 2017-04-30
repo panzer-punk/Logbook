@@ -1,11 +1,17 @@
 package madsoft.com.form;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +22,8 @@ public class ThemeActivity extends Activity {
 
     private String text;
     private String title = "";
-    private String content;
+    private Context context = this;
+    private String imageLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +32,9 @@ public class ThemeActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_theme);
+
+
+
 
 
         if(savedInstanceState != null){
@@ -43,33 +53,79 @@ public class ThemeActivity extends Activity {
 
         }else {
 
-            content = getIntent().getStringExtra(Assets.CONTENT);
-
-            new NewThread().execute();
+            new Parser().execute(getIntent().getStringExtra(Assets.CONTENT));
 
         }
     }
 
 
-    public class NewThread extends AsyncTask<String, Void, String> {
+    public class Parser extends AsyncTask<String, Void, String> {
         @Override
         protected  String doInBackground(String ... arg){
 
+            StringBuilder builder;
 
             try{
 
 
-                Document document = Jsoup.connect(Assets.THEME_PATH + content).get();
+                Document document = Jsoup.connect(Assets.THEME_PATH + arg[0]).get();
 
                 title = document.title();
 
-                Elements elements = document.select("p");
+                Elements elements = document.getAllElements();
 
 
-                for (Element element : elements)
-                    text += element.text() + "\n";
 
 
+
+
+                builder = new StringBuilder();
+
+                for(Element e : elements) {
+
+                    switch (e.tag().toString()) {
+
+                        case "p":
+
+                            if (!(e.hasClass("hidden-lg hidden-md col-sm-12 col-xs-12")
+                                    || e.hasClass("text-center text-main-css")
+                                    || e.hasClass("text-muted pull-right")))
+                                if (!e.text().isEmpty())
+                                   builder.append(e.text()).append("\n");
+
+
+
+
+                            break;
+                        case "ul":
+                            if (!(e.hasClass("nav navbar-nav")
+                                    || e.hasClass("nav navbar-nav navbar-right")
+                                    || e.hasClass("breadcrumb")
+                                    || e.hasClass("list-unstyled list-inline pull-left")))
+                                if (!e.text().isEmpty())
+                                    builder.append(e.text()).append("\n");
+
+                            break;
+
+                        case "img":
+                            if (!e.hasAttr("style")) {
+                                if (e.attr("src").contains(Assets.ROOT)) {
+                                    imageLink = e.attr("src");
+
+
+                                }else
+                                    imageLink = Assets.ROOT + e.attr("src");
+
+                            }
+
+                                Log.d("Image", imageLink);
+                            break;
+
+                    }
+
+                }
+
+                text = builder.toString();
 
 
 
@@ -85,6 +141,13 @@ public class ThemeActivity extends Activity {
         protected void onPostExecute(String result){
 
 
+
+            int c = 0;
+
+
+
+
+
             TextView titleView = (TextView) findViewById(R.id.title);
 
             titleView.setText(title);
@@ -93,6 +156,13 @@ public class ThemeActivity extends Activity {
 
             textView.setText(text);
 
+
+            ImageView imageView = (ImageView) findViewById(R. id.image);
+            ImageLoader imageLoader;
+            imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+            imageLoader.displayImage(imageLink, imageView);
+            
 
 
 

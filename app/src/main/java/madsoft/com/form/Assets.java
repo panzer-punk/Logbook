@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 public class Assets {
 
     public static Elements LINKS = null;
-    public static String PATH = "http://matankkep.ru/formul/";
+    public static String ROOT = "https://matankkep.ru/";
     public static String THEME_PATH = "http://matankkep.ru/";
     public static String CONTENT = "content";
     public static String TEXT = "text";

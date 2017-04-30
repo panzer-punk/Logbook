@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -20,23 +27,36 @@
         android:gravity="center"
         android:textSize="21dip"
         android:textStyle="bold"
-        android:layout_marginBottom="2.5dip"
-        android:layout_marginLeft="2.5dip"
-        android:layout_marginRight="2.5dip"
+        android:layout_marginBottom="2.5sp"
+        android:layout_marginLeft="2.5sp"
+        android:layout_marginRight="2.5sp"
        />
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_content"
-        android:textSize="18dip"
-        android:padding="15dip"
+        android:textSize="18sp"
+        android:padding="15sp"
         android:textStyle="italic"
         />
-</ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/attachments"
+        android:textSize="19sp"
+        android:padding="20sp"
+        android:textStyle="bold"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/image"
+        />
 
 </LinearLayout>
+</ScrollView>
