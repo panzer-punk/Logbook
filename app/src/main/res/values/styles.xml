@@ -2,8 +2,16 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:colorForeground">@color/colorSecondary</item>
+        <item name="android:textColorPrimary">@android:color/background_dark</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:icon">@drawable/ic_launcher</item>
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
 </resources>

@@ -2,9 +2,11 @@ package madsoft.com.form;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -18,12 +20,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 public class ThemeActivity extends Activity {
 
     private String text;
     private String title = "";
     private Context context = this;
     private String imageLink;
+    private String href;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,10 @@ public class ThemeActivity extends Activity {
 
             title = savedInstanceState.getString(Assets.TITLE);
 
+            href = savedInstanceState.getString(Assets.HREF);
+
+            imageLink = savedInstanceState.getString(Assets.IMAGE_LINK);//убрать из финальной версии
+
             TextView textView = (TextView) findViewById(R.id.text_content);
 
             textView.setText(text);
@@ -51,11 +60,34 @@ public class ThemeActivity extends Activity {
 
             textView.setText(title);
 
+            ImageView imageView = (ImageView) findViewById(R.id.image);
+
+            ImageLoader imageLoader;
+            imageLoader = ImageLoader.getInstance();
+            //imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+            imageLoader.displayImage(imageLink, imageView);
+
+
         }else {
 
             new Parser().execute(getIntent().getStringExtra(Assets.CONTENT));
 
         }
+    }
+
+    public void onShareButtonClick(View view){
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, href);
+
+        String chooserTitle = getString(R.string.text_share);
+
+        Intent chosenIntent = Intent.createChooser(intent, chooserTitle);
+
+        startActivity(chosenIntent);
+
+
     }
 
 
@@ -67,8 +99,9 @@ public class ThemeActivity extends Activity {
 
             try{
 
+                href = Assets.THEME_PATH + arg[0];
 
-                Document document = Jsoup.connect(Assets.THEME_PATH + arg[0]).get();
+                Document document = Jsoup.connect(href).get();
 
                 title = document.title();
 
@@ -142,7 +175,7 @@ public class ThemeActivity extends Activity {
 
 
 
-            int c = 0;
+           // int c = 0;
 
 
 
@@ -162,7 +195,8 @@ public class ThemeActivity extends Activity {
             imageLoader = ImageLoader.getInstance();
             imageLoader.init(ImageLoaderConfiguration.createDefault(context));
             imageLoader.displayImage(imageLink, imageView);
-            
+            PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
+            attacher.setZoomable(true);
 
 
 
@@ -178,6 +212,10 @@ public class ThemeActivity extends Activity {
         savedInstanceState.putString(Assets.TEXT, text);
 
         savedInstanceState.putString(Assets.TITLE, title);
+
+        savedInstanceState.putString(Assets.HREF, href);
+
+        savedInstanceState.putString(Assets.IMAGE_LINK, imageLink);//убрать из финальной версии
 
     }
 

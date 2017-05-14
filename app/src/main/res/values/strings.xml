@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Формуляр</string>
     <string name="attachments">Вложения:</string>
+    <string name="text_share">Поделиться</string>
 </resources>
