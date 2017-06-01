@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:textColor="@color/colorBlack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/pro_item"

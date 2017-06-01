@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         };
-
+       // 0x7f0b0056 0x7f0b0055
         listView = (ListView)findViewById(R.id.list);
         listView.setOnItemClickListener(itemClickListener);
 
@@ -63,7 +63,6 @@ public class MainActivity extends Activity {
             links = Assets.LINKS;
         }else
             new NewThread().execute();
-
 
 
     }

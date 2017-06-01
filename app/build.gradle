@@ -4,11 +4,11 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "madsoft.com.form"
+        applicationId "com.madsoft.form"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 8
-        versionName "0.8 Closed beta"
+        versionCode 12
+        versionName "0.9 BETA"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,13 +20,10 @@ android {
 }
 
 dependencies {
-
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.github.chrisbanes:PhotoView:1.3.0'
     testCompile 'junit:junit:4.12'
 }
