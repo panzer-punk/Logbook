@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 
 public class Assets {
 
+    public static final String LOADER_INPUT ="loaderInput" ;
     public static String DOWNLOAD_STATUS = "downloadStatus";
     public static Elements LINKS = null;
     public static final String PATH = "http://matankkep.ru/formul/";

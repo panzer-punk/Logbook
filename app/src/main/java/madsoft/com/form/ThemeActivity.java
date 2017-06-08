@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -32,15 +35,17 @@ public class ThemeActivity extends Activity {
     private String text;
     private String title = "";
    // private Context context = this;
+    private Connection connection;
+    private ConnectivityManager connectivityManager;
     private String imageLink;
     private String href;
     private ImageLoader imageLoader;
     private LinkedList<String> loaderInput;
     private boolean downloaded = false;
     private ShareActionProvider shareActionProvider;
-    private StringBuilder builder;
     private LinearLayout linearLayout;
     private Context context;
+    private boolean success;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +65,9 @@ public class ThemeActivity extends Activity {
 
         linearLayout = (LinearLayout) findViewById(R.id.activity_theme);
 
+        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        connection = new Connection();
 
         if(savedInstanceState != null){
 
@@ -122,7 +129,6 @@ public class ThemeActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_theme, menu);
         MenuItem menuItem = menu.findItem(R.id.action_share);
         shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
@@ -137,38 +143,46 @@ public class ThemeActivity extends Activity {
         shareActionProvider.setShareIntent(intent);
     }
 
-    public class Parser extends AsyncTask<String, Void, String> {
+    private class Parser extends AsyncTask<String, Void, String> {
         @Override
-        protected  String doInBackground(String ... arg){
+        protected  String doInBackground(String ... arg) {
 
 
+            if (connection.isConnected(connectivityManager)) {
 
-            try{
+                try {
 
-               // href = Assets.THEME_PATH + arg[0];
+                    Document document = Jsoup.connect(arg[0]).get();
 
-                Document document = Jsoup.connect(arg[0]).get();
+                    title = document.title();
 
-                title = document.title();
+                    madsoft.com.form.Parser parser = new madsoft.com.form.Parser(document);
 
-                madsoft.com.form.Parser parser = new madsoft.com.form.Parser(document);
+                    loaderInput = parser.parseConten();
 
-                loaderInput = parser.parseConten();
-
-
+                    parser = null;
 
 
-            }catch (Exception exp){ exp.printStackTrace();}
+                } catch (Exception exp) {
+                    exp.printStackTrace();
+                }
 
+            }else {
+                success = false;
+                Thread thread = new Thread(connectionChecker);
+                thread.start();
+            }
             return null;
         }
+
+
+
 
         @Override
         protected void onPostExecute(String result){
 
-            Boolean nextImage = false;
-
             String out = "";
+
 
             if(!downloaded) {
                 ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -176,90 +190,71 @@ public class ThemeActivity extends Activity {
                 progressBar.setVisibility(View.GONE);
             }
 
-            for(String s : loaderInput) {
+            if(loaderInput != null) {
 
-                if(s.contains("https") || s.contains("http")) {
+                for (String s : loaderInput) {
 
-                    if (!out.isEmpty()){
-                        TextView textView = new TextView(context);
+                    if (s.contains("https") || s.contains("http")) {
 
-                        textView.setTextColor(Color.BLACK);
+                        if (!out.isEmpty()) {
+                            TextView textView = new TextView(context);
 
-                        textView.setTextSize(18);
+                            textView.setTextColor(Color.BLACK);
 
-                        textView.setText(out);
+                            textView.setTextSize(18);
 
-                        linearLayout.addView(textView);
+                            textView.setText(out);
 
-                        out = "";
+                            linearLayout.addView(textView);
+
+                            out = "";
+                        }
+                        ImageView imageView = new ImageView(context);
+
+                        imageView.setImageResource(R.drawable.ic_share_black_18dp);
+
+                        linearLayout.addView(imageView);
+
+                        ImageLoader imageLoader;
+                        imageLoader = ImageLoader.getInstance();
+                        imageLoader.displayImage(s, imageView);
+
+                        PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
+
+                        attacher.setZoomable(true);
+
+
+                    } else {
+
+                        out += s + "\n";
+
                     }
-                    ImageView imageView = new ImageView(context);
-
-                    imageView.setImageResource(R.drawable.ic_share_black_18dp);
-
-                    linearLayout.addView(imageView);
-
-                    ImageLoader imageLoader;
-                    imageLoader = ImageLoader.getInstance();
-                    imageLoader.displayImage(s, imageView);
-
-                    PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
-
-                    attacher.setZoomable(true);
-
-
-                }else{
-
-                    out += s;
 
                 }
 
-            }
+                if (!out.isEmpty()) {
+                    TextView textView = new TextView(context);
 
-            if(!out.isEmpty()){
-                TextView textView = new TextView(context);
+                    textView.setTextColor(Color.BLACK);
 
-                textView.setTextColor(Color.BLACK);
+                    textView.setTextSize(18);
 
-                textView.setTextSize(18);
+                    textView.setText(out);
 
-                textView.setText(out);
+                    linearLayout.addView(textView);
+                }
 
-                linearLayout.addView(textView);
-            }
+                TextView titleView = (TextView) findViewById(R.id.title);
 
-            TextView titleView = (TextView) findViewById(R.id.title);
+                titleView.setText(title);
 
-            titleView.setText(title);
+                GridLayout gridLayout = (GridLayout) findViewById(R.id.gridLayout);
 
-            GridLayout gridLayout = (GridLayout) findViewById(R.id.gridLayout);
+                gridLayout.setVisibility(View.VISIBLE);
 
-            gridLayout.setVisibility(View.VISIBLE);
-         /*
-
-
-
-            TextView textView = (TextView) findViewById(R.id.text_content);
-
-            textView.setText(text);
-
-
-
-            ImageView imageView = (ImageView) findViewById(R. id.image);
-
-
-
-
-
-
-            imageLoader.displayImage(imageLink, imageView);
-
-            PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
-
-            attacher.setZoomable(true);*/
-
-            downloaded = true;
-
+                downloaded = true;
+            }else
+                toastMaker("Страница будет загружена при подлкючении к сети.");
 
 
 
@@ -279,11 +274,38 @@ public class ThemeActivity extends Activity {
 
         savedInstanceState.putString(Assets.IMAGE_LINK, imageLink);//убрать из финальной версии
 
-        savedInstanceState.putBoolean(Assets.DOWNLOAD_STATUS,downloaded);
+        savedInstanceState.putBoolean(Assets.DOWNLOAD_STATUS, downloaded);
+
+      //  savedInstanceState.putStringArrayList(Assets.LOADER_INPUT, loaderInput);
 
 
 
     }
 
+    private Runnable connectionChecker = new Runnable() {
+        public void run() {
+            while (!success){
+
+
+                Log.v("in checker"," in while");
+                if(connection.isConnected(connectivityManager)) {
+                    new Parser().execute(href);
+                    success = true;
+                    Log.v("in checker", "leaving the checker");
+                }
+
+
+            }
+        }
+    };
+
+    private void toastMaker(String text){
+
+        Toast toast = Toast.makeText(getApplicationContext(),
+                text,
+                Toast.LENGTH_SHORT);
+        toast.show();
+
+    }
 
 }
