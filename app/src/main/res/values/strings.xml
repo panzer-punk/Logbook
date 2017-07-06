@@ -4,4 +4,8 @@
     <string name="text_share">Поделиться</string>
     <string name="test">452</string>
     <string name="visitors">Просмотры</string>
+    <string name="text_settings">Настройки</string>
+    <string name="text_about">О программе</string>
+    <string name="text_download">Загружать открываемые страницы</string>
+    <string name="author">Разработал Бударный Даниил</string>
 </resources>

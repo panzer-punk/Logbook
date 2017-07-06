@@ -7,7 +7,7 @@
         android:id="@+id/action_share"
         android:title="@string/text_share"
         android:icon="@drawable/ic_share_black_18dp"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:orderInCategory="0"
         android:actionProviderClass="android.widget.ShareActionProvider"/>
 

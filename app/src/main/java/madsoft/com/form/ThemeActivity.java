@@ -35,7 +35,7 @@ public class ThemeActivity extends Activity {
     private String text;
     private String title = "";
    // private Context context = this;
-    private Connection connection;
+    private Connector connector;
     private ConnectivityManager connectivityManager;
     private String imageLink;
     private String href;
@@ -45,14 +45,12 @@ public class ThemeActivity extends Activity {
     private ShareActionProvider shareActionProvider;
     private LinearLayout linearLayout;
     private Context context;
-    private boolean success;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
         setContentView(R.layout.activity_theme);
 
         href = Assets.THEME_PATH + getIntent().getStringExtra(Assets.CONTENT);
@@ -67,7 +65,7 @@ public class ThemeActivity extends Activity {
 
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        connection = new Connection();
+        connector = new Connector();
 
         if(savedInstanceState != null){
 
@@ -93,36 +91,11 @@ public class ThemeActivity extends Activity {
 
             href = savedInstanceState.getString(Assets.HREF);
 
-          /* text = savedInstanceState.getString(Assets.TEXT);
 
-
-
-            href = savedInstanceState.getString(Assets.HREF);
-
-            imageLink = savedInstanceState.getString(Assets.IMAGE_LINK);//убрать из финальной версии
-
-            TextView textView = (TextView) findViewById(R.id.text_content);
-
-            textView.setText(text);
-
-            textView = (TextView) findViewById(R.id.title);
-
-            textView.setText(title);
-
-            ImageView imageView = (ImageView) findViewById(R.id.image);
-
-            ImageLoader imageLoader;
-            imageLoader = ImageLoader.getInstance();
-            imageLoader.displayImage(imageLink, imageView);
-
-            PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
-
-            attacher.setZoomable(true);*/
-
-            new Parser().execute(href);
+            new ParseTask().execute(href);
         }else {
 
-            new Parser().execute(href);
+            new ParseTask().execute(href);
 
         }
     }
@@ -143,12 +116,12 @@ public class ThemeActivity extends Activity {
         shareActionProvider.setShareIntent(intent);
     }
 
-    private class Parser extends AsyncTask<String, Void, String> {
+    private class ParseTask extends AsyncTask<String, Void, Boolean> {
         @Override
-        protected  String doInBackground(String ... arg) {
+        protected  Boolean doInBackground(String ... arg) {
 
 
-            if (connection.isConnected(connectivityManager)) {
+
 
                 try {
 
@@ -158,108 +131,113 @@ public class ThemeActivity extends Activity {
 
                     madsoft.com.form.Parser parser = new madsoft.com.form.Parser(document);
 
-                    loaderInput = parser.parseConten();
+                    loaderInput = parser.parseContent();
 
                     parser = null;
+
+                    return true;
 
 
                 } catch (Exception exp) {
                     exp.printStackTrace();
+                    return false;
                 }
 
-            }else {
-                success = false;
-                Thread thread = new Thread(connectionChecker);
-                thread.start();
-            }
-            return null;
+
         }
 
 
 
 
         @Override
-        protected void onPostExecute(String result){
+        protected void onPostExecute(Boolean downloaded) {
 
-            String out = "";
+            if (downloaded) {
+                String out = "";
+
+                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+                    progressBar.setVisibility(View.GONE);
+
+                if (loaderInput != null) {
+
+                    for (String s : loaderInput) {
+
+                        if (s.contains("https")
+                                || s.contains("http")) {
+
+                            if (!out.isEmpty()) {
+                                TextView textView = new TextView(context);
+
+                                textView.setTextColor(Color.BLACK);
+
+                                textView.setTextSize(18);
+
+                                textView.setText(out);
+
+                                textView.setPadding(0, 16, 0, 16);
+
+                                linearLayout.addView(textView);
+
+                                out = "";
+                            }
+                            ImageView imageView = new ImageView(context);
+
+                            imageView.setImageResource(R.drawable.ic_share_black_18dp);
+
+                            imageView.setMinimumHeight(50);
+
+                            imageView.setMinimumHeight(50);
+
+                            linearLayout.addView(imageView);
+
+                            ImageLoader imageLoader;
+                            imageLoader = ImageLoader.getInstance();
+                            imageLoader.displayImage(s, imageView);
+
+                            PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
+
+                            attacher.setZoomable(true);
 
 
-            if(!downloaded) {
-                ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                        } else {
 
-                progressBar.setVisibility(View.GONE);
-            }
+                            out += s + "\n";
 
-            if(loaderInput != null) {
-
-                for (String s : loaderInput) {
-
-                    if (s.contains("https") || s.contains("http")) {
-
-                        if (!out.isEmpty()) {
-                            TextView textView = new TextView(context);
-
-                            textView.setTextColor(Color.BLACK);
-
-                            textView.setTextSize(18);
-
-                            textView.setText(out);
-
-                            linearLayout.addView(textView);
-
-                            out = "";
                         }
-                        ImageView imageView = new ImageView(context);
-
-                        imageView.setImageResource(R.drawable.ic_share_black_18dp);
-
-                        linearLayout.addView(imageView);
-
-                        ImageLoader imageLoader;
-                        imageLoader = ImageLoader.getInstance();
-                        imageLoader.displayImage(s, imageView);
-
-                        PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
-
-                        attacher.setZoomable(true);
-
-
-                    } else {
-
-                        out += s + "\n";
 
                     }
 
+                    if (!out.isEmpty()) {
+                        TextView textView = new TextView(context);
+
+                        textView.setTextColor(Color.BLACK);
+
+                        textView.setTextSize(18);
+
+                        textView.setText(out);
+
+                        linearLayout.addView(textView);
+                    }
+
+                    TextView titleView = (TextView) findViewById(R.id.title);
+
+                    titleView.setText(title);
+
+                    GridLayout gridLayout = (GridLayout) findViewById(R.id.gridLayout);
+
+                    gridLayout.setVisibility(View.VISIBLE);
+
                 }
 
-                if (!out.isEmpty()) {
-                    TextView textView = new TextView(context);
 
-                    textView.setTextColor(Color.BLACK);
 
-                    textView.setTextSize(18);
-
-                    textView.setText(out);
-
-                    linearLayout.addView(textView);
-                }
-
-                TextView titleView = (TextView) findViewById(R.id.title);
-
-                titleView.setText(title);
-
-                GridLayout gridLayout = (GridLayout) findViewById(R.id.gridLayout);
-
-                gridLayout.setVisibility(View.VISIBLE);
-
-                downloaded = true;
-            }else
+            }else{
                 toastMaker("Страница будет загружена при подлкючении к сети.");
-
-
-
+                Thread thread = new Thread(connectionChecker);
+                thread.start();
+            }
         }
-
     }
 
 
@@ -284,18 +262,10 @@ public class ThemeActivity extends Activity {
 
     private Runnable connectionChecker = new Runnable() {
         public void run() {
-            while (!success){
+            while (!connector.isConnected(connectivityManager)){Log.v("in checker"," in while");}
 
-
-                Log.v("in checker"," in while");
-                if(connection.isConnected(connectivityManager)) {
-                    new Parser().execute(href);
-                    success = true;
-                    Log.v("in checker", "leaving the checker");
-                }
-
-
-            }
+            new ParseTask().execute(href);
+            Log.v("in checker", "leaving the checker");
         }
     };
 

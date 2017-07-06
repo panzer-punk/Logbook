@@ -7,8 +7,8 @@ android {
         applicationId "com.madsoft.form"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 13
-        versionName "0.92 BETA"
+        versionCode 14
+        versionName "0.94 BETA"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

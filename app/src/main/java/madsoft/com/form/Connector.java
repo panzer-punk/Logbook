@@ -11,7 +11,7 @@ import java.net.URL;
  * Created by Даниил on 07.06.2017.
  */
 
-public class Connection {
+public class Connector {
 
     public boolean isConnected(ConnectivityManager cm){
 
@@ -21,7 +21,7 @@ public class Connection {
                 URL url = new URL("http://www.google.com/");
                 HttpURLConnection urlc = (HttpURLConnection)url.openConnection();
                 urlc.setRequestProperty("User-Agent", "test");
-                urlc.setRequestProperty("Connection", "close");
+                urlc.setRequestProperty("Connector", "close");
                 urlc.setConnectTimeout(1000);
                 urlc.connect();
                 if (urlc.getResponseCode() == 200) {

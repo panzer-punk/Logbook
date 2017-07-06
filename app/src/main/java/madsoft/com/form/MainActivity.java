@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,9 +29,8 @@ public class MainActivity extends Activity {
     public static ArrayList<String> arrayList;
     private ArrayAdapter<String> adapter;
     private ListView listView;
-    private Connection connection;
+    private Connector connector;
     private ConnectivityManager connectivityManager;
-    private boolean success;
 
 
     @Override
@@ -37,7 +38,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        connection = new Connection();
+        connector = new Connector();
 
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -72,9 +73,12 @@ public class MainActivity extends Activity {
         listView.setOnItemClickListener(itemClickListener);
 
         if(savedInstanceState != null)
+
             arrayList = savedInstanceState.getStringArrayList(LIST);
-            else
+
+        else
                 arrayList = new ArrayList<String>();
+
         adapter = new ArrayAdapter<String>(
                 this,
                 R.layout.list_item,
@@ -87,7 +91,7 @@ public class MainActivity extends Activity {
             listView.setAdapter(adapter);
             links = Assets.LINKS;
         }else {
-            new NewThread().execute();
+            new DownloadTask().execute();
         }
 
 
@@ -95,11 +99,41 @@ public class MainActivity extends Activity {
 
     }
 
-    public class NewThread extends AsyncTask<String, Void, String>{
-        @Override
-        protected  String doInBackground(String ... arg){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-            if(connection.isConnected(connectivityManager)) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Intent intent;
+
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+
+                 intent = new Intent(this, SettingsActivity.class);
+
+                startActivity(intent);
+
+                return true;
+            case R.id.action_about:
+
+                intent = new Intent(this, AboutActivity.class);
+
+                startActivity(intent);
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class DownloadTask extends AsyncTask<String, Void, Boolean>{
+        @Override
+        protected  Boolean doInBackground(String ... arg){
+
 
                 try {
 
@@ -121,22 +155,21 @@ public class MainActivity extends Activity {
                             iterator.remove();
                     }
 
-                    Log.d("Size", "" + links.size());
+                    return true;
 
                 } catch (Exception exp) {
                     exp.printStackTrace();
+                    return false;
                 }
-            }else{
-                success = false;
-                Thread thread = new Thread(connectionChecker);
-                thread.start();
-            }
-            return null;
         }
 
         @Override
-        protected void onPostExecute(String result){
+        protected void onPostExecute(Boolean downloaded){
 
+            if(!downloaded){
+              Thread thread = new Thread(connectionChecker);
+                thread.start();
+            }else
             listView.setAdapter(adapter);
 
         }
@@ -154,16 +187,11 @@ public class MainActivity extends Activity {
 
     private Runnable connectionChecker = new Runnable() {
         public void run() {
-            while (!success){
-                Log.v("in checker"," in while");
-                if(connection.isConnected(connectivityManager)) {
-                    new NewThread().execute();
-                    success = true;
-                    Log.v("in checker", "leaving the checker");
-                }
-
-
-            }
+            while (!connector.isConnected(connectivityManager))
+            {Log.v("in checker", "waitin' for connection");}
+            
+            new DownloadTask().execute();
+            Log.v("in checker", "leaving the checker");
         }
     };
 

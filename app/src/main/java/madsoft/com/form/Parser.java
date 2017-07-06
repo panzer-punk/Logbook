@@ -5,6 +5,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 /**
@@ -21,7 +24,9 @@ public class Parser {
         this.document = document;
     }
 
-    public LinkedList<String> parseConten() {
+
+
+    public LinkedList<String> parseContent() {
         String imageLink;
 
         parserOutput = new LinkedList<String>();
@@ -43,6 +48,10 @@ public class Parser {
 
 
                     break;
+                case "ol":
+                    if(!e.text().isEmpty())
+                        parserOutput.add(e.text().toString());
+                    break;
                 case "ul":
                     if (!(e.hasClass("nav navbar-nav")
                             || e.hasClass("nav navbar-nav navbar-right")
@@ -55,7 +64,9 @@ public class Parser {
 
                 case "img":
                     if (!e.hasAttr("style")) {
-                        if (e.attr("src").contains(Assets.ROOT) || e.attr("src").contains("http://") ||  e.attr("src").contains("https://") ) {
+                        if (e.attr("src").contains(Assets.ROOT)
+                                || e.attr("src").contains("http://")
+                                ||  e.attr("src").contains("https://")) {
                             imageLink = e.attr("src");
                             parserOutput.add(imageLink);
 
@@ -71,7 +82,10 @@ public class Parser {
 
         }
 
-       return parserOutput;
+        LinkedHashSet<String> deleteDuplicates = new LinkedHashSet<>(parserOutput);
+
+
+       return new LinkedList<>(deleteDuplicates);
         }
     }
 
