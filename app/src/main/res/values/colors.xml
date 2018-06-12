@@ -3,6 +3,6 @@
     <color name="colorPrimary">#3494af</color>
     <color name="colorPrimaryDark">#064b5f</color>
     <color name="colorSecondary">#991905</color>
-    <color name="colorBackground">#FAEBD7</color>
+    <color name="colorBackground">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
 </resources>

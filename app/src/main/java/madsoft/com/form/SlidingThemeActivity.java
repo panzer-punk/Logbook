@@ -1,11 +1,11 @@
 package madsoft.com.form;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
+import com.klinker.android.sliding.SlidingActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.jsoup.Jsoup;
@@ -22,12 +23,10 @@ import org.jsoup.nodes.Document;
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
+public class SlidingThemeActivity extends SlidingActivity {
 
-
-public class ThemeActivity extends Activity {
-
-   /* private String title = "";
-   // private Context context = this;
+    private String title = "";
+    // private Context context = this;
     private Connector connector;
     private ConnectivityManager connectivityManager;
 
@@ -40,21 +39,29 @@ public class ThemeActivity extends Activity {
     private Context context;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.activity_theme);
+    public void init(Bundle savedInstanceState) {
+        setTitle("Activity Title");
 
+        setPrimaryColors(
+                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.colorPrimaryDark)
+        );
+
+        setContent(R.layout.activity_theme);
+
+        this.makeContent(savedInstanceState);
+
+
+    }
+
+    public void makeContent(Bundle savedInstanceState){
         href = Assets.THEME_PATH + getIntent().getStringExtra(Assets.CONTENT);
 
-        context = getApplicationContext();
 
         htmlTextView = (HtmlTextView) findViewById(R.id.activity_theme);
 
-        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
         connector = new Connector();
+
 
         if(savedInstanceState != null){
 
@@ -80,28 +87,12 @@ public class ThemeActivity extends Activity {
 
 
 
-            new ParseTask().execute(href);
+            new SlidingThemeActivity.ParseTask().execute(href);
         }else {
 
-            new ParseTask().execute(href);
+            new SlidingThemeActivity.ParseTask().execute(href);
 
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_theme, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_share);
-        shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
-        setIntent(href);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    private void setIntent(String text) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, text);
-        shareActionProvider.setShareIntent(intent);
     }
 
     private class ParseTask extends AsyncTask<String, Void, Boolean> {
@@ -111,25 +102,27 @@ public class ThemeActivity extends Activity {
 
 
 
-                try {
+            try {
 
-                    Document document = Jsoup.connect(arg[0]).get();
+                Document document = Jsoup.connect(arg[0]).get();
 
-                    title = document.title();
-
-                    madsoft.com.form.Parser parser = new madsoft.com.form.Parser(document);
-
-                    loaderInput = parser.parseContent();
-
-                    parser = null;
-
-                    return true;
+                title = document.title();
 
 
-                } catch (Exception exp) {
-                    exp.printStackTrace();
-                    return false;
-                }
+
+                madsoft.com.form.Parser parser = new madsoft.com.form.Parser(document);
+
+                loaderInput = parser.parseContent();
+
+                parser = null;
+
+                return true;
+
+
+            } catch (Exception exp) {
+                exp.printStackTrace();
+                return false;
+            }
 
 
         }
@@ -142,41 +135,33 @@ public class ThemeActivity extends Activity {
 
             if (downloaded) {
 
-                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-                    progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+
+                setTitle(title);
 
                 if (loaderInput != null) {
 
 
                     htmlTextView.setHtml(loaderInput,
-                            new HtmlHttpImageGetter(htmlTextView, null, true));
+                            new HtmlHttpImageGetter(htmlTextView, null, false));
                 }
 
             }else{
                 toastMaker("Страница будет загружена при подлкючении к сети.");
-                Thread thread = new Thread(connectionChecker);
-                thread.start();
             }
         }
     }
 
 
-    @Override
+   /* @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
-
+        super(savedInstanceState);
         savedInstanceState.putString(Assets.TEXT, loaderInput);
         savedInstanceState.putString(Assets.TITLE, title);
-    }
+    }*/
 
-    private Runnable connectionChecker = new Runnable() {
-        public void run() {
-            while (!connector.isConnected(connectivityManager)){Log.v("in checker"," in while");}
-
-            new ParseTask().execute(href);
-            Log.v("in checker", "leaving the checker");
-        }
-    };
 
     private void toastMaker(String text){
 
@@ -185,6 +170,6 @@ public class ThemeActivity extends Activity {
                 Toast.LENGTH_SHORT);
         toast.show();
 
-    }*/
+    }
 
 }

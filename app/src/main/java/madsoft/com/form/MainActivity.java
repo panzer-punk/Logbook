@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
                    String linkHref = link.attr("href");
 
 
-                    Intent intent = new Intent(MainActivity.this, ThemeActivity.class);
+                    Intent intent = new Intent(MainActivity.this, SlidingThemeActivity.class);
                     intent.putExtra(Assets.CONTENT, linkHref);
                     startActivity(intent);
                }catch (Exception e){ Toast toast = Toast.makeText(getApplicationContext(),
