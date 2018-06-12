@@ -1,5 +1,7 @@
 package madsoft.com.form;
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,19 +19,18 @@ import java.util.LinkedList;
 public class Parser {
 
     private Document document;
-    private LinkedList<String> parserOutput;
+    private char crunch = '"';
 
-     Parser(Document document) {
+    Parser(Document document) {
 
         this.document = document;
     }
 
 
-
-    public LinkedList<String> parseContent() {
+    public String parseContent() {
         String imageLink;
 
-        parserOutput = new LinkedList<String>();
+        StringBuilder builder = new StringBuilder();
 
         Elements elements = document.getAllElements();
 
@@ -42,15 +43,13 @@ public class Parser {
                             || e.hasClass("text-center text-main-css")
                             || e.hasClass("text-muted pull-right")))
                         if (!e.text().isEmpty())
-                           parserOutput.add(e.text().toString());
-
-
+                            builder.append(e.toString());
 
 
                     break;
                 case "ol":
-                    if(!e.text().isEmpty())
-                        parserOutput.add(e.text().toString());
+                    if (!e.text().isEmpty() && e.toString() != null)
+                        builder.append(e.toString());
                     break;
                 case "ul":
                     if (!(e.hasClass("nav navbar-nav")
@@ -58,7 +57,7 @@ public class Parser {
                             || e.hasClass("breadcrumb")
                             || e.hasClass("list-unstyled list-inline pull-left")))
                         if (!e.text().isEmpty())
-                            parserOutput.add(e.text().toString());
+                            builder.append(e.toString());
 
                     break;
 
@@ -66,13 +65,14 @@ public class Parser {
                     if (!e.hasAttr("style")) {
                         if (e.attr("src").contains(Assets.ROOT)
                                 || e.attr("src").contains("http://")
-                                ||  e.attr("src").contains("https://")) {
+                                || e.attr("src").contains("https://")) {
                             imageLink = e.attr("src");
-                            parserOutput.add(imageLink);
+                           // parserOutput.add(imageLink);
+                            builder.append(e.toString());
 
                         } else
                             imageLink = Assets.ROOT + e.attr("src");
-                            parserOutput.add(imageLink);
+                         builder.append("<img src=" + crunch + imageLink + crunch +">");
                     }
 
 
@@ -82,11 +82,8 @@ public class Parser {
 
         }
 
-        LinkedHashSet<String> deleteDuplicates = new LinkedHashSet<>(parserOutput);
-
-
-       return new LinkedList<>(deleteDuplicates);
-        }
+        return builder.toString();
     }
+}
 
 

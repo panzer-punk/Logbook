@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,38 +11,31 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ShareActionProvider;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
-import java.util.LinkedList;
 
-import uk.co.senab.photoview.PhotoViewAttacher;
+public class ThemeActivity extends extends SlidingActivity {
 
-public class ThemeActivity extends Activity {
-
-    private String text;
     private String title = "";
    // private Context context = this;
     private Connector connector;
     private ConnectivityManager connectivityManager;
-    private String imageLink;
+
     private String href;
     private ImageLoader imageLoader;
-    private LinkedList<String> loaderInput;
+    private String loaderInput;
     private boolean downloaded = false;
     private ShareActionProvider shareActionProvider;
-    private LinearLayout linearLayout;
+    private HtmlTextView htmlTextView;
     private Context context;
 
     @Override
@@ -57,11 +49,7 @@ public class ThemeActivity extends Activity {
 
         context = getApplicationContext();
 
-       imageLoader = ImageLoader.getInstance();
-
-       imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-
-        linearLayout = (LinearLayout) findViewById(R.id.activity_theme);
+        htmlTextView = (HtmlTextView) findViewById(R.id.activity_theme);
 
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -83,13 +71,12 @@ public class ThemeActivity extends Activity {
 
             title = savedInstanceState.getString(Assets.TITLE);
 
-            TextView textView;
+            this.setTitle(title);
 
-            textView = (TextView) findViewById(R.id.title);
+            loaderInput = savedInstanceState.getString(Assets.TEXT);
 
-            textView.setText(title);
+            htmlTextView.setHtml(loaderInput);
 
-            href = savedInstanceState.getString(Assets.HREF);
 
 
             new ParseTask().execute(href);
@@ -153,7 +140,6 @@ public class ThemeActivity extends Activity {
         protected void onPostExecute(Boolean downloaded) {
 
             if (downloaded) {
-                String out = "";
 
                     ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -161,76 +147,10 @@ public class ThemeActivity extends Activity {
 
                 if (loaderInput != null) {
 
-                    for (String s : loaderInput) {
 
-                        if (s.contains("https")
-                                || s.contains("http")) {
-
-                            if (!out.isEmpty()) {
-                                TextView textView = new TextView(context);
-
-                                textView.setTextColor(Color.BLACK);
-
-                                textView.setTextSize(18);
-
-                                textView.setText(out);
-
-                                textView.setPadding(0, 16, 0, 16);
-
-                                linearLayout.addView(textView);
-
-                                out = "";
-                            }
-                            ImageView imageView = new ImageView(context);
-
-                            imageView.setImageResource(R.drawable.ic_share_black_18dp);
-
-                            imageView.setMinimumHeight(50);
-
-                            imageView.setMinimumHeight(50);
-
-                            linearLayout.addView(imageView);
-
-                            ImageLoader imageLoader;
-                            imageLoader = ImageLoader.getInstance();
-                            imageLoader.displayImage(s, imageView);
-
-                            PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
-
-                            attacher.setZoomable(true);
-
-
-                        } else {
-
-                            out += s + "\n";
-
-                        }
-
-                    }
-
-                    if (!out.isEmpty()) {
-                        TextView textView = new TextView(context);
-
-                        textView.setTextColor(Color.BLACK);
-
-                        textView.setTextSize(18);
-
-                        textView.setText(out);
-
-                        linearLayout.addView(textView);
-                    }
-
-                    TextView titleView = (TextView) findViewById(R.id.title);
-
-                    titleView.setText(title);
-
-                    GridLayout gridLayout = (GridLayout) findViewById(R.id.gridLayout);
-
-                    gridLayout.setVisibility(View.VISIBLE);
-
+                    htmlTextView.setHtml(loaderInput,
+                             new HtmlHttpImageGetter(htmlTextView));
                 }
-
-
 
             }else{
                 toastMaker("Страница будет загружена при подлкючении к сети.");
@@ -244,20 +164,8 @@ public class ThemeActivity extends Activity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
 
-        savedInstanceState.putString(Assets.TEXT, text);
-
+        savedInstanceState.putString(Assets.TEXT, loaderInput);
         savedInstanceState.putString(Assets.TITLE, title);
-
-        savedInstanceState.putString(Assets.HREF, href);
-
-        savedInstanceState.putString(Assets.IMAGE_LINK, imageLink);//убрать из финальной версии
-
-        savedInstanceState.putBoolean(Assets.DOWNLOAD_STATUS, downloaded);
-
-      //  savedInstanceState.putStringArrayList(Assets.LOADER_INPUT, loaderInput);
-
-
-
     }
 
     private Runnable connectionChecker = new Runnable() {

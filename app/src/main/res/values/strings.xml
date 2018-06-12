@@ -8,4 +8,5 @@
     <string name="text_about">О программе</string>
     <string name="text_download">Загружать открываемые страницы</string>
     <string name="author">Разработал Бударный Даниил</string>
+    <string name="title_activity_new_design_main">NewDesignMainActivity</string>
 </resources>
