@@ -18,15 +18,18 @@ import android.widget.Toast;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Collector;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class MainActivity extends Activity {
-    private static  String LIST = "arrayList";
+    private static  String LIST = "linkTextList";
     public Elements links; // сохраняется в Assets
-    public static ArrayList<String> arrayList;
+    public static ArrayList<String> linkTextList;
     private ArrayAdapter<String> adapter;
     private ListView listView;
     private Connector connector;
@@ -53,7 +56,8 @@ public class MainActivity extends Activity {
 
 
                try {
-                   Document doc = Jsoup.parse(links.get((int) id).outerHtml());
+                   //
+                   Document doc = Jsoup.parse(Assets.LNKS.getLink((lisView.getItemAtPosition(position).toString())).outerHtml());
                    Element link = doc.select("a").first();
                    String linkHref = link.attr("href");
 
@@ -62,34 +66,33 @@ public class MainActivity extends Activity {
                     intent.putExtra(Assets.CONTENT, linkHref);
                     startActivity(intent);
                }catch (Exception e){ Toast toast = Toast.makeText(getApplicationContext(),
-                       "Отсутсвует подключение к сети",
+                       e.toString(),
                        Toast.LENGTH_SHORT);
-                   toast.show();}
+                   toast.show(); }
 
             }
         };
-       // 0x7f0b0056 0x7f0b0055
+
         listView = (ListView)findViewById(R.id.list);
         listView.setOnItemClickListener(itemClickListener);
 
         if(savedInstanceState != null)
 
-            arrayList = savedInstanceState.getStringArrayList(LIST);
+            linkTextList = savedInstanceState.getStringArrayList(LIST);
 
         else
-                arrayList = new ArrayList<String>();
+                linkTextList = new ArrayList<>();
 
-        adapter = new ArrayAdapter<String>(
+        adapter = new ArrayAdapter<>(
                 this,
                 R.layout.list_item,
                 R.id.pro_item,
-                arrayList);
+                linkTextList);
 
 
         if(savedInstanceState != null) {
 
             listView.setAdapter(adapter);
-            links = Assets.LINKS;
         }else {
             new DownloadTask().execute();
         }
@@ -139,11 +142,11 @@ public class MainActivity extends Activity {
 
                     Document doc = Jsoup.connect(Assets.PATH).get();
                     links = doc.select("a[href]");
-                    arrayList.clear();
+                    linkTextList.clear();
 
                     for (Element link : links)
                         if (link.toString().contains("formul") && link.toString().contains(".html"))
-                            arrayList.add(link.text());
+                            linkTextList.add(link.text());
 
                     Iterator<Element> iterator = links.iterator();
 
@@ -154,6 +157,7 @@ public class MainActivity extends Activity {
                         if (!el.toString().contains(".html"))
                             iterator.remove();
                     }
+
 
                     return true;
 
@@ -169,9 +173,11 @@ public class MainActivity extends Activity {
             if(!downloaded){
               Thread thread = new Thread(connectionChecker);
                 thread.start();
-            }else
-            listView.setAdapter(adapter);
-
+            }else {
+                listView.setAdapter(adapter);
+                if(Assets.LNKS == null)
+                Assets.LNKS = new LinksMap(links);
+            }
         }
 
     }
@@ -179,11 +185,13 @@ public class MainActivity extends Activity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
 
-        savedInstanceState.putStringArrayList(LIST, arrayList);
-        Assets.LINKS = links;
+        savedInstanceState.putStringArrayList(LIST, linkTextList);
+
 
 
     }
+
+
 
     private Runnable connectionChecker = new Runnable() {
         public void run() {

@@ -40,7 +40,7 @@ public class SlidingThemeActivity extends SlidingActivity {
 
     @Override
     public void init(Bundle savedInstanceState) {
-        setTitle("Activity Title");
+        setTitle(R.string.loading);
 
         setPrimaryColors(
                 getResources().getColor(R.color.colorPrimary),
