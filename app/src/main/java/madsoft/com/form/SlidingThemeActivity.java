@@ -63,36 +63,9 @@ public class SlidingThemeActivity extends SlidingActivity {
         connector = new Connector();
 
 
-        if(savedInstanceState != null){
-
-
-            downloaded = savedInstanceState.getBoolean(Assets.DOWNLOAD_STATUS);
-
-            if(downloaded){
-
-                ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-                progressBar.setVisibility(View.GONE);
-
-            }
-
-
-            title = savedInstanceState.getString(Assets.TITLE);
-
-            this.setTitle(title);
-
-            loaderInput = savedInstanceState.getString(Assets.TEXT);
-
-            htmlTextView.setHtml(loaderInput);
-
-
-
-            new SlidingThemeActivity.ParseTask().execute(href);
-        }else {
-
             new SlidingThemeActivity.ParseTask().execute(href);
 
-        }
+        
     }
 
     private class ParseTask extends AsyncTask<String, Void, Boolean> {
@@ -153,14 +126,6 @@ public class SlidingThemeActivity extends SlidingActivity {
             }
         }
     }
-
-
-   /* @Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
-        super(savedInstanceState);
-        savedInstanceState.putString(Assets.TEXT, loaderInput);
-        savedInstanceState.putString(Assets.TITLE, title);
-    }*/
 
 
     private void toastMaker(String text){
