@@ -11,14 +11,15 @@ import java.util.HashMap;
 
 public class Assets {
 
-    public static String DOWNLOAD_STATUS = "downloadStatus";
     public static LinksMap LNKS = null;
+    public static boolean DOWNLOADFLAG = false;
+    public static final String ARRAYLIST = "ARRAYLIST";
+    public static final String FILENAME = "filename";
     public static final String PATH = "http://matankkep.ru/formul/";
     public static final String ROOT = "https://matankkep.ru/";
     public static final String THEME_PATH = "http://matankkep.ru/";
     public static final String CONTENT = "content";
-    public static final String TEXT = "text";
-    public static final String TITLE = "title";
+    public static final String FLAG_D = "DOWNLOADFLAG";
 
 
 }

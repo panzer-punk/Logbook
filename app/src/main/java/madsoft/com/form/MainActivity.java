@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 public class MainActivity extends Activity {
     private static  String LIST = "linkTextList";
+    private CacheSystem cacheSystem;
     public Elements links; // сохраняется в Assets
     public static ArrayList<String> linkTextList;
     private ArrayAdapter<String> adapter;
@@ -45,6 +46,7 @@ public class MainActivity extends Activity {
 
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        cacheSystem = new CacheSystem(this);
 
 
         Log.v("Bundle", "" + (savedInstanceState == null));
@@ -60,10 +62,12 @@ public class MainActivity extends Activity {
                    Document doc = Jsoup.parse(Assets.LNKS.getLink((lisView.getItemAtPosition(position).toString())).outerHtml());
                    Element link = doc.select("a").first();
                    String linkHref = link.attr("href");
+                   String filename = lisView.getItemAtPosition(position).toString();
 
 
                     Intent intent = new Intent(MainActivity.this, SlidingThemeActivity.class);
                     intent.putExtra(Assets.CONTENT, linkHref);
+                    intent.putExtra(Assets.FILENAME, filename);
                     startActivity(intent);
                }catch (Exception e){ Toast toast = Toast.makeText(getApplicationContext(),
                        e.toString(),
@@ -171,10 +175,15 @@ public class MainActivity extends Activity {
         protected void onPostExecute(Boolean downloaded){
 
             if(!downloaded){
+                if(cacheSystem.checkFile(Assets.ARRAYLIST)) {
+                    linkTextList = cacheSystem.loadArrayList(Assets.ARRAYLIST);
+                    listView.setAdapter(adapter);
+                }
               Thread thread = new Thread(connectionChecker);
                 thread.start();
             }else {
                 listView.setAdapter(adapter);
+                cacheSystem.write(linkTextList, Assets.ARRAYLIST);
                 if(Assets.LNKS == null)
                 Assets.LNKS = new LinksMap(links);
             }
@@ -195,6 +204,9 @@ public class MainActivity extends Activity {
 
     private Runnable connectionChecker = new Runnable() {
         public void run() {
+
+
+
             while (!connector.isConnected(connectivityManager))
             {Log.v("in checker", "waitin' for connection");}
             

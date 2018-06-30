@@ -25,18 +25,13 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 public class SlidingThemeActivity extends SlidingActivity {
 
-    private String title = "";
-    // private Context context = this;
     private Connector connector;
-    private ConnectivityManager connectivityManager;
 
     private String href;
-    private ImageLoader imageLoader;
+    private CacheSystem cacheSystem;
+    private String filename;
     private String loaderInput;
-    private boolean downloaded = false;
-    private ShareActionProvider shareActionProvider;
     private HtmlTextView htmlTextView;
-    private Context context;
 
     @Override
     public void init(Bundle savedInstanceState) {
@@ -49,6 +44,7 @@ public class SlidingThemeActivity extends SlidingActivity {
 
         setContent(R.layout.activity_theme);
 
+
         this.makeContent(savedInstanceState);
 
 
@@ -57,12 +53,25 @@ public class SlidingThemeActivity extends SlidingActivity {
     public void makeContent(Bundle savedInstanceState){
         href = Assets.THEME_PATH + getIntent().getStringExtra(Assets.CONTENT);
 
+        filename = getIntent().getStringExtra(Assets.FILENAME);
+
+        cacheSystem = new CacheSystem(this);
+
+        setTitle(filename);
 
         htmlTextView = findViewById(R.id.activity_theme);
 
         connector = new Connector();
 
+        if(cacheSystem.checkFile(filename)) {
+            htmlTextView.setHtml(cacheSystem.load(filename), new HtmlHttpImageGetter(htmlTextView, null, false));
 
+            ProgressBar progressBar = findViewById(R.id.progressBar);
+
+            progressBar.setVisibility(View.GONE);
+
+        }
+        else
             new SlidingThemeActivity.ParseTask().execute(href);
 
 
@@ -78,10 +87,6 @@ public class SlidingThemeActivity extends SlidingActivity {
             try {
 
                 Document document = Jsoup.connect(arg[0]).get();
-
-                title = document.title();
-
-
 
                 madsoft.com.form.Parser parser = new madsoft.com.form.Parser(document);
 
@@ -112,10 +117,10 @@ public class SlidingThemeActivity extends SlidingActivity {
 
                 progressBar.setVisibility(View.GONE);
 
-                setTitle(title);
-
                 if (loaderInput != null) {
 
+                   // if(Assets.DOWNLOADFLAG) Сделать для этого кнопку на самой активности
+                    cacheSystem.write(loaderInput, filename);
 
                     htmlTextView.setHtml(loaderInput,
                             new HtmlHttpImageGetter(htmlTextView, null, false));

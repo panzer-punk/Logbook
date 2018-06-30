@@ -7,7 +7,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
+import java.util.ArrayList;
 
 
 import static android.content.Context.MODE_PRIVATE;
@@ -26,7 +26,39 @@ public class CacheSystem {
 
     }
 
+    public boolean checkFile(String filename){
+
+
+        try {
+
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    activity.openFileInput(filename)));
+
+        }catch (IOException e){return false;}
+        catch (Exception e){e.printStackTrace(); return false;}
+
+        return true;
+    }
+
     public void save(byte[] file){
+
+    }
+
+    public void write(ArrayList<String> list, String filename){
+
+        BufferedWriter bw;
+
+        try{
+            bw = new BufferedWriter(new OutputStreamWriter(
+                    activity.openFileOutput(filename, MODE_PRIVATE)));
+
+            for(String s : list)
+            bw.write(s);
+
+            bw.close();
+
+        }catch (Exception ex){ex.printStackTrace();}
 
     }
 
@@ -47,9 +79,13 @@ public class CacheSystem {
 
     }
 
-    public void delete(String path){
+    public void delete(String filename){
 
-        
+    try {
+
+        activity.deleteFile(filename);
+
+    }catch (Exception e){e.printStackTrace();}
 
     }
 
@@ -74,6 +110,30 @@ public class CacheSystem {
         }catch (Exception e){e.printStackTrace();}
 
         return str2;
+
+    }
+
+    public ArrayList<String> loadArrayList(String filename){
+
+        String str = "";
+        ArrayList<String> list = new ArrayList<>();
+
+        try {
+
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    activity.openFileInput(filename)));
+
+
+
+            while ((str = br.readLine()) != null) {
+                list.add(str);
+            }
+            br.close();
+
+        }catch (Exception e){e.printStackTrace();}
+
+        return list;
 
     }
 
