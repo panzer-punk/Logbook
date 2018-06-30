@@ -58,14 +58,14 @@ public class SlidingThemeActivity extends SlidingActivity {
         href = Assets.THEME_PATH + getIntent().getStringExtra(Assets.CONTENT);
 
 
-        htmlTextView = (HtmlTextView) findViewById(R.id.activity_theme);
+        htmlTextView = findViewById(R.id.activity_theme);
 
         connector = new Connector();
 
 
             new SlidingThemeActivity.ParseTask().execute(href);
 
-        
+
     }
 
     private class ParseTask extends AsyncTask<String, Void, Boolean> {
@@ -108,7 +108,7 @@ public class SlidingThemeActivity extends SlidingActivity {
 
             if (downloaded) {
 
-                ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                ProgressBar progressBar = findViewById(R.id.progressBar);
 
                 progressBar.setVisibility(View.GONE);
 

@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
             }
         };
 
-        listView = (ListView)findViewById(R.id.list);
+        listView = findViewById(R.id.list);
         listView.setOnItemClickListener(itemClickListener);
 
         if(savedInstanceState != null)

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.madsoft.form"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 21
         versionCode 15
         versionName "0.95 BETA"

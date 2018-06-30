@@ -24,10 +24,7 @@ public class Connector {
                 urlc.setRequestProperty("Connector", "close");
                 urlc.setConnectTimeout(1000);
                 urlc.connect();
-                if (urlc.getResponseCode() == 200) {
-                    return true;
-                }
-                return false;
+                return urlc.getResponseCode() == 200;
 
             } catch (IOException e) {
                 return false;
