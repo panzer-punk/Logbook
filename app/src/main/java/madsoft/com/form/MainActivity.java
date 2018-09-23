@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,20 +17,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Collector;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.stream.Collectors;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity{
     private static  String LIST = "linkTextList";
     private CacheSystem cacheSystem;
+    private Toolbar toolbar;
     public Elements links; // сохраняется в Assets
     public static ArrayList<String> linkTextList;
     private ArrayAdapter<String> adapter;
@@ -47,6 +48,9 @@ public class MainActivity extends Activity {
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
         cacheSystem = new CacheSystem(this);
+
+        toolbar = findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
 
 
         Log.v("Bundle", "" + (savedInstanceState == null));
@@ -77,7 +81,7 @@ public class MainActivity extends Activity {
             }
         };
 
-        listView = findViewById(R.id.list);
+        listView = findViewById(R.id.list_view);
         listView.setOnItemClickListener(itemClickListener);
 
         if(savedInstanceState != null)
@@ -149,7 +153,7 @@ public class MainActivity extends Activity {
                     linkTextList.clear();
 
                     for (Element link : links)
-                        if (link.toString().contains("formul") && link.toString().contains(".html"))
+                   if (link.toString().contains("formul") && link.toString().contains(".html"))
                             linkTextList.add(link.text());
 
                     Iterator<Element> iterator = links.iterator();
@@ -193,6 +197,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
 
         savedInstanceState.putStringArrayList(LIST, linkTextList);
 

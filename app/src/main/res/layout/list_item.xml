@@ -4,13 +4,17 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:textColor="@color/colorBlack"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:textColor="@color/primary_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/item_background"
         android:id="@+id/pro_item"
+        android:gravity="center"
         android:textStyle="bold"
-        android:padding="21dip"
-        android:textSize="16dip"
+        android:textSize="28sp"
+        android:paddingTop="18sp"
+        tools:ignore="HardcodedText"
         />
 
 </LinearLayout>

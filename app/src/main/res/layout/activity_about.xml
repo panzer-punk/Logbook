@@ -15,6 +15,6 @@
         android:layout_height="wrap_content"
         android:text="@string/author"
         android:textSize="18sp"
-        android:textColor="@color/colorBlack"/>
+        android:textColor="@color/primary_text"/>
 
 </RelativeLayout>

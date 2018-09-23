@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/diaog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        android:text="Факториал"
+        android:textColor="@color/icons"
+        android:textSize="22sp"
+        android:padding="8dp"
+        />
+    <TextView
+        android:id="@+id/diaog_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:text="Факториа́л — функция, определённая на множестве неотрицательных целых чисел. Название происходит от лат. factorialis — действующий, производящий, умножающий; обозначается n!, произносится эн факториа́л. Факториал натурального числа n определяется как произведение всех натуральных чисел от 1 до n включительно"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:textIsSelectable="true"
+        />
+
+
+</LinearLayout>
