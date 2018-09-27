@@ -13,7 +13,7 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_below="@id/toolbar_main"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swiperefresh"
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <com.nirhart.parallaxscroll.views.ParallaxListView xmlns:android="http://schemas.android.com/apk/res/android"

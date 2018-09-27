@@ -49,17 +49,9 @@ public class MainActivity extends AppCompatActivity{
 
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        listView = findViewById(R.id.list_view);
+
         cacheSystem = new CacheSystem(this);
-
-        swipeRefreshLayout = findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-               download();
-
-            }
-        });
 
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -72,14 +64,23 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> lisView, View view, int position, long id) {
 
+                String linkHref;
+                String filename;
 
                try {
-                   //
-                   Document doc = Jsoup.parse(Assets.LNKS.getLink((lisView.getItemAtPosition(position).toString())).outerHtml());
-                   Element link = doc.select("a").first();
-                   String linkHref = link.attr("href");
-                   String filename = lisView.getItemAtPosition(position).toString();
 
+                   if(Assets.LNKS != null) {
+                       Document doc = Jsoup.parse(Assets.LNKS.getLink((lisView.getItemAtPosition(position).toString())).outerHtml());
+                       Element link = doc.select("a").first();
+                       linkHref = link.attr("href");
+                       filename = lisView.getItemAtPosition(position).toString();
+                   }else {
+
+                       linkHref = null;
+                       filename = lisView.getItemAtPosition(position).toString();
+
+
+                   }
 
                     Intent intent = new Intent(MainActivity.this, SlidingThemeActivity.class);
                     intent.putExtra(Assets.CONTENT, linkHref);
@@ -93,8 +94,21 @@ public class MainActivity extends AppCompatActivity{
             }
         };
 
-        listView = findViewById(R.id.list_view);
+
+
         listView.setOnItemClickListener(itemClickListener);
+
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                download();
+
+            }
+        });
+
 
         if(savedInstanceState != null)
 
@@ -198,19 +212,22 @@ public class MainActivity extends AppCompatActivity{
         @Override
         protected void onPostExecute(Boolean downloaded){
 
+            swipeRefreshLayout.setRefreshing(false);
+
             if(!downloaded){
-                if(cacheSystem.checkFile(Assets.ARRAYLIST)) {
-                    linkTextList = cacheSystem.loadArrayList(Assets.ARRAYLIST);
+
+                    //linkTextList = cacheSystem.loadArrayList(Assets.ARRAYLIST);
+                    linkTextList = cacheSystem.loadListCachedFiles();
                     listView.setAdapter(adapter);
-                }
-              Thread thread = new Thread(connectionChecker);
-                thread.start();
+
+
+           //   Thread thread = new Thread(connectionChecker);
+            //    thread.start();
             }else {
                 listView.setAdapter(adapter);
-                cacheSystem.write(linkTextList, Assets.ARRAYLIST);
                 if(Assets.LNKS == null)
                 Assets.LNKS = new LinksMap(links);
-                swipeRefreshLayout.setRefreshing(false);
+
             }
         }
 

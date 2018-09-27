@@ -2,25 +2,19 @@ package madsoft.com.form;
 
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +25,6 @@ import com.klinker.android.sliding.SlidingActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
-import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 
 
@@ -90,16 +82,10 @@ public class SlidingThemeActivity extends SlidingActivity {
 
         connector = new Connector();
 
-        if (cacheSystem.checkFile(filename)) {
-            //   htmlTextView.setHtml(cacheSystem.load(filename), new HtmlHttpImageGetter(htmlTextView, null, false));
-
-        //    ProgressBar progressBar = findViewById(R.id.progressBar);
-
-         //   progressBar.setVisibility(View.GONE);
-
-        } else
+        if(href != null)
             new SlidingThemeActivity.ParseTask().execute(href);
-
+        else
+            new ParseTask().prepareTextView(filename);
 
     }
 
@@ -134,7 +120,6 @@ public class SlidingThemeActivity extends SlidingActivity {
         @Override
         protected void onPostExecute(Boolean downloaded) {
 
-            if (downloaded) {
 
                // ProgressBar progressBar = findViewById(R.id.progressBar);
 
@@ -143,18 +128,31 @@ public class SlidingThemeActivity extends SlidingActivity {
                 if (loaderInput != null) {
 
                     // if(Assets.DOWNLOADFLAG) Сделать для этого кнопку на самой активности
-                    // cacheSystem.write(loaderInput, filename);
+                     cacheSystem.write(loaderInput, filename);
 
 
-                    htmlTextView.setText(linkifyHtml(loaderInput, Linkify.ALL));
-
-                    htmlTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                  prepareTextView(loaderInput);
 
 
                 } else {
-                    toastMaker("Страница будет загружена при подлкючении к сети.");
+                    if(cacheSystem.checkFile(filename)){
+
+                        prepareTextView(cacheSystem.load(filename));
+
+                    }
+
+
+                    toastMaker("Кэшированная версия страницы");
                 }
-            }
+
+        }
+
+        public void prepareTextView(String text){
+
+            htmlTextView.setText(linkifyHtml(text, Linkify.ALL));
+
+            htmlTextView.setMovementMethod(LinkMovementMethod.getInstance());
+
         }
 
 
@@ -220,10 +218,13 @@ public class SlidingThemeActivity extends SlidingActivity {
 
     private class ParseDialogTask extends AsyncTask<String, Void, Boolean> {
         String titleS;
+        String url;
 
         @Override
         protected Boolean doInBackground(String... arg) {
 
+
+            url = arg[0];
 
             try {
 
@@ -254,17 +255,21 @@ public class SlidingThemeActivity extends SlidingActivity {
         @Override
         protected void onPostExecute(Boolean downloaded) {
 
-            if (downloaded) {
+           url =  url.replaceAll("/","_");
 
                 if (dialogInput != null && titleS != null) {
 
+                    cacheSystem.write(dialogInput, CacheSystem.shorts_prefix + url);
 
                     dialogMaker(dialogInput, titleS);
 
                 } else {
 
+                    if(cacheSystem.checkFile(CacheSystem.shorts_prefix + url))
+                        dialogMaker(cacheSystem.load(CacheSystem.shorts_prefix + url), titleS);
+
                 }
-            }
+
         }
     }
 }
