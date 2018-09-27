@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity{
     private static  String LIST = "linkTextList";
     private CacheSystem cacheSystem;
     private Toolbar toolbar;
+    private SwipeRefreshLayout swipeRefreshLayout;
     public Elements links; // сохраняется в Assets
     public static ArrayList<String> linkTextList;
     private ArrayAdapter<String> adapter;
@@ -48,6 +50,16 @@ public class MainActivity extends AppCompatActivity{
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
         cacheSystem = new CacheSystem(this);
+
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+               download();
+
+            }
+        });
 
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -102,11 +114,18 @@ public class MainActivity extends AppCompatActivity{
 
             listView.setAdapter(adapter);
         }else {
-            new DownloadTask().execute();
+            download();
         }
 
 
 
+
+    }
+
+    private void download(){
+
+        swipeRefreshLayout.setRefreshing(true);
+        new DownloadTask().execute();
 
     }
 
@@ -144,6 +163,7 @@ public class MainActivity extends AppCompatActivity{
     public class DownloadTask extends AsyncTask<String, Void, Boolean>{
         @Override
         protected  Boolean doInBackground(String ... arg){
+
 
 
                 try {
@@ -190,6 +210,7 @@ public class MainActivity extends AppCompatActivity{
                 cacheSystem.write(linkTextList, Assets.ARRAYLIST);
                 if(Assets.LNKS == null)
                 Assets.LNKS = new LinksMap(links);
+                swipeRefreshLayout.setRefreshing(false);
             }
         }
 

@@ -93,9 +93,9 @@ public class SlidingThemeActivity extends SlidingActivity {
         if (cacheSystem.checkFile(filename)) {
             //   htmlTextView.setHtml(cacheSystem.load(filename), new HtmlHttpImageGetter(htmlTextView, null, false));
 
-            ProgressBar progressBar = findViewById(R.id.progressBar);
+        //    ProgressBar progressBar = findViewById(R.id.progressBar);
 
-            progressBar.setVisibility(View.GONE);
+         //   progressBar.setVisibility(View.GONE);
 
         } else
             new SlidingThemeActivity.ParseTask().execute(href);
@@ -136,9 +136,9 @@ public class SlidingThemeActivity extends SlidingActivity {
 
             if (downloaded) {
 
-                ProgressBar progressBar = findViewById(R.id.progressBar);
+               // ProgressBar progressBar = findViewById(R.id.progressBar);
 
-                progressBar.setVisibility(View.GONE);
+              //  progressBar.setVisibility(View.GONE);
 
                 if (loaderInput != null) {
 

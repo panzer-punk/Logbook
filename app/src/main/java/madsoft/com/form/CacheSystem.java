@@ -19,6 +19,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class CacheSystem {
 
     private Activity activity;
+    public static String file_extension = ".thm";
 
     public CacheSystem(Activity activity) {
 
@@ -26,7 +27,12 @@ public class CacheSystem {
 
     }
 
+    private void prepare(String s)
+    { s += file_extension;}
+
     public boolean checkFile(String filename){
+
+        prepare(filename);
 
 
         try {
@@ -45,9 +51,10 @@ public class CacheSystem {
 
     }
 
-    public void write(ArrayList<String> list, String filename){
+    public void write(ArrayList<String> list, String filename){//спорный метод
 
         BufferedWriter bw;
+        prepare(filename);
 
         try{
             bw = new BufferedWriter(new OutputStreamWriter(
@@ -65,6 +72,7 @@ public class CacheSystem {
     public void write(String str, String filename){
 
         BufferedWriter bw;
+        prepare(filename);
 
         try{
             bw = new BufferedWriter(new OutputStreamWriter(
@@ -93,6 +101,7 @@ public class CacheSystem {
 
         String str = "";
         String str2 = " ";
+        prepare(filename);
 
         try {
 
@@ -117,6 +126,8 @@ public class CacheSystem {
 
         String str = "";
         ArrayList<String> list = new ArrayList<>();
+
+        prepare(filename);
 
         try {
 
