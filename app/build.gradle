@@ -29,6 +29,7 @@ dependencies {
     compile 'org.sufficientlysecure:html-textview:3.5'
     compile 'com.klinkerapps:sliding-activity:1.5.2'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
 }
 
 

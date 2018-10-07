@@ -1,43 +1,42 @@
 package madsoft.com.form;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.os.Parcelable;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
-
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
-    private static  String LIST = "linkTextList";
-    private CacheSystem cacheSystem;
+
+public class MainActivity extends AppCompatActivity {
+    /*  private static  String LIST = "linkTextList";
+      private CacheSystem cacheSystem;
+
+      private SwipeRefreshLayout swipeRefreshLayout;
+      public Elements links; // сохраняется в Assets
+      public static ArrayList<String> linkTextList;
+      private ArrayAdapter<String> adapter;
+      private ListView listView;
+      private Connector connector;
+      private ConnectivityManager connectivityManager;*/
     private Toolbar toolbar;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    public Elements links; // сохраняется в Assets
-    public static ArrayList<String> linkTextList;
-    private ArrayAdapter<String> adapter;
-    private ListView listView;
-    private Connector connector;
-    private ConnectivityManager connectivityManager;
+    private DownloadedFragment downloadedFragment;
+    private PageFragment pageFragment;
+    private SearchFragment searchFragment;
+    private BottomNavigationView bottomNavigationView;
+    private ViewPager pager;
 
 
     @Override
@@ -45,21 +44,127 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        connector = new Connector();
 
-        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        pager = findViewById(R.id.pager);
 
-        listView = findViewById(R.id.list_view);
+        MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
 
-        cacheSystem = new CacheSystem(this);
+        pager.setAdapter(pagerAdapter);
+
+        //  connector = new Connector();
+
+        //  connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //   listView = findViewById(R.id.list_view);
+
+        //   cacheSystem = new CacheSystem(this);
+
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+
+        BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationView_OnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.action_downloaded:
+                        pager.setCurrentItem(0);
+                        break;
+                    case R.id.action_main:
+                        pager.setCurrentItem(1);
+                        break;
+                    case R.id.action_search:
+                        pager.setCurrentItem(2);
+                        break;
+                    case R.id.action_settings:
+                        pager.setCurrentItem(3);
+                        break;
+                }
+
+                return true;
+            }
+        };
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(bottomNavigationView_OnNavigationItemSelectedListener);
+
+        ViewPager.OnPageChangeListener viewPagerMain_OnPageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        bottomNavigationView.getMenu().getItem(0).setChecked(true);
+                        break;
+                    case 1:
+                        bottomNavigationView.getMenu().getItem(1).setChecked(true);
+                        break;
+                    case 2:
+                        bottomNavigationView.getMenu().getItem(2).setChecked(true);
+                        break;
+                    case 3:
+                        bottomNavigationView.getMenu().getItem(3).setChecked(true);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
 
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 
 
-        Log.v("Bundle", "" + (savedInstanceState == null));
+        pager.addOnPageChangeListener(viewPagerMain_OnPageChangeListener);
 
-        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener(){
+        bottomNavigationView.getMenu().getItem(1).setChecked(true);
+        pager.setCurrentItem(1);
+
+
+    }
+
+    public static class MyPagerAdapter extends FragmentPagerAdapter {
+        private static int NUM_ITEMS = 3;
+
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        // Returns the fragment to display for that page
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0: // Fragment # 0 - This will show FirstFragment
+                    return DownloadedFragment.newInstance();
+                case 1: // Fragment # 0 - This will show FirstFragment different title
+                    return PageFragment.newInstance();
+                case 2: // Fragment # 1 - This will show SecondFragment
+                    return SearchFragment.newInstance();
+                default:
+                    return null;
+            }
+        }
+
+    }
+}
+
+
+
+      //  Log.v("Bundle", "" + (savedInstanceState == null));
+
+      /*  AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener(){
 
             @Override
             public void onItemClick(AdapterView<?> lisView, View view, int position, long id) {
@@ -132,41 +237,33 @@ public class MainActivity extends AppCompatActivity{
         }
 
 
+*/
 
 
-    }
 
-    private void download(){
+  /*  private void download(){
 
         swipeRefreshLayout.setRefreshing(true);
-        new DownloadTask().execute();
+        new loadCahce().execute();
 
-    }
+    }*/
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+
+  //  @Override
+ /*   public boolean onOptionsItemSelected(MenuItem item) {
 
         Intent intent;
 
         switch (item.getItemId()) {
             case R.id.action_settings:
 
-                 intent = new Intent(this, SettingsActivity.class);
 
-                startActivity(intent);
 
                 return true;
-            case R.id.action_about:
+            case R.id.action_downloaded:
 
-                intent = new Intent(this, AboutActivity.class);
 
-                startActivity(intent);
 
                 return true;
             default:
@@ -174,7 +271,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public class DownloadTask extends AsyncTask<String, Void, Boolean>{
+    public class loadCahce extends AsyncTask<String, Void, Boolean>{
         @Override
         protected  Boolean doInBackground(String ... arg){
 
@@ -214,21 +311,18 @@ public class MainActivity extends AppCompatActivity{
 
             swipeRefreshLayout.setRefreshing(false);
 
-            if(!downloaded){
-
-                    //linkTextList = cacheSystem.loadArrayList(Assets.ARRAYLIST);
+            if(!downloaded)
                     linkTextList = cacheSystem.loadListCachedFiles();
-                    listView.setAdapter(adapter);
 
-
-           //   Thread thread = new Thread(connectionChecker);
-            //    thread.start();
-            }else {
-                listView.setAdapter(adapter);
+            else{
                 if(Assets.LNKS == null)
                 Assets.LNKS = new LinksMap(links);
-
             }
+
+            adapter.clear();
+            adapter.addAll(linkTextList);
+            listView.setAdapter(adapter);
+
         }
 
     }
@@ -252,10 +346,9 @@ public class MainActivity extends AppCompatActivity{
 
             while (!connector.isConnected(connectivityManager))
             {Log.v("in checker", "waitin' for connection");}
-            
-            new DownloadTask().execute();
+
+            new loadCahce().execute();
             Log.v("in checker", "leaving the checker");
         }
     };
-
-}
+*/

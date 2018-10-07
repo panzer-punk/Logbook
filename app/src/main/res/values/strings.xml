@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Формуляр</string>
-    <string name="attachments">Вложения:</string>
     <string name="text_share">Поделиться</string>
-    <string name="test">452</string>
     <string name="loading">Загрузка...</string>
-    <string name="visitors">Просмотры</string>
     <string name="text_settings">Настройки</string>
-    <string name="text_about">О программе</string>
+    <string name="text_downloaded">Загруженные</string>
     <string name="text_download">Загружать открываемые страницы</string>
     <string name="author">Разработал Бударный Даниил</string>
+    <string name="text_search">Поиск</string>
+    <string name="text_main">Главная</string>
+    <string name="hint_search">Введите название темы</string>
     <string name="title_activity_new_design_main">NewDesignMainActivity</string>
 </resources>

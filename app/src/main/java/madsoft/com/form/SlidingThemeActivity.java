@@ -83,7 +83,7 @@ public class SlidingThemeActivity extends SlidingActivity {
         connector = new Connector();
 
         if(href != null)
-            new SlidingThemeActivity.ParseTask().execute(href);
+            new ParseTask().execute(href);
         else
             new ParseTask().prepareTextView(filename);
 
@@ -97,13 +97,17 @@ public class SlidingThemeActivity extends SlidingActivity {
 
             try {
 
-                Document document = Jsoup.connect(arg[0]).get();
+                if(!arg[0].equals(filename)) {
 
-                madsoft.com.form.Parser parser = new madsoft.com.form.Parser(document);
+                    Document document = Jsoup.connect(arg[0]).get();
 
-                loaderInput = parser.parseContent();
+                    madsoft.com.form.Parser parser = new madsoft.com.form.Parser(document);
 
-                parser = null;
+                    loaderInput = parser.parseContent();
+
+                    parser = null;
+                }else
+                return false;
 
                 return true;
 
