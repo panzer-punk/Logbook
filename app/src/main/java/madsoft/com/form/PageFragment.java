@@ -111,10 +111,16 @@ public class PageFragment extends Fragment {
 
     private void download(){
 
-
+        adapter.clear();
 
         swipeRefreshLayout.setRefreshing(true);
         new DownloadTask().execute();
+
+    }
+
+    private void setAdapter( ArrayAdapter<String> adapter){
+
+        listView.setAdapter(adapter);
 
     }
 
@@ -122,10 +128,6 @@ public class PageFragment extends Fragment {
     public class DownloadTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected  Boolean doInBackground(String ... arg){
-
-            adapter.clear();
-
-
 
             try {
 
@@ -165,7 +167,7 @@ public class PageFragment extends Fragment {
                     Assets.LNKS = new LinksMap(links);
 
                 adapter.addAll(linkTextList);
-                listView.setAdapter(adapter);
+                setAdapter(adapter);
 
                 swipeRefreshLayout.setRefreshing(false);
 
