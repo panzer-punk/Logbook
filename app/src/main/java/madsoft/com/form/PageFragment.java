@@ -2,11 +2,13 @@ package madsoft.com.form;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -55,7 +57,13 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
         articleRecyclerViewAdapter = new ArticleRecyclerViewAdapter(this);
         recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        int orientation = getResources().getConfiguration().orientation;
+        if ( orientation == Configuration.ORIENTATION_LANDSCAPE) {
+           recyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        }
+
         recyclerView.setAdapter(articleRecyclerViewAdapter);
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);

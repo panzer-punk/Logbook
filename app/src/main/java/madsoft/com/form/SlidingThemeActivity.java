@@ -49,7 +49,7 @@ public class SlidingThemeActivity extends AppCompatActivity {
         webView.setVerticalScrollBarEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setSupportZoom(true);
-        webView.loadUrl(href + "?android=1");
+        webView.loadUrl(href + "?d=android");
 
         title = findViewById(R.id.diaog_title);
         content = findViewById(R.id.diaog_text);
