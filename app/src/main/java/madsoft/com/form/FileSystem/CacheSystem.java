@@ -19,7 +19,6 @@ import static android.content.Context.STORAGE_SERVICE;
 /**
  * Created by Даниил on 30.06.2018.
  */
-
 public class CacheSystem {
 
     private Activity activity;

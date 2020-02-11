@@ -36,9 +36,9 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
 
         public void bind(Article article){
 
-            titleTextView.setText(article.title);
-            descriptionTextView.setText(article.description);
-            Picasso.get().load(article.imageLink)
+            titleTextView.setText(article.getTitle());
+            descriptionTextView.setText(article.getDescription());
+            Picasso.get().load(article.getImageLink())
                     .into(imageView);
 
 
