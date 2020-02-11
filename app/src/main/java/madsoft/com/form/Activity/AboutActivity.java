@@ -1,7 +1,9 @@
-package madsoft.com.form;
+package madsoft.com.form.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import madsoft.com.form.R;
 
 public class AboutActivity extends Activity {
 

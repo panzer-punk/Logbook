@@ -1,10 +1,15 @@
-package madsoft.com.form;
+package madsoft.com.form.Fragment;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import madsoft.com.form.Activity.SlidingThemeActivity;
+import madsoft.com.form.Assets;
+import madsoft.com.form.FileSystem.CacheSystem;
+import madsoft.com.form.R;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +39,7 @@ public class DownloadedFragment extends Fragment {
 
 
 
-    static DownloadedFragment newInstance() {
+    public static DownloadedFragment newInstance() {
         DownloadedFragment Fragment = new DownloadedFragment();
         return Fragment;
     }

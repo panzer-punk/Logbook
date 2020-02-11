@@ -1,9 +1,12 @@
-package madsoft.com.form;
+package madsoft.com.form.Fragment;
 
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import madsoft.com.form.FileSystem.CacheSystem;
+import madsoft.com.form.R;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +34,7 @@ public class SearchFragment extends Fragment {
     private ListView listView;
 
 
-    static SearchFragment newInstance() {
+    public static SearchFragment newInstance() {
         SearchFragment Fragment = new SearchFragment();
         return Fragment;
     }

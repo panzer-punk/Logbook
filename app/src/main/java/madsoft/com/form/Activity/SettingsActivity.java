@@ -1,11 +1,13 @@
-package madsoft.com.form;
+package madsoft.com.form.Activity;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.CheckBox;
+
+import madsoft.com.form.Assets;
+import madsoft.com.form.FileSystem.CacheSystem;
+import madsoft.com.form.R;
 
 public class SettingsActivity extends Activity {
 

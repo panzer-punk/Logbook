@@ -1,4 +1,4 @@
-package madsoft.com.form;
+package madsoft.com.form.Activity;
 
 
 import android.os.Bundle;
@@ -10,6 +10,10 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import madsoft.com.form.Fragment.DownloadedFragment;
+import madsoft.com.form.Fragment.PageFragment;
+import madsoft.com.form.R;
+import madsoft.com.form.Fragment.SearchFragment;
 
 import android.view.MenuItem;
 

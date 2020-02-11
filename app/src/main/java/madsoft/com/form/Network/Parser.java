@@ -1,19 +1,12 @@
-package madsoft.com.form;
+package madsoft.com.form.Network;
 
-import android.util.Log;
-import android.widget.ArrayAdapter;
-
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
+
+import madsoft.com.form.Network.Objects.Article;
 
 /**
  * Created by Даниил on 01.06.2017.

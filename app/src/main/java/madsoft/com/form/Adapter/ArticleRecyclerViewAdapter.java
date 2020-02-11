@@ -1,6 +1,9 @@
-package madsoft.com.form;
+package madsoft.com.form.Adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
+import madsoft.com.form.Network.Objects.Article;
+import madsoft.com.form.R;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

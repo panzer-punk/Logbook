@@ -1,4 +1,4 @@
-package madsoft.com.form;
+package madsoft.com.form.Network.Objects;
 
 import org.jsoup.nodes.Element;
 

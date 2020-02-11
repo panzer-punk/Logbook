@@ -1,8 +1,7 @@
-package madsoft.com.form;
+package madsoft.com.form.Fragment;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -10,13 +9,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
+import madsoft.com.form.Activity.SlidingThemeActivity;
+import madsoft.com.form.Network.Objects.Article;
+import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
+import madsoft.com.form.Assets;
+import madsoft.com.form.Network.Parser;
+import madsoft.com.form.R;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,7 +29,7 @@ import java.util.LinkedList;
  * Created by Даниил on 27.09.2018.
  */
 
-public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener{
+public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener {
 
     final static String BITMAP = "BITMAP";
 
@@ -38,7 +40,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
 
 
-    static PageFragment newInstance() {
+    public static PageFragment newInstance() {
         PageFragment pageFragment = new PageFragment();
         return pageFragment;
     }
@@ -100,8 +102,8 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         intent.putExtra("BitmapImage", bitmap);*/
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
-        intent.putExtra(Article.LINK, article.link);
-        intent.putExtra(Article.TITLE, article.title);
+        intent.putExtra(Article.LINK, article.getLink());
+        intent.putExtra(Article.TITLE, article.getTitle());
         startActivity(intent);
 
     }
