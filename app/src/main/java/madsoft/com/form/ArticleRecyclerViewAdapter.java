@@ -1,6 +1,6 @@
 package madsoft.com.form;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +13,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
-
+    public ArticleViewHolder holder;
     public static class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView imageView;
         public TextView titleTextView, descriptionTextView;
         private onClickListener onClickListener;
+
 
         public ArticleViewHolder(View itemView, onClickListener onClickListener) {
             super(itemView);
@@ -73,7 +74,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ArticleViewHolder articleViewHolder = (ArticleViewHolder) holder;
         articleViewHolder.bind(list.get(position));
-
+        holder = articleViewHolder;
     }
 
 

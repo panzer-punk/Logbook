@@ -1,32 +1,26 @@
 package madsoft.com.form;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -34,6 +28,8 @@ import java.util.LinkedList;
  */
 
 public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener{
+
+    final static String BITMAP = "BITMAP";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     protected LinkedList<Article> articles;
@@ -66,6 +62,8 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
         recyclerView.setAdapter(articleRecyclerViewAdapter);
 
+
+
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -95,6 +93,11 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     public void onItemClick(int position) {
         Article article = articleRecyclerViewAdapter.getItem(position);
 
+       /* imageView.buildDrawingCache();
+        Bitmap bitmap = imageView.getDrawingCache();
+
+        Intent intent = new Intent(this, NewActivity.class);
+        intent.putExtra("BitmapImage", bitmap);*/
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.putExtra(Article.LINK, article.link);
@@ -130,7 +133,6 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
                 articleRecyclerViewAdapter.clear();
                 articleRecyclerViewAdapter.setItems(articles);
                 swipeRefreshLayout.setRefreshing(false);
-
             }
 
         }

@@ -2,17 +2,19 @@ package madsoft.com.form;
 
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.view.LayoutInflater;
 import android.view.View;
 
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-
+import com.squareup.picasso.Picasso;
 
 
 public class SlidingThemeActivity extends AppCompatActivity {
@@ -41,6 +43,7 @@ public class SlidingThemeActivity extends AppCompatActivity {
         filename = getIntent().getStringExtra(Article.TITLE);
         href = getIntent().getStringExtra(Article.LINK);
 
+
         cacheSystem = new CacheSystem(this);
 
         setTitle(filename);
@@ -53,6 +56,7 @@ public class SlidingThemeActivity extends AppCompatActivity {
 
         title = findViewById(R.id.diaog_title);
         content = findViewById(R.id.diaog_text);
+
 
         toolbar = findViewById(R.id.toolbar_theme);
         setSupportActionBar(toolbar);

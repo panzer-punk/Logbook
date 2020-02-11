@@ -6,19 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/d_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true">
-        <com.nirhart.parallaxscroll.views.ParallaxListView
-            android:id="@+id/d_list_view"
+        <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:parallax_factor="1.9"
-            app:circular_parallax="true"
-            tools:context=".MainActivity" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/d_list_view"
+            />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

@@ -15,12 +15,6 @@
         android:hint="@string/hint_search"
         android:id="@+id/search_field" />
 
-    <com.nirhart.parallaxscroll.views.ParallaxListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:parallax_factor="1.9"
-        app:circular_parallax="true"
-        tools:context=".MainActivity" />
+
 
 </LinearLayout>
