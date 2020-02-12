@@ -3,7 +3,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ArticleWp {
-
+    public static String LINK = "Link";
+    public static String TITLE = "Title";
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -16,6 +17,9 @@ public class ArticleWp {
     @SerializedName("title")
     @Expose
     private Title title;
+    @SerializedName("jetpack_featured_media_url")
+    @Expose
+    private String jetpackFeaturedMediaUrl;
 
     public Integer getId() {
         return id;
@@ -49,4 +53,11 @@ public class ArticleWp {
         this.title = title;
     }
 
+    public String getJetpackFeaturedMediaUrl() {
+        return jetpackFeaturedMediaUrl;
+    }
+
+    public void setJetpackFeaturedMediaUrl(String jetpackFeaturedMediaUrl) {
+        this.jetpackFeaturedMediaUrl = jetpackFeaturedMediaUrl;
+    }
 }

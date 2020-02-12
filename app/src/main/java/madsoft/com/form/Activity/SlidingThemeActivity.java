@@ -5,9 +5,9 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import madsoft.com.form.Network.Objects.Article;
 import madsoft.com.form.FileSystem.CacheSystem;
 import madsoft.com.form.Network.Html.Connector;
+import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.R;
 
 import android.view.LayoutInflater;
@@ -40,8 +40,8 @@ public class SlidingThemeActivity extends AppCompatActivity {
 
     public void makeContent(Bundle savedInstanceState) {
 
-        filename = getIntent().getStringExtra(Article.TITLE);
-        href = getIntent().getStringExtra(Article.LINK);
+        filename = getIntent().getStringExtra(ArticleWp.TITLE);
+        href = getIntent().getStringExtra(ArticleWp.LINK);
 
 
         cacheSystem = new CacheSystem(this);

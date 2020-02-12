@@ -2,7 +2,6 @@ package madsoft.com.form.Fragment;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -10,20 +9,19 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import madsoft.com.form.Activity.SlidingThemeActivity;
-import madsoft.com.form.Network.Objects.Article;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
-import madsoft.com.form.Assets;
-import madsoft.com.form.Network.Html.Parser;
+import madsoft.com.form.Network.Objects.ArticleWp;
+import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Даниил on 27.09.2018.
@@ -31,11 +29,9 @@ import java.util.LinkedList;
 
 public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener {
 
-    final static String BITMAP = "BITMAP";
-
     private SwipeRefreshLayout swipeRefreshLayout;
-    protected LinkedList<Article> articles;
     private RecyclerView recyclerView;
+    private NetworkService networkService;
     private ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
 
 
@@ -77,6 +73,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
             }
         });
 
+        networkService = NetworkService.getInstance();
 
         download();
 
@@ -86,58 +83,37 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     private void download(){
 
         swipeRefreshLayout.setRefreshing(true);
-        new DownloadTask().execute();
+        networkService
+                .getWpApi()
+                .getArticleWpCall()
+                .enqueue(new Callback<List<ArticleWp>>() {
+                    @Override
+                    public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
+                        List<ArticleWp> list = response.body();
+
+                        swipeRefreshLayout.setRefreshing(false);
+                        articleRecyclerViewAdapter.clear();
+                        articleRecyclerViewAdapter.setItems(list);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
+
+                    }
+                });
 
     }
 
 
     @Override
     public void onItemClick(int position) {
-        Article article = articleRecyclerViewAdapter.getItem(position);
-
-       /* imageView.buildDrawingCache();
-        Bitmap bitmap = imageView.getDrawingCache();
-
-        Intent intent = new Intent(this, NewActivity.class);
-        intent.putExtra("BitmapImage", bitmap);*/
+        ArticleWp article = articleRecyclerViewAdapter.getItem(position);
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
-        intent.putExtra(Article.LINK, article.getLink());
-        intent.putExtra(Article.TITLE, article.getTitle());
+        intent.putExtra(ArticleWp.LINK, article.getLink());
+        intent.putExtra(ArticleWp.TITLE, article.getTitle().getRendered());
         startActivity(intent);
 
     }
 
-
-    public class DownloadTask extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected  Boolean doInBackground(String ... arg){
-
-            try {
-
-                Document doc = Jsoup.connect(Assets.PATH).get();
-                articles = Parser.articleAdapter(doc);
-
-                return true;
-
-            } catch (Exception exp) {
-                exp.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean downloaded){
-
-
-
-            if(downloaded) {
-                articleRecyclerViewAdapter.clear();
-                articleRecyclerViewAdapter.setItems(articles);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-
-        }
-
-    }
 }

@@ -1,7 +1,7 @@
 package madsoft.com.form.Adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
-import madsoft.com.form.Network.Objects.Article;
+import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.R;
 
 import android.view.LayoutInflater;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
     public ArticleViewHolder holder;
@@ -34,11 +34,11 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
 
         }
 
-        public void bind(Article article){
+        public void bind(ArticleWp article){
 
-            titleTextView.setText(article.getTitle());
-            descriptionTextView.setText(article.getDescription());
-            Picasso.get().load(article.getImageLink())
+            titleTextView.setText(article.getTitle().getRendered());
+            descriptionTextView.setText(article.getModified());
+            Picasso.get().load(article.getJetpackFeaturedMediaUrl())
                     .into(imageView);
 
 
@@ -53,7 +53,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
     public interface onClickListener{
         void onItemClick(int position);
     }
-    LinkedList<Article> list;
+    List<ArticleWp> list;
     private onClickListener onClickListener;
 
     public ArticleRecyclerViewAdapter(onClickListener onClickListener) {
@@ -61,7 +61,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
         this.onClickListener = onClickListener;
     }
 
-    public ArticleRecyclerViewAdapter(LinkedList<Article> list, onClickListener onClickListener) {
+    public ArticleRecyclerViewAdapter(List<ArticleWp> list, onClickListener onClickListener) {
         this.list = list;
         this.onClickListener = onClickListener;
     }
@@ -88,14 +88,14 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
         return list.size();
     }
 
-    public void setItems(Collection<Article> linkedList){
+    public void setItems(List <ArticleWp> linkedList){
 
         list.addAll(linkedList);
         notifyDataSetChanged();
 
     }
 
-    public Article getItem(int position)
+    public ArticleWp getItem(int position)
     {return list.get(position);}
 
     public void clear(){
