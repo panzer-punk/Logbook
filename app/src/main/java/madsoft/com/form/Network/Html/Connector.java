@@ -1,4 +1,4 @@
-package madsoft.com.form.Network;
+package madsoft.com.form.Network.Html;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

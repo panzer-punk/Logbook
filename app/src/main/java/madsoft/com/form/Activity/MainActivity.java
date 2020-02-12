@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Fragment.PageFragment;
+import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
 import madsoft.com.form.Fragment.SearchFragment;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
       private Connector connector;
       private ConnectivityManager connectivityManager;*/
     private Toolbar toolbar;
+    private NetworkService networkService;
     private DownloadedFragment downloadedFragment;
     private PageFragment pageFragment;
     private SearchFragment searchFragment;
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.getMenu().getItem(1).setChecked(true);
         pager.setCurrentItem(1);
 
+        networkService = NetworkService.getInstance();
 
     }
 

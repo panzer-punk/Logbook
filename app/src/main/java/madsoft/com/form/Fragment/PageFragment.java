@@ -13,7 +13,7 @@ import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Network.Objects.Article;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Assets;
-import madsoft.com.form.Network.Parser;
+import madsoft.com.form.Network.Html.Parser;
 import madsoft.com.form.R;
 
 import android.view.LayoutInflater;

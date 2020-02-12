@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import madsoft.com.form.Network.Objects.Article;
 import madsoft.com.form.FileSystem.CacheSystem;
-import madsoft.com.form.Network.Connector;
+import madsoft.com.form.Network.Html.Connector;
 import madsoft.com.form.R;
 
 import android.view.LayoutInflater;
