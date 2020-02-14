@@ -25,7 +25,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
     public interface ArticleAdapterNextPageCallback{
         void onResponse();
         void onFailure();
-    };
+    }
     public ArticleViewHolder holder;
     private short pages = 1;
     private short curPage = 1;
@@ -36,11 +36,14 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
         return curPage;
     }
 
+    public boolean hasCallback(){return callback!=null;}
+
     public void setCallback(ArticleAdapterNextPageCallback callback) {
         this.callback = callback;
     }
 
     public void nextPage() {
+        if(!hasNextPage()) return;
         curPage++;
         networkService.getWpApi().getArticleWpCall(curPage).enqueue(new Callback<List<ArticleWp>>() {
             @Override

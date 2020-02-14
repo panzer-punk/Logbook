@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import de.mateware.snacky.Snacky;
 import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Network.Objects.ArticleWp;
@@ -35,14 +36,10 @@ import java.util.List;
 
 public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback {
 
-
-
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private NetworkService networkService;
     private ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
-
     private RecyclerView.OnScrollListener onScrollListener;
 
 
@@ -93,13 +90,14 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
                 int totalItemCount = layoutManager.getItemCount();//сколько всего элементов
                 int firstVisibleItems = layoutManager.findFirstVisibleItemPosition();//какая позиция первого элемента
 
-
                     if ( (visibleItemCount+firstVisibleItems) >= totalItemCount && articleRecyclerViewAdapter.hasNextPage()) {
                         articleRecyclerViewAdapter.nextPage();
-                       
+                        nextPageSnack();
+
                     }
 
             }
+
         };
         recyclerView.addOnScrollListener(onScrollListener);
         articleRecyclerViewAdapter.setCallback(this);
@@ -145,13 +143,51 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
     }
 
+    private void nextPageSnack(){
+      buildSnack( 1);
+    }
     @Override
     public void onResponse() {
        //загрузка успешно завершена
+        buildSnack(2);
     }
 
     @Override
     public void onFailure() {
         //проблемы при обновлнии адаптера
+        buildSnack(3);
+    }
+
+    private void buildSnack(int id){
+
+        Snacky.Builder builder = Snacky.builder()
+                .setView(getView())
+                .setMaxLines(2)
+                .setTextSize(20)
+                .setDuration(Snacky.LENGTH_SHORT);
+
+        switch (id){
+
+            case 1:
+                 builder.setText(R.string.loadingArticles)
+                 .build()
+                 .show();
+                 break;
+            case 2:
+                builder.setText(R.string.articlesLoadSuccess)
+               .success()
+                .show();
+                break;
+            case 3:
+                builder.setText(R.string.articlesLoadFail)
+                .error()
+                .show();
+                break;
+                default:
+                    builder.setText(R.string.app_name)
+                    .build()
+                    .show();
+
+        }
     }
 }
