@@ -12,5 +12,5 @@
     <string name="title_activity_new_design_main">NewDesignMainActivity</string>
     <string name="loadingArticles">Загружаем записи</string>
     <string name="articlesLoadSuccess">Приятного чтения =)</string>
-    <string name="articlesLoadFail">Что-то пошло не так =(</string>
+    <string name="articlesLoadFail">Проверьте подключение к сети</string>
 </resources>

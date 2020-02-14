@@ -125,9 +125,11 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
                     @Override
                     public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
-
+                        buildSnack(3);
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
+
 
     }
 

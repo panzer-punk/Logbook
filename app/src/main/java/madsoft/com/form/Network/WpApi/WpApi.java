@@ -14,6 +14,9 @@ public interface WpApi {
      Call<List<ArticleWp>> getArticleWpCall();
 
     @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
+    Call<List<ArticleWp>> getArticleWpCallWithCount(@Query("per_page") int itemCount);
+
+    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
     Call<List<ArticleWp>> getArticleWpCall(@Query("page") short page);
 
     @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
