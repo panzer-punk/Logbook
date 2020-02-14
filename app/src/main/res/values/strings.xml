@@ -13,4 +13,6 @@
     <string name="loadingArticles">Загружаем записи</string>
     <string name="articlesLoadSuccess">Приятного чтения =)</string>
     <string name="articlesLoadFail">Проверьте подключение к сети</string>
+    <string name="action_share">Поделиться</string>
+    <string name="action_download">Скачать</string>
 </resources>

@@ -1,5 +1,6 @@
 package madsoft.com.form.Fragment;
 
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -20,13 +21,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -34,13 +32,14 @@ import java.util.List;
  * Created by Даниил on 27.09.2018.
  */
 
-public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback {
+public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback{
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private NetworkService networkService;
     private ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
+
 
 
     public static PageFragment newInstance() {
@@ -53,10 +52,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pages, null);
-
-
-
-        articleRecyclerViewAdapter = new ArticleRecyclerViewAdapter(this);
+         articleRecyclerViewAdapter = new ArticleRecyclerViewAdapter(this);
         recyclerView = view.findViewById(R.id.recycler_view);
         int orientation = getResources().getConfiguration().orientation;
         if ( orientation == Configuration.ORIENTATION_LANDSCAPE) {

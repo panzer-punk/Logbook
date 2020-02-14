@@ -1,6 +1,8 @@
 package madsoft.com.form.Activity;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -12,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Fragment.PageFragment;
-import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
 import madsoft.com.form.Fragment.SearchFragment;
 
@@ -20,16 +21,6 @@ import android.view.MenuItem;
 
 
 public class MainActivity extends AppCompatActivity {
-    /*  private static  String LIST = "linkTextList";
-      private CacheSystem cacheSystem;
-
-      private SwipeRefreshLayout swipeRefreshLayout;
-      public Elements links; // сохраняется в Assets
-      public static ArrayList<String> linkTextList;
-      private ArrayAdapter<String> adapter;
-      private ListView listView;
-      private Connector connector;
-      private ConnectivityManager connectivityManager;*/
     private Toolbar toolbar;
     private DownloadedFragment downloadedFragment;
     private PageFragment pageFragment;
@@ -47,20 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
         pager = findViewById(R.id.pager);
 
-        MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        final MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
 
         pager.setAdapter(pagerAdapter);
 
-        //  connector = new Connector();
-
-        //  connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        //   listView = findViewById(R.id.list_view);
-
-        //   cacheSystem = new CacheSystem(this);
-
-
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+       bottomNavigationView = findViewById(R.id.bottom_navigation);
 
 
         BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationView_OnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
