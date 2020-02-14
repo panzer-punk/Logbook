@@ -3,6 +3,8 @@ package madsoft.com.form.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -17,9 +19,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -27,13 +33,17 @@ import java.util.List;
  * Created by Даниил on 27.09.2018.
  */
 
-public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener {
+public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback {
+
+
+
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private NetworkService networkService;
     private ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
 
+    private RecyclerView.OnScrollListener onScrollListener;
 
 
     public static PageFragment newInstance() {
@@ -74,7 +84,25 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         });
 
         networkService = NetworkService.getInstance();
+        onScrollListener = new RecyclerView.OnScrollListener() {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = layoutManager.getChildCount();//смотрим сколько элементов на экране
+                int totalItemCount = layoutManager.getItemCount();//сколько всего элементов
+                int firstVisibleItems = layoutManager.findFirstVisibleItemPosition();//какая позиция первого элемента
 
+
+                    if ( (visibleItemCount+firstVisibleItems) >= totalItemCount && articleRecyclerViewAdapter.hasNextPage()) {
+                        articleRecyclerViewAdapter.nextPage();
+                       
+                    }
+
+            }
+        };
+        recyclerView.addOnScrollListener(onScrollListener);
+        articleRecyclerViewAdapter.setCallback(this);
         download();
 
         return view;
@@ -89,10 +117,11 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
                 .enqueue(new Callback<List<ArticleWp>>() {
                     @Override
                     public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
+                        short pages = Short.parseShort(response.headers().get("X-WP-TotalPages"));
                         List<ArticleWp> list = response.body();
-
                         swipeRefreshLayout.setRefreshing(false);
                         articleRecyclerViewAdapter.clear();
+                        articleRecyclerViewAdapter.setPages(pages);
                         articleRecyclerViewAdapter.setItems(list);
                     }
 
@@ -116,4 +145,13 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
     }
 
+    @Override
+    public void onResponse() {
+       //загрузка успешно завершена
+    }
+
+    @Override
+    public void onFailure() {
+        //проблемы при обновлнии адаптера
+    }
 }
