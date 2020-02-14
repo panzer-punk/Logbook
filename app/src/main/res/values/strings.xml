@@ -10,4 +10,7 @@
     <string name="text_main">Главная</string>
     <string name="hint_search">Введите название темы</string>
     <string name="title_activity_new_design_main">NewDesignMainActivity</string>
+    <string name="loadingArticles">Загружаем записи</string>
+    <string name="articlesLoadSuccess">Приятного чтения =)</string>
+    <string name="articlesLoadFail">Что-то пошло не так =(</string>
 </resources>
