@@ -162,7 +162,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
     {return list.get(position);}
 
     public void clear(){
-
+        curPage = 1;
         list.clear();
         notifyDataSetChanged();
 
