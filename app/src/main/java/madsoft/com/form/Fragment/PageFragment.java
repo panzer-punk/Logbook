@@ -22,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ import java.util.List;
  * Created by Даниил on 27.09.2018.
  */
 
-public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback{
+public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback, ArticleRecyclerViewAdapter.IntentCallback {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -97,6 +98,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         };
         recyclerView.addOnScrollListener(onScrollListener);
         articleRecyclerViewAdapter.setCallback(this);
+        articleRecyclerViewAdapter.setIntentCallback(this);
         download();
 
         return view;
@@ -188,4 +190,17 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
         }
     }
+
+    @Override
+    public void onShareArticle(ArticleWp article) {
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getLink());
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
 }

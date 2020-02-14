@@ -8,14 +8,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import java.util.LinkedList;
@@ -26,11 +28,27 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
         void onResponse();
         void onFailure();
     }
+    public interface IntentCallback{
+
+        void onShareArticle(ArticleWp article);
+
+    }
     public ArticleViewHolder holder;
     private short pages = 1;
     private short curPage = 1;
     private NetworkService networkService = NetworkService.getInstance();
     private ArticleAdapterNextPageCallback callback;
+    protected List<ArticleWp> list;
+    protected IntentCallback intentCallback;
+    private onClickListener onClickListener;
+
+    public IntentCallback getIntentCallback() {
+        return intentCallback;
+    }
+
+    public void setIntentCallback(IntentCallback intentCallback) {
+        this.intentCallback = intentCallback;
+    }
 
     public short getCurPage() {
         return curPage;
@@ -62,8 +80,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
         });
     }
 
-    private List<ArticleWp> list;
-    private onClickListener onClickListener;
+
 
     public short getPages() {
         return pages;
@@ -77,21 +94,39 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
         return curPage < pages;
     }
 
-    public static class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public  class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView imageView;
         public TextView titleTextView, descriptionTextView;
+        public Button share, download;
         private onClickListener onClickListener;
 
 
-        public ArticleViewHolder(View itemView, onClickListener onClickListener) {
+        public ArticleViewHolder(final View itemView, onClickListener onClickListener) {
             super(itemView);
             this.onClickListener = onClickListener;
             imageView = itemView.findViewById(R.id.card_image);
             titleTextView = itemView.findViewById(R.id.card_title);
             descriptionTextView = itemView.findViewById(R.id.card_desc);
+            share = itemView.findViewById(R.id.button_share);
+            download = itemView.findViewById(R.id.button_download);
             itemView.setOnClickListener(this);
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                    if(intentCallback == null) return;
+
+                    intentCallback.onShareArticle(list.get(getAdapterPosition()));
+
+                }
+            });
+            download.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    
+                }
+            });
         }
 
         public void bind(ArticleWp article){

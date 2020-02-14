@@ -69,12 +69,16 @@
                     android:layout_height="wrap_content"
                     android:text="@string/action_share"
                     android:layout_marginEnd="5dp"
+                    android:id="@+id/button_share"
+                    android:textColor="@color/colorAccent"
                     style ="?android:attr/borderlessButtonStyle"
                      />
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/action_download"
+                    android:id="@+id/button_download"
+                    android:textColor="@color/colorAccent"
                     style ="?android:attr/borderlessButtonStyle" />
             </LinearLayout>
         </LinearLayout>
