@@ -62,8 +62,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public void nextPage() {
         if(!hasNextPage()) return;
-        curPage++;
-        networkService.getWpApi().getArticleWpCall(curPage).enqueue(new Callback<List<ArticleWp>>() {
+        networkService.getWpApi().getArticleWpCall(++curPage).enqueue(new Callback<List<ArticleWp>>() {
             @Override
             public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
                 List<ArticleWp> list = response.body();
@@ -74,6 +73,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
 
             @Override
             public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
+                curPage--;
                 if(callback!=null)
             callback.onFailure();
             }
@@ -124,7 +124,7 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
             download.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    
+
                 }
             });
         }
