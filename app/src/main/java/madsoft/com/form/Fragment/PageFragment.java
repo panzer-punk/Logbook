@@ -137,6 +137,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         ArticleWp article = articleRecyclerViewAdapter.getItem(position);
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
+        intent.setAction(" ");
         intent.putExtra(ArticleWp.LINK, article.getLink());
         intent.putExtra(ArticleWp.TITLE, article.getTitle().getRendered());
         startActivity(intent);

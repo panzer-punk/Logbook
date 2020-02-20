@@ -15,4 +15,6 @@
     <string name="articlesLoadFail">Проверьте подключение к сети</string>
     <string name="action_share">Поделиться</string>
     <string name="action_download">Скачать</string>
+    <string name="deeplink_prefix">/posts/</string>
+    <string name="deeplink_host">rpspn.000webhostapp.com</string>
 </resources>

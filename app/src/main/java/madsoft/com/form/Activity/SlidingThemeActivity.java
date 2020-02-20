@@ -2,6 +2,7 @@ package madsoft.com.form.Activity;
 
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -40,8 +41,20 @@ public class SlidingThemeActivity extends AppCompatActivity {
 
     public void makeContent(Bundle savedInstanceState) {
 
-        filename = getIntent().getStringExtra(ArticleWp.TITLE);
-        href = getIntent().getStringExtra(ArticleWp.LINK);
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        switch (action){
+
+            case Intent.ACTION_VIEW:
+
+                href = intent.getData().toString();
+                filename = intent.getData().getPath().replace(getString(R.string.deeplink_prefix), " ");
+                break;
+                default:
+                    filename = intent.getStringExtra(ArticleWp.TITLE);
+                    href = intent.getStringExtra(ArticleWp.LINK);
+        }
+
 
 
         cacheSystem = new CacheSystem(this);
