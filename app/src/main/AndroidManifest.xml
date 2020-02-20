@@ -32,7 +32,18 @@
         <activity android:name=".Activity.SlidingThemeActivity"
             android:excludeFromRecents="true"
             android:taskAffinity=""
-            android:parentActivityName=".Activity.MainActivity" />
+            android:parentActivityName=".Activity.MainActivity">
+            <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <category android:name="android.intent.category.DEFAULT" />
+
+            <data android:scheme="https"
+                android:host="rpspn.000webhostapp.com"
+                android:pathPrefix="/posts/" />
+        </intent-filter>
+        </activity>
     </application>
 
 </manifest>
