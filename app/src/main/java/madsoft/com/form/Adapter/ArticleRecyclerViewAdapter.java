@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter implements Callback<List<ArticleWp>> {
+public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<ArticleWp> {
     @Override
     public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
         short pages = Short.parseShort(response.headers().get("X-WP-TotalPages"));
@@ -27,13 +27,13 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter implements 
         List<ArticleWp> list = response.body();
         setPages(pages);
         appendList(list);
-        if(callback != null)
+        if(hasCallback())
             callback.onResponse();
     }
 
     @Override
     public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
-        if(callback != null)
+        if(hasCallback())
             callback.onFailure();
     }
 
@@ -47,13 +47,6 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter implements 
 
     }
     public ArticleViewHolder holder;
-    private short pages = 1;
-    private short curPage = 1;
-    private NetworkService networkService = NetworkService.getInstance();
-    private ArticleAdapterNextPageCallback callback;
-    protected List<ArticleWp> list;
-    protected IntentCallback intentCallback;
-    private onClickListener onClickListener;
 
     public IntentCallback getIntentCallback() {
         return intentCallback;
@@ -66,8 +59,6 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter implements 
     public short getCurPage() {
         return curPage;
     }
-
-    public boolean hasCallback(){return callback!=null;}
 
     public void setCallback(ArticleAdapterNextPageCallback callback) {
         this.callback = callback;
@@ -103,9 +94,6 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter implements 
         this.pages = pages;
     }
 
-    public boolean hasNextPage() {
-        return curPage < pages;
-    }
 
     public  class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -191,26 +179,11 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter implements 
         holder = articleViewHolder;
     }
 
-
-
     @Override
     public int getItemCount()
     {return list.size(); }
 
-    public void appendList(List<ArticleWp> list) {
-        this.list.addAll(list);
-        notifyDataSetChanged();
-    }
-
     public ArticleWp getItem(int position)
     {return list.get(position);}
-
-    public void clear(){
-        curPage = 1;
-        list.clear();
-        notifyDataSetChanged();
-
-    }
-
 
 }
