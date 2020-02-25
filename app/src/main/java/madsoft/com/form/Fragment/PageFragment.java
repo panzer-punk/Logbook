@@ -17,17 +17,12 @@ import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.List;
 
 /**
  * Created by Даниил on 27.09.2018.
@@ -110,23 +105,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         networkService
                 .getWpApi()
                 .getArticleWpCall()
-                .enqueue(new Callback<List<ArticleWp>>() {
-                    @Override
-                    public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
-                        short pages = Short.parseShort(response.headers().get("X-WP-TotalPages"));
-                        List<ArticleWp> list = response.body();
-                        swipeRefreshLayout.setRefreshing(false);
-                        articleRecyclerViewAdapter.clear();
-                        articleRecyclerViewAdapter.setPages(pages);
-                        articleRecyclerViewAdapter.setItems(list);
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
-                        buildSnack(3);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                .enqueue(articleRecyclerViewAdapter);
 
 
     }
@@ -150,12 +129,19 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     @Override
     public void onResponse() {
        //загрузка успешно завершена
+        stopRefreshLayout();
         buildSnack(2);
+    }
+
+    private void stopRefreshLayout(){
+        if(swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onFailure() {
         //проблемы при обновлнии адаптера
+        stopRefreshLayout();
         buildSnack(3);
     }
 

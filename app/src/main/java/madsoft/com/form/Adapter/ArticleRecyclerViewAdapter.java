@@ -7,10 +7,6 @@ import madsoft.com.form.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +19,24 @@ import com.squareup.picasso.Picasso;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
+public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter implements Callback<List<ArticleWp>> {
+    @Override
+    public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
+        short pages = Short.parseShort(response.headers().get("X-WP-TotalPages"));
+        clear();
+        List<ArticleWp> list = response.body();
+        setPages(pages);
+        appendList(list);
+        if(callback != null)
+            callback.onResponse();
+    }
+
+    @Override
+    public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
+        if(callback != null)
+            callback.onFailure();
+    }
+
     public interface ArticleAdapterNextPageCallback{
         void onResponse();
         void onFailure();
@@ -187,13 +200,6 @@ public class ArticleRecyclerViewAdapter extends RecyclerView.Adapter {
     public void appendList(List<ArticleWp> list) {
         this.list.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void setItems(List <ArticleWp> linkedList){
-
-        list.addAll(linkedList);
-        notifyDataSetChanged();
-
     }
 
     public ArticleWp getItem(int position)
