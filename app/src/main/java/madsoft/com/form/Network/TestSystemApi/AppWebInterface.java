@@ -9,13 +9,13 @@ public class AppWebInterface {
     Context mContext;
 
 
-    AppWebInterface(Context c) {
+    public AppWebInterface(Context c) {
         mContext = c;
     }
 
 
     @JavascriptInterface
-    public void showToast(String toast) {
+    public void getTest(String toast) {
         Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
     }
 

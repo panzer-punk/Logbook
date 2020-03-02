@@ -9,11 +9,13 @@ import androidx.appcompat.widget.Toolbar;
 import madsoft.com.form.FileSystem.CacheSystem;
 import madsoft.com.form.Network.Html.Connector;
 import madsoft.com.form.Network.Objects.ArticleWp;
+import madsoft.com.form.Network.TestSystemApi.AppWebInterface;
 import madsoft.com.form.R;
 
 import android.view.LayoutInflater;
 import android.view.View;
 
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -62,9 +64,12 @@ public class SlidingThemeActivity extends AppCompatActivity {
         setTitle(filename);
 
         webView = findViewById(R.id.activity_theme);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setSupportZoom(true);
         webView.setVerticalScrollBarEnabled(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setSupportZoom(true);
+        webView.addJavascriptInterface(new AppWebInterface(this), "Android");
         webView.loadUrl(href + "?d=android");
 
         title = findViewById(R.id.diaog_title);
