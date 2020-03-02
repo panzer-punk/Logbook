@@ -134,6 +134,9 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
 
             titleTextView.setText(article.getTitle().getRendered());
             descriptionTextView.setText(article.getModified());
+            if(article.getJetpackFeaturedMediaUrl().isEmpty())
+                imageView.setImageResource(R.drawable.placeholder);
+            else
             Picasso.get().load(article.getJetpackFeaturedMediaUrl())
                     .into(imageView);
 
