@@ -17,4 +17,5 @@
     <string name="action_download">Скачать</string>
     <string name="deeplink_prefix">/posts/</string>
     <string name="deeplink_host">rpspn.000webhostapp.com</string>
+    <string name="quiz_title_placeholder">ТЕКСТ ВОПРОСА</string>
 </resources>

@@ -7,17 +7,19 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import madsoft.com.form.FileSystem.CacheSystem;
+import madsoft.com.form.Fragment.QuizFragment;
 import madsoft.com.form.Network.Html.Connector;
 import madsoft.com.form.Network.Objects.ArticleWp;
-import madsoft.com.form.Network.TestSystemApi.AppWebInterface;
 import madsoft.com.form.R;
 
 import android.view.LayoutInflater;
 import android.view.View;
 
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class SlidingThemeActivity extends AppCompatActivity {
@@ -69,7 +71,7 @@ public class SlidingThemeActivity extends AppCompatActivity {
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setSupportZoom(true);
         webView.setVerticalScrollBarEnabled(true);
-        webView.addJavascriptInterface(new AppWebInterface(this), "Android");
+        webView.addJavascriptInterface(this, "Android");
         webView.loadUrl(href + "?d=android");
 
         title = findViewById(R.id.diaog_title);
@@ -89,7 +91,10 @@ public class SlidingThemeActivity extends AppCompatActivity {
     }
 
 
-
+    @JavascriptInterface
+    public void getTest(String toast) {
+        QuizFragment.display(getSupportFragmentManager(), toast);
+    }
 
 
     public void dialogMaker(String titleS, String contentS) {
