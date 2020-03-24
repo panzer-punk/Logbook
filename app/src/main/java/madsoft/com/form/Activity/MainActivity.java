@@ -5,10 +5,12 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 
+import com.evolve.backdroplibrary.BackdropContainer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,11 +20,14 @@ import madsoft.com.form.R;
 import madsoft.com.form.Fragment.SearchFragment;
 
 import android.view.MenuItem;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.LinearInterpolator;
 
 
 public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DownloadedFragment downloadedFragment;
+    private BackdropContainer backdropContainer;
     private PageFragment pageFragment;
     private SearchFragment searchFragment;
     private BottomNavigationView bottomNavigationView;
@@ -100,8 +105,12 @@ public class MainActivity extends AppCompatActivity {
         };
 
         toolbar = findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar);
-
+     //   setSupportActionBar(toolbar);
+        backdropContainer = (BackdropContainer)findViewById(R.id.backdropcontainer);
+        backdropContainer.attachToolbar(toolbar)
+                .dropInterpolator(new LinearOutSlowInInterpolator())
+                .dropHeight(this.getResources().getDimensionPixelSize(R.dimen.sneek_height))
+                .build();
 
         pager.addOnPageChangeListener(viewPagerMain_OnPageChangeListener);
 

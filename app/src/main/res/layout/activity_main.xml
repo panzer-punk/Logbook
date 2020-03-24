@@ -15,15 +15,24 @@
         style="@style/Toolbar"
         android:layout_alignParentTop="true"
         />
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pager"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/toolbar_main"
+    <com.evolve.backdroplibrary.BackdropContainer
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </androidx.viewpager.widget.ViewPager>
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_main"
+        android:id="@+id/backdropcontainer"
+        app:menuIcon="@drawable/ic_visibility_black_24dp"
+        app:closeIcon="@drawable/ic_check_black_24dp"
+        app:duration="500">
+        <include layout="@layout/category_picker"/>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.viewpager.widget.ViewPager>
+    </com.evolve.backdroplibrary.BackdropContainer>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
