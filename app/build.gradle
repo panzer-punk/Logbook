@@ -33,6 +33,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.matecode:Snacky:1.1.4'
-
+    implementation 'com.github.kishan2612:Material-Backdrop-Android:v1.1.0'
 
 }
