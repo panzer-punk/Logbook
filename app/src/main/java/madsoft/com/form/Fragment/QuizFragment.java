@@ -22,10 +22,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import madsoft.com.form.Adapter.AnswersRecyclerViewAdapter;
 import madsoft.com.form.Network.Objects.Answer;
 import madsoft.com.form.Network.Objects.Quiz;
 import madsoft.com.form.R;
@@ -34,7 +38,10 @@ public class QuizFragment extends DialogFragment {
     public static final String TAG = "example_dialog";
 
     private ImageButton quitButton;
+    RecyclerView.LayoutManager rLayoutManager;
+    private AnswersRecyclerViewAdapter answersRecyclerViewAdapter;
     protected TextView quizTitle;
+    private RecyclerView recyclerView;
 
     public QuizFragment(String path) {
 
@@ -70,6 +77,11 @@ public class QuizFragment extends DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.quiz_page, container, false);
 
+        recyclerView = view.findViewById(R.id.quiz_answers);
+        answersRecyclerViewAdapter = new AnswersRecyclerViewAdapter();
+        rLayoutManager = new GridLayoutManager(view.getContext(), 2);
+        recyclerView.setLayoutManager(rLayoutManager);
+        recyclerView.setAdapter(answersRecyclerViewAdapter);
         quitButton = view.findViewById(R.id.quit_button);
         quizTitle = view.findViewById(R.id.quiz_title);
         return view;
@@ -133,7 +145,11 @@ public class QuizFragment extends DialogFragment {
         @Override
         protected void onPostExecute(Quiz result) {
             super.onPostExecute(result);
-            quizTitle.setText(result.getName());
+            Collections.shuffle(result.getQuestions());
+            quizTitle.setText(result.getQuestions().get(0).getQuestion());
+            List<Answer> toShuffle = result.getQuestions().get(0).getAnswers();
+            Collections.shuffle(toShuffle);
+            answersRecyclerViewAdapter.setAnswers(toShuffle);
         }
     }
 }
