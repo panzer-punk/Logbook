@@ -11,20 +11,29 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
+import madsoft.com.form.Adapter.CategoriesRecyclerViewAfapter;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Fragment.PageFragment;
+import madsoft.com.form.Network.Objects.Category;
+import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
 import madsoft.com.form.Fragment.SearchFragment;
 
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ArticleRecyclerViewAdapter.onClickListener {
     private Toolbar toolbar;
     private DownloadedFragment downloadedFragment;
     private BackdropContainer backdropContainer;
@@ -32,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private SearchFragment searchFragment;
     private BottomNavigationView bottomNavigationView;
     private ViewPager pager;
+    private NetworkService networkService;
+    private RecyclerView categoriesRecyclerView;
+    private CategoriesRecyclerViewAfapter categoriesRecyclerViewAfapter;
 
 
     @Override
@@ -40,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        networkService = NetworkService.getInstance();
+
 
         pager = findViewById(R.id.pager);
 
@@ -47,7 +61,14 @@ public class MainActivity extends AppCompatActivity {
 
         pager.setAdapter(pagerAdapter);
 
+
+
        bottomNavigationView = findViewById(R.id.bottom_navigation);
+       categoriesRecyclerViewAfapter = new CategoriesRecyclerViewAfapter(this);
+        View categoriesLayout = findViewById(R.id.categories_layout);
+        categoriesRecyclerView = categoriesLayout.findViewById(R.id.categories_recyclerView);
+        categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        categoriesRecyclerView.setAdapter(categoriesRecyclerViewAfapter);
 
 
         BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationView_OnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -118,8 +139,17 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.getMenu().getItem(1).setChecked(true);
         pager.setCurrentItem(1);
+        networkService
+                .getWpApi()
+                .getCategoriesWpCall()
+                .enqueue(categoriesRecyclerViewAfapter);
 
+    }
 
+    @Override
+    public void onItemClick(int position) {
+
+        Category category = categoriesRecyclerViewAfapter.getItem(position);
     }
 
     public static class MyPagerAdapter extends FragmentPagerAdapter {

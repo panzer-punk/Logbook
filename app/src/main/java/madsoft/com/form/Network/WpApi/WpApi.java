@@ -26,6 +26,9 @@ public interface WpApi {
     @GET("categories?_fileds=id,name")//Поля для отбора см. Wordpress REST Api
     Call<List<Category>> getCategoriesWpCall();
 
+    @GET("categories?_fileds=id,name")//Поля для отбора см. Wordpress REST Api
+    Call<List<Category>> getCategoriesWpCall(@Query("page") short page);
+
     @GET("search?_fields=id,title,url&search={search}")
     Call<List<ArticleWpListItem>> searchArticleWpCall(String search);
 

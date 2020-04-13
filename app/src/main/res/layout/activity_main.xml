@@ -23,7 +23,7 @@
         app:menuIcon="@drawable/baseline_filter_list_white_24"
         app:closeIcon="@drawable/baseline_done_white_24"
         app:duration="500">
-        <include layout="@layout/category_picker"/>
+        <include layout="@layout/category_picker" android:id="@+id/categories_layout"/>
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager"
             android:layout_alignParentBottom="true"

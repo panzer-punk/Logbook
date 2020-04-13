@@ -101,7 +101,7 @@ public class DownloadedFragment extends Fragment {
         adapter = new ArrayAdapter<>(
                 getActivity(),
                 R.layout.list_item,
-                R.id.pro_item,
+                R.id.category_text,
                 linkTextList);
 
         download();
