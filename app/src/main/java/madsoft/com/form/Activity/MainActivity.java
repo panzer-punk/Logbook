@@ -106,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar_main);
      //   setSupportActionBar(toolbar);
+
+        toolbar.setTitle(R.string.app_name);
         backdropContainer = (BackdropContainer)findViewById(R.id.backdropcontainer);
         backdropContainer.attachToolbar(toolbar)
                 .dropInterpolator(new LinearOutSlowInInterpolator())
