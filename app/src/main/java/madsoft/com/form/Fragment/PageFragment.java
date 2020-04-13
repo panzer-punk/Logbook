@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,6 +16,7 @@ import de.mateware.snacky.Snacky;
 import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Network.Objects.ArticleWp;
+import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
 
@@ -28,27 +30,36 @@ import android.view.ViewGroup;
  * Created by Даниил on 27.09.2018.
  */
 
-public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback, ArticleRecyclerViewAdapter.IntentCallback {
+public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener,
+        ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback,
+        ArticleRecyclerViewAdapter.IntentCallback,
+        Filterable{
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private NetworkService networkService;
-    private ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
+    protected ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
-
+    private static PageFragment instance;
 
 
     public static PageFragment newInstance() {
-        PageFragment pageFragment = new PageFragment();
-        return pageFragment;
+        if(instance == null)
+            instance = new PageFragment();
+        return instance;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        articleRecyclerViewAdapter = new ArticleRecyclerViewAdapter(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pages, null);
-         articleRecyclerViewAdapter = new ArticleRecyclerViewAdapter(this);
+
         recyclerView = view.findViewById(R.id.recycler_view);
         int orientation = getResources().getConfiguration().orientation;
         if ( orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -190,4 +201,19 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         startActivity(shareIntent);
     }
 
+    @Override
+    public void applyFilter(Category category) {
+        swipeRefreshLayout.setRefreshing(true);
+        networkService = NetworkService.getInstance();
+        if(category != null)
+        networkService
+                .getWpApi()
+                .getArticleWpCall(""+category.getId())
+                .enqueue(articleRecyclerViewAdapter);
+        else
+            networkService
+                    .getWpApi()
+                    .getArticleWpCall()
+                    .enqueue(articleRecyclerViewAdapter);
+    }
 }

@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import com.evolve.backdroplibrary.BackdropContainer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -20,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Adapter.CategoriesRecyclerViewAfapter;
 import madsoft.com.form.Fragment.DownloadedFragment;
+import madsoft.com.form.Fragment.Filterable;
 import madsoft.com.form.Fragment.PageFragment;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
@@ -43,8 +46,9 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     private ViewPager pager;
     private NetworkService networkService;
     private RecyclerView categoriesRecyclerView;
+    private FloatingActionButton fab;
     private CategoriesRecyclerViewAfapter categoriesRecyclerViewAfapter;
-
+    private  MyPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +58,18 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
 
         networkService = NetworkService.getInstance();
 
+        fab = findViewById(R.id.floating_action_button);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClick(-1);
+            }
+        });
 
         pager = findViewById(R.id.pager);
 
-        final MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+         pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
 
         pager.setAdapter(pagerAdapter);
 
@@ -148,8 +160,19 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
 
     @Override
     public void onItemClick(int position) {
+        Category category;
+        if(position > 0) {
+            fab.show();
+            category = categoriesRecyclerViewAfapter.getItem(position);
+        }else {
+            fab.hide();
+            category = null;
+        }
+        Filterable filterable = (Filterable) pagerAdapter.getItem(pager.getCurrentItem());
+        filterable.applyFilter(category);
 
-        Category category = categoriesRecyclerViewAfapter.getItem(position);
+
+
     }
 
     public static class MyPagerAdapter extends FragmentPagerAdapter {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import madsoft.com.form.FileSystem.CacheSystem;
+import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.R;
 
 import android.view.LayoutInflater;
@@ -21,11 +22,12 @@ import java.util.ArrayList;
  * Created by Даниил on 27.09.2018.
  */
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements Filterable{
 
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
 
     private static String LIST = "linkTextList";
+    private static SearchFragment instance;
     private CacheSystem cacheSystem;
     private SwipeRefreshLayout swipeRefreshLayout;
     public Elements links; // сохраняется в Assets
@@ -35,8 +37,9 @@ public class SearchFragment extends Fragment {
 
 
     public static SearchFragment newInstance() {
-        SearchFragment Fragment = new SearchFragment();
-        return Fragment;
+        if(instance == null)
+            instance = new SearchFragment();
+        return instance;
     }
 
 
@@ -48,4 +51,8 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void applyFilter(Category category) {
+
+    }
 }
