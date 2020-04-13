@@ -9,6 +9,7 @@ import com.evolve.backdroplibrary.BackdropContainer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     private FloatingActionButton fab;
     private CategoriesRecyclerViewAfapter categoriesRecyclerViewAfapter;
     private  MyPagerAdapter pagerAdapter;
+    private RecyclerView.OnScrollListener onScrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,25 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         categoriesRecyclerView.setAdapter(categoriesRecyclerViewAfapter);
 
+        onScrollListener = new RecyclerView.OnScrollListener() {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) categoriesRecyclerView.getLayoutManager();
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = layoutManager.getChildCount();//смотрим сколько элементов на экране
+                int totalItemCount = layoutManager.getItemCount();//сколько всего элементов
+                int firstVisibleItems = layoutManager.findFirstVisibleItemPosition();//какая позиция первого элемента
+
+                if ( (visibleItemCount+firstVisibleItems) >= totalItemCount && categoriesRecyclerViewAfapter.hasNextPage()) {
+                    categoriesRecyclerViewAfapter.nextPage();
+
+
+                }
+
+            }
+
+        };
+        categoriesRecyclerView.addOnScrollListener(onScrollListener);
 
         BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationView_OnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -162,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     public void onItemClick(int position) {
         Category category;
         if(position > 0) {
+            backdropContainer.closeBackview();
             fab.show();
             category = categoriesRecyclerViewAfapter.getItem(position);
         }else {
