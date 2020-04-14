@@ -39,7 +39,6 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private NetworkService networkService;
-    private String category_bundle_key = "CATEGORY";
     protected ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
     private static PageFragment instance;
