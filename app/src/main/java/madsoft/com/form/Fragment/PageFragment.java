@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.mateware.snacky.Snacky;
+import madsoft.com.form.Activity.MainActivity;
 import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Network.Objects.ArticleWp;
@@ -38,6 +39,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private NetworkService networkService;
+    private String category_bundle_key = "CATEGORY";
     protected ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
     private static PageFragment instance;
@@ -48,6 +50,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
             instance = new PageFragment();
         return instance;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,6 +109,8 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         articleRecyclerViewAdapter.setCallback(this);
         articleRecyclerViewAdapter.setIntentCallback(this);
         download();
+        if(instance != null)
+        instance = this;
 
         return view;
     }
@@ -113,12 +118,17 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     private void download(){
 
         swipeRefreshLayout.setRefreshing(true);
+        MainActivity mActivity = (MainActivity) getActivity();
+        if(mActivity.category == null)
         networkService
                 .getWpApi()
                 .getArticleWpCall()
                 .enqueue(articleRecyclerViewAdapter);
-
-
+        else
+            networkService
+                    .getWpApi()
+                    .getArticleWpCall(""+mActivity.category.getId())
+                    .enqueue(articleRecyclerViewAdapter);
     }
 
 
@@ -157,6 +167,9 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     }
 
     private void buildSnack(int id){
+
+        if(getView() == null)
+            return;
 
         Snacky.Builder builder = Snacky.builder()
                 .setView(getView())

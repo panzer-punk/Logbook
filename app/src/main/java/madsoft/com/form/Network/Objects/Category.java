@@ -3,7 +3,10 @@ package madsoft.com.form.Network.Objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
+    public static String BUNDLE_KEY = "CATEGORY";
     @SerializedName("id")
     @Expose
     private Integer id;

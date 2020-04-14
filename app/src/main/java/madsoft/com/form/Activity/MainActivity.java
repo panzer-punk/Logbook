@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     private DownloadedFragment downloadedFragment;
     private BackdropContainer backdropContainer;
     private PageFragment pageFragment;
+    public Category category;
     private SearchFragment searchFragment;
     private BottomNavigationView bottomNavigationView;
     private ViewPager pager;
@@ -56,6 +57,12 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null){
+            category = (Category) savedInstanceState.getSerializable(Category.BUNDLE_KEY);
+        }else
+            category = null;
+
         setContentView(R.layout.activity_main);
 
         networkService = NetworkService.getInstance();
@@ -180,8 +187,14 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(Category.BUNDLE_KEY, category);
+    }
+
+    @Override
     public void onItemClick(int position) {
-        Category category;
+
         if(position > 0) {
             backdropContainer.closeBackview();
             fab.show();
