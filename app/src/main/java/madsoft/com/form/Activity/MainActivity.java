@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
         networkService = NetworkService.getInstance();
 
         fab = findViewById(R.id.floating_action_button);
+        if(category != null)
+            fab.show();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
