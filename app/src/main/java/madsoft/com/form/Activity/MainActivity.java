@@ -1,8 +1,6 @@
 package madsoft.com.form.Activity;
 
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import com.evolve.backdroplibrary.BackdropContainer;
@@ -14,14 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
-import madsoft.com.form.Adapter.CategoriesRecyclerViewAfapter;
+import madsoft.com.form.Adapter.CategoriesRecyclerViewAdapter;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Fragment.Filterable;
 import madsoft.com.form.Fragment.PageFragment;
@@ -30,11 +27,8 @@ import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
 import madsoft.com.form.Fragment.SearchFragment;
 
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.LinearInterpolator;
 
 
 public class MainActivity extends AppCompatActivity implements ArticleRecyclerViewAdapter.onClickListener {
@@ -49,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     private NetworkService networkService;
     private RecyclerView categoriesRecyclerView;
     private FloatingActionButton fab;
-    private CategoriesRecyclerViewAfapter categoriesRecyclerViewAfapter;
+    private CategoriesRecyclerViewAdapter categoriesRecyclerViewAdapter;
     private  MyPagerAdapter pagerAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
 
@@ -87,11 +81,11 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
 
 
        bottomNavigationView = findViewById(R.id.bottom_navigation);
-       categoriesRecyclerViewAfapter = new CategoriesRecyclerViewAfapter(this);
+       categoriesRecyclerViewAdapter = new CategoriesRecyclerViewAdapter(this);
         View categoriesLayout = findViewById(R.id.categories_layout);
         categoriesRecyclerView = categoriesLayout.findViewById(R.id.categories_recyclerView);
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        categoriesRecyclerView.setAdapter(categoriesRecyclerViewAfapter);
+        categoriesRecyclerView.setAdapter(categoriesRecyclerViewAdapter);
 
         onScrollListener = new RecyclerView.OnScrollListener() {
             LinearLayoutManager layoutManager = (LinearLayoutManager) categoriesRecyclerView.getLayoutManager();
@@ -102,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
                 int totalItemCount = layoutManager.getItemCount();//сколько всего элементов
                 int firstVisibleItems = layoutManager.findFirstVisibleItemPosition();//какая позиция первого элемента
 
-                if ( (visibleItemCount+firstVisibleItems) >= totalItemCount && categoriesRecyclerViewAfapter.hasNextPage()) {
-                    categoriesRecyclerViewAfapter.nextPage();
+                if ( (visibleItemCount+firstVisibleItems) >= totalItemCount && categoriesRecyclerViewAdapter.hasNextPage()) {
+                    categoriesRecyclerViewAdapter.nextPage();
 
 
                 }
@@ -184,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
         networkService
                 .getWpApi()
                 .getCategoriesWpCall()
-                .enqueue(categoriesRecyclerViewAfapter);
+                .enqueue(categoriesRecyclerViewAdapter);
 
     }
 
@@ -200,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
         if(position > 0) {
             backdropContainer.closeBackview();
             fab.show();
-            category = categoriesRecyclerViewAfapter.getItem(position);
+            category = categoriesRecyclerViewAdapter.getItem(position);
         }else {
             fab.hide();
             category = null;

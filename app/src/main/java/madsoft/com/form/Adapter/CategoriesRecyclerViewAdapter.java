@@ -16,9 +16,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CategoriesRecyclerViewAfapter extends RetrofitWpPaginationAdapter<Category>{
+public class CategoriesRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Category>{
     public CategoriesViewHolder holder;
-    public CategoriesRecyclerViewAfapter(ArticleRecyclerViewAdapter.onClickListener onClickListener) {
+    public CategoriesRecyclerViewAdapter(ArticleRecyclerViewAdapter.onClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 
@@ -65,12 +65,12 @@ public class CategoriesRecyclerViewAfapter extends RetrofitWpPaginationAdapter<C
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item, parent, false);
-        return new CategoriesRecyclerViewAfapter.CategoriesViewHolder(view, onClickListener);
+        return new CategoriesRecyclerViewAdapter.CategoriesViewHolder(view, onClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-      CategoriesRecyclerViewAfapter.CategoriesViewHolder categoryViewHolder = (CategoriesRecyclerViewAfapter.CategoriesViewHolder) holder;
+      CategoriesRecyclerViewAdapter.CategoriesViewHolder categoryViewHolder = (CategoriesRecyclerViewAdapter.CategoriesViewHolder) holder;
        categoryViewHolder.bind(list.get(position));
         this.holder = categoryViewHolder;
     }
