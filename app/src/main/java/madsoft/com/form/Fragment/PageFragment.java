@@ -38,6 +38,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
+    private OnScrollNextPageListener nextPageListener;
     private NetworkService networkService;
     protected ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
@@ -71,7 +72,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         }
 
         recyclerView.setAdapter(articleRecyclerViewAdapter);
-
+        onScrollListener = new OnScrollNextPageListener((LinearLayoutManager) recyclerView.getLayoutManager(), articleRecyclerViewAdapter);
 
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
@@ -86,24 +87,6 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         });
 
         networkService = NetworkService.getInstance();
-        onScrollListener = new RecyclerView.OnScrollListener() {
-            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int visibleItemCount = layoutManager.getChildCount();//смотрим сколько элементов на экране
-                int totalItemCount = layoutManager.getItemCount();//сколько всего элементов
-                int firstVisibleItems = layoutManager.findFirstVisibleItemPosition();//какая позиция первого элемента
-
-                    if ( (visibleItemCount+firstVisibleItems) >= totalItemCount && articleRecyclerViewAdapter.hasNextPage()) {
-                        articleRecyclerViewAdapter.nextPage();
-                        nextPageSnack();
-
-                    }
-
-            }
-
-        };
         recyclerView.addOnScrollListener(onScrollListener);
         articleRecyclerViewAdapter.setCallback(this);
         articleRecyclerViewAdapter.setIntentCallback(this);

@@ -43,6 +43,7 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
     private static SearchFragment instance;
     private RecyclerView searchRecyclerView;
     private EditText searchEditText;
+    private OnScrollNextPageListener nextPageListener;
     private SearchResultsAdapter searchFragmentResultsAdapter;
     private SwipeRefreshLayout searchSwipeRefreshLayout;
 
@@ -68,6 +69,8 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
         searchEditText = view.findViewById(R.id.search_field);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         searchRecyclerView.setAdapter(searchFragmentResultsAdapter);
+        nextPageListener = new OnScrollNextPageListener((LinearLayoutManager) searchRecyclerView.getLayoutManager(), searchFragmentResultsAdapter);
+        searchRecyclerView.addOnScrollListener(nextPageListener);
         searchSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_search);
         searchSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

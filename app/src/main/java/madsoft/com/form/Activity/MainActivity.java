@@ -21,6 +21,7 @@ import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Adapter.CategoriesRecyclerViewAdapter;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Fragment.Filterable;
+import madsoft.com.form.Fragment.OnScrollNextPageListener;
 import madsoft.com.form.Fragment.PageFragment;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     private FloatingActionButton fab;
     private CategoriesRecyclerViewAdapter categoriesRecyclerViewAdapter;
     private  MyPagerAdapter pagerAdapter;
-    private RecyclerView.OnScrollListener onScrollListener;
+    private OnScrollNextPageListener onScrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,24 +88,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         categoriesRecyclerView.setAdapter(categoriesRecyclerViewAdapter);
 
-        onScrollListener = new RecyclerView.OnScrollListener() {
-            LinearLayoutManager layoutManager = (LinearLayoutManager) categoriesRecyclerView.getLayoutManager();
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int visibleItemCount = layoutManager.getChildCount();//смотрим сколько элементов на экране
-                int totalItemCount = layoutManager.getItemCount();//сколько всего элементов
-                int firstVisibleItems = layoutManager.findFirstVisibleItemPosition();//какая позиция первого элемента
-
-                if ( (visibleItemCount+firstVisibleItems) >= totalItemCount && categoriesRecyclerViewAdapter.hasNextPage()) {
-                    categoriesRecyclerViewAdapter.nextPage();
-
-
-                }
-
-            }
-
-        };
+        onScrollListener = new OnScrollNextPageListener((LinearLayoutManager) categoriesRecyclerView.getLayoutManager(), categoriesRecyclerViewAdapter);
         categoriesRecyclerView.addOnScrollListener(onScrollListener);
 
         BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationView_OnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {

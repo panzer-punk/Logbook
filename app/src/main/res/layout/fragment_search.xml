@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:background="@color/fragments_background"
     android:layout_width="match_parent"
+    android:paddingBottom="56dp"
     android:layout_height="match_parent">
 
     <EditText
