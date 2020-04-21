@@ -13,7 +13,21 @@
         android:inputType="text|textPersonName"
         android:ems="20"
         android:hint="@string/hint_search"
-        android:id="@+id/search_field" />
+        android:id="@+id/search_field"
+        android:imeOptions="actionDone"/>
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true">
+    <androidx.recyclerview.widget.RecyclerView
+        android:scrollbars="vertical"
+        android:id="@+id/search_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 

@@ -65,7 +65,7 @@ public class SlidingThemeActivity extends AppCompatActivity {
 
         setTitle(filename);
 
-        webView = findViewById(R.id.activity_theme);
+        webView = findViewById(R.id.activity_theme_webView);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadWithOverviewMode(true);
