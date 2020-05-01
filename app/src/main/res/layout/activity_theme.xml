@@ -46,13 +46,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <WebView
-        android:id="@+id/activity_theme_webView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="?android:attr/actionBarSize"
-        android:isScrollContainer="false"/>
-
+        <FrameLayout
+            android:id="@+id/fragment_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </androidx.core.widget.NestedScrollView>
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"

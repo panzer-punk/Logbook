@@ -38,12 +38,21 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
+    private boolean loadFlag = true;
+    private Category category;
     private OnScrollNextPageListener nextPageListener;
     private NetworkService networkService;
     protected ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
     private static PageFragment instance;
 
+
+    public PageFragment(boolean loadFlag) {
+        this.loadFlag = loadFlag;
+    }
+
+    public PageFragment() {
+    }
 
     public static PageFragment newInstance() {
         if(instance == null)
@@ -56,6 +65,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         articleRecyclerViewAdapter = new ArticleRecyclerViewAdapter(this);
+        category = null;
     }
 
     @Override
@@ -90,6 +100,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         recyclerView.addOnScrollListener(onScrollListener);
         articleRecyclerViewAdapter.setCallback(this);
         articleRecyclerViewAdapter.setIntentCallback(this);
+        if(loadFlag)
         download();
         if(instance != null)
         instance = this;
@@ -101,7 +112,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
         swipeRefreshLayout.setRefreshing(true);
         MainActivity mActivity = (MainActivity) getActivity();
-        if(mActivity.category == null)
+        if(category == null)
         networkService
                 .getWpApi()
                 .getArticleWpCall()
@@ -109,7 +120,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         else
             networkService
                     .getWpApi()
-                    .getArticleWpCall(""+mActivity.category.getId())
+                    .getArticleWpCall(""+category.getId())
                     .enqueue(articleRecyclerViewAdapter);
     }
 
@@ -201,14 +212,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         swipeRefreshLayout.setRefreshing(true);
         networkService = NetworkService.getInstance();
         if(category != null)
-        networkService
-                .getWpApi()
-                .getArticleWpCall(""+category.getId())
-                .enqueue(articleRecyclerViewAdapter);
-        else
-            networkService
-                    .getWpApi()
-                    .getArticleWpCall()
-                    .enqueue(articleRecyclerViewAdapter);
+            this.category = category;
+      download();
     }
 }

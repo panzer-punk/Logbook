@@ -6,34 +6,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import madsoft.com.form.FileSystem.CacheSystem;
 import madsoft.com.form.Fragment.QuizFragment;
+import madsoft.com.form.Fragment.WebViewFragment;
 import madsoft.com.form.Network.Html.Connector;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.R;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import android.webkit.JavascriptInterface;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-public class SlidingThemeActivity extends AppCompatActivity {
+public class SlidingThemeActivity extends AppCompatActivity{
 
     private Connector connector;
-
+    private WebViewFragment articleFragment;
     private String href;
     private Toolbar toolbar;
     private CacheSystem cacheSystem;
     private String filename;
-    private WebView webView;
     private TextView title;
     private TextView content;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,14 +64,9 @@ public class SlidingThemeActivity extends AppCompatActivity {
 
         setTitle(filename);
 
-        webView = findViewById(R.id.activity_theme_webView);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setLoadWithOverviewMode(true);
-        webSettings.setSupportZoom(true);
-        webView.setVerticalScrollBarEnabled(true);
-        webView.addJavascriptInterface(this, "Android");
-        webView.loadUrl(href + "?d=android");
+        articleFragment = new WebViewFragment(this, href);
+        replaceFragment(articleFragment);
+
 
         title = findViewById(R.id.diaog_title);
         content = findViewById(R.id.diaog_text);
@@ -115,6 +109,12 @@ public class SlidingThemeActivity extends AppCompatActivity {
 
     }
 
+    private void  replaceFragment (Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_placeholder, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
 }
 
