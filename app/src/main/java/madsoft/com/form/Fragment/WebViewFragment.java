@@ -18,7 +18,9 @@ import madsoft.com.form.R;
 public class WebViewFragment extends Fragment implements AppWebClientCallback {
     @Override
     public void update(String query) {
+
         webView.loadUrl(query+"?d=android");
+
     }
 
 
@@ -53,6 +55,14 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
        update(url);
         return view;
 
+    }
+
+    public boolean canGoBack(){
+        return webView.canGoBack();
+    }
+
+    public void goBack(){
+        webView.goBack();
     }
 
 

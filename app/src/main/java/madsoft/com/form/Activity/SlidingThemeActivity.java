@@ -16,6 +16,7 @@ import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.R;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -84,6 +85,23 @@ public class SlidingThemeActivity extends AppCompatActivity{
 
     }
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    if (articleFragment.canGoBack()) {
+                        articleFragment.goBack();
+                    } else {
+                        finish();
+                    }
+                    return true;
+            }
+
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @JavascriptInterface
     public void getTest(String toast) {
