@@ -210,9 +210,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     @Override
     public void applyFilter(Category category) {
         swipeRefreshLayout.setRefreshing(true);
-        networkService = NetworkService.getInstance();
-        if(category != null)
-            this.category = category;
+        this.category = category;
       download();
     }
 }
