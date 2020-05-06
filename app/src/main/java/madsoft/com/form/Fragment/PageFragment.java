@@ -211,6 +211,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     public void applyFilter(Category category) {
         swipeRefreshLayout.setRefreshing(true);
         this.category = category;
+        articleRecyclerViewAdapter.setArticlesCategory(category);
       download();
     }
 }

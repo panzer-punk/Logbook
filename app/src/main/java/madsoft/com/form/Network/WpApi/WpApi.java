@@ -23,6 +23,9 @@ public interface WpApi {//TODO сделать общий метод, а не р�
     @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
     Call<List<ArticleWp>> getArticleWpCall(@Query("categories") String categories);
 
+    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
+    Call<List<ArticleWp>> getArticleWpCall(@Query("page") short page, @Query("categories") String categories);
+
     @GET("categories?_fileds=id,name")//Поля для отбора см. Wordpress REST Api
     Call<List<Category>> getCategoriesWpCall();
 

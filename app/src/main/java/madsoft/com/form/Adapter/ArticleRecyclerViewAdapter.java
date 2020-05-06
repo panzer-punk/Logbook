@@ -2,7 +2,7 @@ package madsoft.com.form.Adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 import madsoft.com.form.Network.Objects.ArticleWp;
-import madsoft.com.form.Network.WpApi.NetworkService;
+import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +20,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<ArticleWp> {
+    private Category articlesCategory;
+
+    public void setArticlesCategory(Category category) {
+        this.articlesCategory = category;
+    }
+
     @Override
     public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
         short pages = Short.parseShort(response.headers().get("X-WP-TotalPages"));
@@ -66,6 +72,8 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
 
     public void nextPage() {
         if(!hasNextPage()) return;
+
+        if(articlesCategory == null)
         networkService.getWpApi().getArticleWpCall(++curPage).enqueue(new Callback<List<ArticleWp>>() {
             @Override
             public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
@@ -82,6 +90,23 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
             callback.onFailure();
             }
         });
+        else
+            networkService.getWpApi().getArticleWpCall(++curPage, articlesCategory.getId().toString()).enqueue(new Callback<List<ArticleWp>>() {
+                @Override
+                public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
+                    List<ArticleWp> list = response.body();
+                    appendList(list);
+                    if(callback != null)
+                        callback.onResponse();
+                }
+
+                @Override
+                public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
+                    curPage--;
+                    if(callback!=null)
+                        callback.onFailure();
+                }
+            });
     }
 
 
