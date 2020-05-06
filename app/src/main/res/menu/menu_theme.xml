@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
         tools:context=".ThemeActivity">
 
     <item
         android:id="@+id/action_share"
         android:title="@string/text_share"
         android:icon="@drawable/ic_share_black_18dp"
-        android:showAsAction="always"
         android:orderInCategory="0"
-        android:actionProviderClass="android.widget.ShareActionProvider"/>
-
+        app:showAsAction="always"
+        app:actionProviderClass="androidx.core.view.ActionProvider" />
+    <item
+        android:id="@+id/action_download"
+        android:enabled="true"
+        android:icon="@drawable/baseline_get_app_black_18"
+        android:title="@string/text_download"
+        app:actionProviderClass="androidx.core.view.ActionProvider"
+        app:showAsAction="ifRoom"/>
 
 
 </menu>
