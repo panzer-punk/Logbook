@@ -93,8 +93,9 @@ class AppWebClient extends WebViewClient{
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView  view, String  url){
-        handleLink(url);
-        return true;
+            handleLink(url);
+            return true;
+
     }
 
 }

@@ -42,6 +42,7 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
 
     private static SearchFragment instance;
     private RecyclerView searchRecyclerView;
+    private String query;
     private EditText searchEditText;
     private OnScrollNextPageListener nextPageListener;
     private SearchResultsAdapter searchFragmentResultsAdapter;
@@ -85,7 +86,8 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 searchEditText.clearFocus();
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    search(v.getText().toString());
+                    query = v.getText().toString();
+                    search(query);
                     return true;
                 }else
                 return false;
@@ -104,7 +106,10 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
     }
 
     @Override
-    public void applyFilter(Category category) {//TODO обработка фильтра
+    public void applyFilter(Category category) {//Обработать запрос невозможно из-за такого устройства WP API
+
+      //  this.category = category;
+      //  search(query);
 
     }
 
