@@ -15,7 +15,7 @@
     <string name="articlesLoadFail">Проверьте подключение к сети</string>
     <string name="action_share">Поделиться</string>
     <string name="action_download">Скачать</string>
-    <string name="deeplink_prefix">/posts/</string>
+    <string name="deeplink_prefix">/posts</string>
     <string name="deeplink_host">sanctumlogos.info</string>
     <string name="quiz_title_placeholder">ТЕКСТ ВОПРОСА</string>
 </resources>
