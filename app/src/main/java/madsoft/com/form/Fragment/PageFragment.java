@@ -1,12 +1,16 @@
 package madsoft.com.form.Fragment;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,12 +24,14 @@ import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
-
+import madsoft.com.form.service.DownloadService;
 
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import static madsoft.com.form.Activity.MainActivity.WRITE_FILE_PERMISSION;
 
 /**
  * Created by Даниил on 27.09.2018.
@@ -36,6 +42,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         ArticleRecyclerViewAdapter.IntentCallback,
         Filterable{
 
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private boolean loadFlag = true;
@@ -45,6 +52,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     protected ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
     private static PageFragment instance;
+    private static ArticleWp downloadUrl;
 
 
     public PageFragment(boolean loadFlag) {
@@ -205,6 +213,31 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
+    }
+
+    private void askWritePermission(){
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_FILE_PERMISSION);
+        }else
+            downloadArticle();
+
+    }
+
+
+    @Override
+    public void onDownloadArticle(ArticleWp articleWp) {
+        downloadUrl = articleWp;
+       askWritePermission();
+    }
+
+    public void downloadArticle(){
+          Intent intent = new Intent(getActivity(), DownloadService.class);
+          intent.putExtra(DownloadService.URL_INTENT_KEY, downloadUrl.getLink());
+          intent.putExtra(DownloadService.MODIFIED_KEY, downloadUrl.getModified());
+          getActivity().startService(intent);
     }
 
     @Override

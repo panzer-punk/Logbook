@@ -1,6 +1,9 @@
 package madsoft.com.form.Activity;
 
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.evolve.backdroplibrary.BackdropContainer;
@@ -8,6 +11,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -27,7 +32,9 @@ import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.R;
 import madsoft.com.form.Fragment.SearchFragment;
+import madsoft.com.form.service.DownloadService;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -47,6 +54,33 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     private CategoriesRecyclerViewAdapter categoriesRecyclerViewAdapter;
     private  MyPagerAdapter pagerAdapter;
     private OnScrollNextPageListener onScrollListener;
+    public static final int WRITE_FILE_PERMISSION = 0;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_FILE_PERMISSION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                  //  Intent intent = new Intent(getActivity(), DownloadService.class);
+                    //  intent.putExtra(DownloadService.URL_INTENT_KEY, url);
+                    //      getActivity().startService(intent);
+                    Log.d("P", "granted");
+                  pageFragment = (PageFragment) pagerAdapter.getItem(pager.getCurrentItem());
+                  pageFragment.downloadArticle();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
                 .enqueue(categoriesRecyclerViewAdapter);
 
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

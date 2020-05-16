@@ -5,31 +5,47 @@ import android.app.DownloadManager;
 import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.util.Log;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.select.NodeTraversor;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.SynchronousQueue;
 
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.Network.WpApi.WpApi;
 import madsoft.com.form.R;
 
+import static java.nio.charset.StandardCharsets.UTF_16;
+import static java.nio.charset.StandardCharsets.UTF_16BE;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class DownloadService extends Service {
 
     public static String URL_INTENT_KEY = "URL";
+    public static String HOST_URL = "https://sanctumlogos.info/";
+    public static String MODIFIED_KEY = "MODIFIED";
 
 
 
@@ -51,70 +67,87 @@ public class DownloadService extends Service {
         @Override
         public void handleMessage(Message msg) {
 
+            File dir = getApplicationContext().getFilesDir();
+            String path = dir.getAbsolutePath();
+            if(!dir.exists()) {
+                dir.mkdirs();
+            }
+
             try {
-                mDoc = Jsoup.connect(msg.obj.toString()).get();
+                String murl = new String(msg.obj.toString().getBytes(),UTF_8);
+                Log.i("URL", murl);
+
+                mDoc = Jsoup.connect(murl + "?d=android")
+                        .get();
                 Element head = mDoc.head();
                 Elements styles = head.getElementsByTag("link");
                 for(Element s : styles){
 
                     if(s.attr("rel").equals("stylesheet")
-                            && s.attr("href").contains(NetworkService.BASE_URL)){
-
-                       DownloadManager.Request request = new DownloadManager.Request(Uri.parse(s.attr("src")))
-                               .setTitle(s.attr("id"))
-                               .setDescription(getString(R.string.loading))
-                               .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                               .setDestinationUri(Uri.fromFile(new File(mDoc.title() + "/" + s.attr("id") + ".css")))
-                               .setAllowedOverMetered(true)
-                               .setAllowedOverRoaming(true);// Set if download is allowed on roaming network
-
+                            && s.attr("href").contains(HOST_URL)){
                     s.attr("href", s.attr("id") + ".css");
-
-                    mDownloadManager.enqueue(request);
-                    mDownloadManager.wait();
                     }else
                         s.remove();
 
                 }
                 Elements scripts = head.getElementsByTag("script");
-                for (Element s : scripts) {
+                scripts.remove();
 
-                    if (s.attr("type").equals("text/javascript")
-                            && s.attr("src").contains(NetworkService.BASE_URL)) {
-
-               /* DownloadManager.Request request = new DownloadManager.Request(Uri.parse(s.attr("src")))
-                        .setTitle(s.attr("id"))
-                        .setDescription(getString(R.string.loading))
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                        .setDestinationUri(Uri.fromFile(new File(s.attr("id") + ".css")))
-                        .setAllowedOverMetered(true)
-                        .setAllowedOverRoaming(true);// Set if download is allowed on roaming network*/
-
-                       // s.attr("src", s.attr("id") + ".js");
-                        s.remove();
-
-                    } else
-                        s.remove();
-
-                }
-
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(msg.obj.toString()))
-                        .setTitle(mDoc.title())
-                        .setDescription(getString(R.string.loading))
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                        .setDestinationUri(Uri.fromFile(new File(mDoc.title() + "/" + "index.html")))
-                        .setAllowedOverMetered(true)
-                        .setAllowedOverRoaming(true);// Set if download is allowed on roaming network
+                final File f = File.createTempFile("page", ".html", dir);
+               FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
+               Log.d("File path", f.getAbsolutePath());
+                //TODO добавить запись в базу данных
             } catch (IOException e) {
-                e.printStackTrace();
-                stopSelf(msg.arg1);
-            } catch (InterruptedException e) {
                 e.printStackTrace();
                 stopSelf(msg.arg1);
             }
 
             stopSelf(msg.arg1);
         }
+    }
+
+    private void writeToFileFromUrl(String surl, String filename, String extension){
+        try {
+        URL url = new URL(surl);
+
+        URLConnection ucon = url.openConnection();
+
+        /*
+         * Define InputStreams to read from the URLConnection.
+         */
+        InputStream is = ucon.getInputStream();
+        BufferedInputStream bis = new BufferedInputStream(is);
+
+        /*
+         * Read bytes to the Buffer until there is nothing more to read(-1).
+         */
+     /*  baf = new ByteArrayBuffer(5000);
+        int current = 0;
+        while ((current = bis.read()) != -1) {
+            baf.append((byte) current);
+        }
+
+
+         Convert the Bytes read to a String.
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(baf.toByteArray());
+        fos.flush();
+        fos.close();
+
+            FileOutputStream fos = new FileOutputStream(new File(Environment.getDownloadCacheDirectory(), filename+extension));
+
+*/
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    private void writeToFile(String content){
+
     }
 
     public void onCreate() {

@@ -50,6 +50,7 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
     public interface IntentCallback{
 
         void onShareArticle(ArticleWp article);
+        void onDownloadArticle(ArticleWp article);
 
     }
     public ArticleViewHolder holder;
@@ -150,7 +151,7 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
             download.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                intentCallback.onDownloadArticle(list.get(getAdapterPosition()));
                 }
             });
         }
