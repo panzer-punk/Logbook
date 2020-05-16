@@ -33,6 +33,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.SynchronousQueue;
 
+import madsoft.com.form.Application.MyApplication;
+import madsoft.com.form.DataBase.PageDao;
+import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.Network.WpApi.WpApi;
 import madsoft.com.form.R;
@@ -55,10 +58,12 @@ public class DownloadService extends Service {
 
 
     private final class ServiceHandler extends Handler {
-        private DownloadManager mDownloadManager;
+      //  private DownloadManager mDownloadManager;
+        private PageDao servicePageDao;
         private Document mDoc;
         {
-            mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+         //   mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            servicePageDao = MyApplication.getDatabase().pageDao();
 
         }
         public ServiceHandler(Looper looper) {
@@ -94,9 +99,14 @@ public class DownloadService extends Service {
                 scripts.remove();
 
                 final File f = File.createTempFile("page", ".html", dir);
+                Page page = new Page();
+                page.modified = "";//TODO передать modified из ArticleWp
+                page.path = f.getAbsolutePath();
+                servicePageDao.insert(page);
                FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
-               Log.d("File path", f.getAbsolutePath());
-                //TODO добавить запись в базу данных
+              // Log.d("File path", f.getAbsolutePath());
+
+
             } catch (IOException e) {
                 e.printStackTrace();
                 stopSelf(msg.arg1);
