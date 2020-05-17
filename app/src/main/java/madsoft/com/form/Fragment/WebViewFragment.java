@@ -33,7 +33,7 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
 
         loader = new loadLocalFile(webView);
         loader.execute(query);
-
+          //  webView.loadUrl("file:///android_asset/test.html");
         }
     }
 
@@ -138,7 +138,7 @@ class loadLocalFile extends AsyncTask<String, Integer, String>{
 
     @Override
     protected void onPostExecute(String s) {
-        webView.loadDataWithBaseURL("file:///android_assets/", s,"text/html", "UTF-8", null);
+        webView.loadDataWithBaseURL("file:///android_asset/", s,"text/html", "UTF-8", null);
     }
 }
 
