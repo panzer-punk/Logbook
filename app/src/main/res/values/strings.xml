@@ -14,6 +14,7 @@
     <string name="articlesLoadSuccess">Приятного чтения =)</string>
     <string name="articlesLoadFail">Проверьте подключение к сети</string>
     <string name="action_share">Поделиться</string>
+    <string name="action_delete">Удалить</string>
     <string name="action_download">Скачать</string>
     <string name="deeplink_prefix">/posts/</string>
     <string name="deeplink_host">https://sanctumlogos.info/</string>

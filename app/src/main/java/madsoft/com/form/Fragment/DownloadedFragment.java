@@ -4,40 +4,39 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import madsoft.com.form.Activity.SlidingThemeActivity;
-import madsoft.com.form.Assets;
-import madsoft.com.form.FileSystem.CacheSystem;
+import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
+import madsoft.com.form.Adapter.PageRecyclerViewAdapter;
+import madsoft.com.form.Application.MyApplication;
+import madsoft.com.form.DataBase.PageDao;
+import madsoft.com.form.DataBase.entity.Page;
+import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.R;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Даниил on 27.09.2018.
  */
 
-public class DownloadedFragment extends Fragment implements Filterable{
-    static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
+public class DownloadedFragment extends Fragment implements Filterable, ArticleRecyclerViewAdapter.onClickListener {
 
-    private static  String LIST = "linkTextList";
     private static DownloadedFragment instance;
-    private CacheSystem cacheSystem;
     private SwipeRefreshLayout swipeRefreshLayout;
-    public Elements links; // сохраняется в Assets
-    public static ArrayList<String> linkTextList;
-    private ArrayAdapter<String> adapter;
-    private ListView listView;
+    private RecyclerView recyclerView;
+    private PageDao downloadedPageDao;
+    private PageRecyclerViewAdapter downloadsAdapter;
+    private Category category;
 
 
 
@@ -52,71 +51,25 @@ public class DownloadedFragment extends Fragment implements Filterable{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_downloaded, null);
-
-        cacheSystem = new CacheSystem(getActivity());
-
-        listView = view.findViewById(R.id.d_list_view);
-
-        linkTextList = new ArrayList<>();
-
-
-        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener(){
-
-            @Override
-            public void onItemClick(AdapterView<?> lisView, View view, int position, long id) {
-
-                String linkHref;
-                String filename;
-
-                try {
-
-                        linkHref = null;
-                        filename = lisView.getItemAtPosition(position).toString();
-
-
-                    Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
-                    intent.putExtra(Assets.CONTENT, linkHref);
-                    intent.putExtra(Assets.FILENAME, filename);
-                    startActivity(intent);
-                }catch (Exception e){ Toast toast = Toast.makeText(getActivity(),
-                        e.toString(),
-                        Toast.LENGTH_SHORT);
-                    toast.show(); }
-
-            }
-        };
-
-
-
-        listView.setOnItemClickListener(itemClickListener);
-
+        recyclerView = view.findViewById(R.id.recycler_view_downloaded);
         swipeRefreshLayout = view.findViewById(R.id.d_swipe_refresh);
-
+        downloadsAdapter = new PageRecyclerViewAdapter(this);
+        recyclerView.setAdapter(downloadsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 download();
-
             }
         });
-
-        adapter = new ArrayAdapter<>(
-                getActivity(),
-                R.layout.list_item,
-                R.id.category_text,
-                linkTextList);
-
         download();
-
-
         return view;
     }
 
     private void download(){
 
         swipeRefreshLayout.setRefreshing(true);
-        new loadCahce().execute();
+        new loadCache().execute();
 
     }
 
@@ -125,13 +78,28 @@ public class DownloadedFragment extends Fragment implements Filterable{
 
     }
 
+    @Override
+    public void onItemClick(int position) {
+       Page page = downloadsAdapter.getItem(position);
 
-    public class loadCahce extends AsyncTask<String, Void, Boolean> {
+        Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
+        intent.setAction(" ");
+        intent.putExtra(ArticleWp.LINK, page.path);
+        intent.putExtra(ArticleWp.TITLE, page.path);
+        intent.putExtra(SlidingThemeActivity.READ_MODE, true);//TODO если true то работать с локальным файлом
+        startActivity(intent);
+    }
+
+
+    public class loadCache extends AsyncTask<String, Void, Boolean> {
+        List<Page> cachedPages;
         @Override
         protected  Boolean doInBackground(String ... arg){
 
-            linkTextList = cacheSystem.loadListCachedFiles();
-
+            downloadedPageDao = MyApplication.getDatabase().pageDao();
+            cachedPages = downloadedPageDao.getAll();
+            if(cachedPages == null)
+                return false;
             return true;
 
         }
@@ -140,9 +108,11 @@ public class DownloadedFragment extends Fragment implements Filterable{
         protected void onPostExecute(Boolean downloaded){
 
             swipeRefreshLayout.setRefreshing(false);
-            adapter.clear();
-            adapter.addAll(linkTextList);
-            listView.setAdapter(adapter);
+            if(downloaded)
+                downloadsAdapter.appendList(cachedPages);
+            else
+                Log.e("Error", "Couldn't load cache");
+
 
         }
 

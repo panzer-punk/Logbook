@@ -28,6 +28,8 @@ import android.widget.TextView;
 
 public class SlidingThemeActivity extends AppCompatActivity{
 
+    public static String READ_MODE = "READ_MODE";
+
     private Connector connector;
     private WebViewFragment articleFragment;
     private String href;
@@ -36,6 +38,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
     private String filename;
     private TextView title;
     private TextView content;
+    private boolean readMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 default:
                     filename = intent.getStringExtra(ArticleWp.TITLE);
                     href = intent.getStringExtra(ArticleWp.LINK);
+                    readMode = intent.getBooleanExtra(READ_MODE, false);
         }
 
 
@@ -67,7 +71,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
 
         setTitle(filename);
 
-        articleFragment = new WebViewFragment(this, href);
+        articleFragment = new WebViewFragment(this, href, readMode);
         replaceFragment(articleFragment);
 
 

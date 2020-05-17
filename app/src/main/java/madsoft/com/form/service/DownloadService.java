@@ -98,13 +98,14 @@ public class DownloadService extends Service {
                 Elements scripts = head.getElementsByTag("script");
                 scripts.remove();
 
-                final File f = File.createTempFile("page", ".html", dir);
+                final File f = new File(dir.getAbsolutePath() + "/"+ mDoc.title() + ".html");
                 Page page = new Page();
                 page.modified = "";//TODO передать modified из ArticleWp
+                //TODO передать параметр category id
                 page.path = f.getAbsolutePath();
                 servicePageDao.insert(page);
                FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
-              // Log.d("File path", f.getAbsolutePath());
+               Log.d("File path", f.getAbsolutePath());
 
 
             } catch (IOException e) {

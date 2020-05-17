@@ -1,5 +1,6 @@
 package madsoft.com.form.Fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,12 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.File;
+import java.io.IOException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,22 +23,31 @@ import madsoft.com.form.R;
 /**/
 
 public class WebViewFragment extends Fragment implements AppWebClientCallback {
+    loadLocalFile loader;
     @Override
     public void update(String query) {
 
+        if(!readMode)
         webView.loadUrl(query+"?d=android");
+        else {
 
+        loader = new loadLocalFile(webView);
+        loader.execute(query);
+
+        }
     }
 
 
     private WebView webView;
+    private boolean readMode;
     private SlidingThemeActivity parent;
     private String url;
     private AppWebClient fragmentWebClient;
 
-    public WebViewFragment(SlidingThemeActivity parent, String url) {
+    public WebViewFragment(SlidingThemeActivity parent, String url, boolean localFile) {
         this.parent = parent;
         this.url = url;
+        readMode = localFile;
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,7 +114,34 @@ class AppWebClient extends WebViewClient{
 
     }
 
+
+
 }
+class loadLocalFile extends AsyncTask<String, Integer, String>{
+    private WebView webView;
+
+    public loadLocalFile(WebView webView) {
+        this.webView = webView;
+    }
+
+    @Override
+    protected String doInBackground(String... strings){
+        File f = new File(strings[0]);
+        Document document = null;
+        try {
+            document = Jsoup.parse(f, "UTF-8", "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return document.outerHtml();
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+        webView.loadDataWithBaseURL("file:///android_assets/", s,"text/html", "UTF-8", null);
+    }
+}
+
 interface AppWebClientCallback{
     public void update(String query);
 }
