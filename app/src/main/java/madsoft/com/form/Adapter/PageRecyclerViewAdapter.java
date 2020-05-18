@@ -31,6 +31,20 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
         this.onClickListener = onClickListener;
     }
 
+    public static ArticleWp pageToArticle(Page page){
+
+        ArticleWp articleWp = new ArticleWp();
+        Title title = new Title();
+        title.setRendered(page.title);
+        articleWp.setId(page.id);
+        articleWp.setLink(page.path);
+        articleWp.setJetpackFeaturedMediaUrl(null);
+        articleWp.setModified(page.modified);
+        articleWp.setTitle(title);
+        return articleWp;
+
+    }
+
     public class PageRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView imageView;

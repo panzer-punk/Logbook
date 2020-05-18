@@ -138,10 +138,13 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     public void onItemClick(int position) {
         ArticleWp article = articleRecyclerViewAdapter.getItem(position);
 
+        Bundle themeActivityBundle = new Bundle();
+        themeActivityBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, article);
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.setAction(" ");
-        intent.putExtra(Assets.LINK, article.getLink());
-        intent.putExtra(Assets.TITLE, article.getTitle().getRendered());
+        intent.putExtra(DownloadService.BUNDLE_KEY, themeActivityBundle);
+       // intent.putExtra(Assets.LINK, article.getLink());
+      //  intent.putExtra(Assets.TITLE, article.getTitle().getRendered());
         startActivity(intent);
 
     }
