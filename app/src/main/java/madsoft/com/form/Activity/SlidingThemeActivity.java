@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import madsoft.com.form.Assets;
 import madsoft.com.form.FileSystem.CacheSystem;
 import madsoft.com.form.Fragment.QuizFragment;
 import madsoft.com.form.Fragment.WebViewFragment;
@@ -60,8 +61,8 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 filename = intent.getData().getPath().replace(getString(R.string.deeplink_prefix), " ");
                 break;
                 default:
-                    filename = intent.getStringExtra(ArticleWp.TITLE);
-                    href = intent.getStringExtra(ArticleWp.LINK);
+                    filename = intent.getStringExtra(Assets.TITLE);
+                    href = intent.getStringExtra(Assets.LINK);
                     readMode = intent.getBooleanExtra(READ_MODE, false);
         }
 

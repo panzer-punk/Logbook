@@ -5,6 +5,7 @@ import android.app.DownloadManager;
 import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -36,6 +37,7 @@ import java.util.concurrent.SynchronousQueue;
 import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.DataBase.PageDao;
 import madsoft.com.form.DataBase.entity.Page;
+import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.Network.WpApi.WpApi;
 import madsoft.com.form.R;
@@ -46,10 +48,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DownloadService extends Service {
 
-    public static String URL_INTENT_KEY = "URL";
+  //  public static String URL_INTENT_KEY = "URL";
     public static String HOST_URL = "https://sanctumlogos.info/";
-    public static String MODIFIED_KEY = "MODIFIED";
-
+  //  public static String MODIFIED_KEY = "MODIFIED";
+    public static String BUNDLE_KEY = "BUNDLE";
+    public static String BUNDLE_MESSAGE_KEY = "BUNDLE_MESSAGE";
 
 
    // private Queue<String> downloadUrls;
@@ -72,6 +75,8 @@ public class DownloadService extends Service {
         @Override
         public void handleMessage(Message msg) {
 
+            ArticleWp currentArticle = (ArticleWp) msg.obj;
+
             File dir = getApplicationContext().getFilesDir();
             String path = dir.getAbsolutePath();
             if(!dir.exists()) {
@@ -79,7 +84,7 @@ public class DownloadService extends Service {
             }
 
             try {
-                String murl = new String(msg.obj.toString().getBytes(),UTF_8);
+                String murl = new String(currentArticle.getLink().getBytes(),UTF_8);
                 Log.i("URL", murl);
 
                 mDoc = Jsoup.connect(murl + "?d=android")
@@ -100,9 +105,12 @@ public class DownloadService extends Service {
 
                 final File f = new File(dir.getAbsolutePath() + "/"+ mDoc.title() + ".html");
                 Page page = new Page();
-                page.modified = "";//TODO передать modified из ArticleWp
-                //TODO передать параметр category id
+                page.modified = currentArticle.getModified();
+                page.id = currentArticle.getId();
                 page.path = f.getAbsolutePath();
+                page.shareLink = currentArticle.getLink();
+                page.title = currentArticle.getTitle().getRendered();
+                page.imagePath = currentArticle.getJetpackFeaturedMediaUrl();//TODO передать путь к картинке локальной!
                 if(!f.exists()) {
                     FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
                     servicePageDao.insert(page);
@@ -119,49 +127,6 @@ public class DownloadService extends Service {
         }
     }
 
-    private void writeToFileFromUrl(String surl, String filename, String extension){
-        try {
-        URL url = new URL(surl);
-
-        URLConnection ucon = url.openConnection();
-
-        /*
-         * Define InputStreams to read from the URLConnection.
-         */
-        InputStream is = ucon.getInputStream();
-        BufferedInputStream bis = new BufferedInputStream(is);
-
-        /*
-         * Read bytes to the Buffer until there is nothing more to read(-1).
-         */
-     /*  baf = new ByteArrayBuffer(5000);
-        int current = 0;
-        while ((current = bis.read()) != -1) {
-            baf.append((byte) current);
-        }
-
-
-         Convert the Bytes read to a String.
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(baf.toByteArray());
-        fos.flush();
-        fos.close();
-
-            FileOutputStream fos = new FileOutputStream(new File(Environment.getDownloadCacheDirectory(), filename+extension));
-
-*/
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-    private void writeToFile(String content){
-
-    }
 
     public void onCreate() {
        // downloadUrls = new SynchronousQueue<>();
@@ -177,12 +142,14 @@ public class DownloadService extends Service {
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
-        String url = intent.getStringExtra(URL_INTENT_KEY);
+        Bundle serviceBundle = intent.getBundleExtra(BUNDLE_KEY);
+        ArticleWp articleWp = (ArticleWp) serviceBundle.get(BUNDLE_MESSAGE_KEY);
+       // String url = intent.getStringExtra(URL_INTENT_KEY);
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
         Message msg = downloadHandler.obtainMessage();
         msg.arg1 = startId;
-        msg.obj = url;
+        msg.obj = articleWp;
         downloadHandler.sendMessage(msg);
         // If we get killed, after returning from here, restart
         return START_STICKY;

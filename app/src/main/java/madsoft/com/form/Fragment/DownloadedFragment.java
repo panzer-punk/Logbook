@@ -11,6 +11,7 @@ import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Adapter.PageRecyclerViewAdapter;
 import madsoft.com.form.Application.MyApplication;
+import madsoft.com.form.Assets;
 import madsoft.com.form.DataBase.PageDao;
 import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Network.Objects.ArticleWp;
@@ -84,8 +85,8 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.setAction(" ");
-        intent.putExtra(ArticleWp.LINK, page.path);
-        intent.putExtra(ArticleWp.TITLE, page.path);
+        intent.putExtra(Assets.LINK, page.path);
+        intent.putExtra(Assets.TITLE, page.title);
         intent.putExtra(SlidingThemeActivity.READ_MODE, true);//TODO если true то работать с локальным файлом
         startActivity(intent);
     }

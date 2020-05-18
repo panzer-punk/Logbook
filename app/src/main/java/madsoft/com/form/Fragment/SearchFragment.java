@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Adapter.SearchResultsAdapter;
+import madsoft.com.form.Assets;
 import madsoft.com.form.FileSystem.CacheSystem;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.ArticleWpListItem;
@@ -119,8 +120,8 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.setAction(" ");
-        intent.putExtra(ArticleWp.LINK, listItem.getUrl());
-        intent.putExtra(ArticleWp.TITLE, listItem.getTitle());
+        intent.putExtra(Assets.LINK, listItem.getUrl());
+        intent.putExtra(Assets.TITLE, listItem.getTitle());
         startActivity(intent);
     }
 

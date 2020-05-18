@@ -20,6 +20,7 @@ import de.mateware.snacky.Snacky;
 import madsoft.com.form.Activity.MainActivity;
 import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
+import madsoft.com.form.Assets;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
@@ -139,8 +140,8 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.setAction(" ");
-        intent.putExtra(ArticleWp.LINK, article.getLink());
-        intent.putExtra(ArticleWp.TITLE, article.getTitle().getRendered());
+        intent.putExtra(Assets.LINK, article.getLink());
+        intent.putExtra(Assets.TITLE, article.getTitle().getRendered());
         startActivity(intent);
 
     }
@@ -234,9 +235,12 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     }
 
     public void downloadArticle(){
+        Bundle serviceBundle = new Bundle();
+        serviceBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, downloadUrl);
           Intent intent = new Intent(getActivity(), DownloadService.class);
-          intent.putExtra(DownloadService.URL_INTENT_KEY, downloadUrl.getLink());
-          intent.putExtra(DownloadService.MODIFIED_KEY, downloadUrl.getModified());
+          intent.putExtra(DownloadService.BUNDLE_KEY, serviceBundle);
+       //   intent.putExtra(DownloadService.URL_INTENT_KEY, downloadUrl.getLink());
+       //   intent.putExtra(DownloadService.MODIFIED_KEY, downloadUrl.getModified());
           getActivity().startService(intent);
     }
 

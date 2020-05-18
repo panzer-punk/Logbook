@@ -2,9 +2,10 @@ package madsoft.com.form.Network.Objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ArticleWp {
-    public static String LINK = "Link";
-    public static String TITLE = "Title";
+import java.io.Serializable;
+
+public class ArticleWp implements Serializable {
+
     @SerializedName("id")
     @Expose
     private Integer id;

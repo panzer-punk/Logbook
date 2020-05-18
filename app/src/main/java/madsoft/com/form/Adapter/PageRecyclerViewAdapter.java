@@ -43,12 +43,12 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
 
             ArticleWp articleWp = new ArticleWp();
             Title title = new Title();
-            title.setRendered("TODO");
+            title.setRendered(page.title);
             articleWp.setId(page.id);
-            articleWp.setLink(page.path);//TODO хранить ссылку на исходник записи для действия поделиться
+            articleWp.setLink(page.shareLink);
             articleWp.setJetpackFeaturedMediaUrl(null);
             articleWp.setModified(page.modified);
-            articleWp.setTitle(title);//TODO добавить заголовок в бд
+            articleWp.setTitle(title);
             return articleWp;
 
         }
@@ -87,7 +87,7 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
 
         public void bind(Page page){
 
-            titleTextView.setText(page.path);//TODO добавить title в бд
+            titleTextView.setText(page.title);
             descriptionTextView.setText(page.modified);
             imageView.setImageResource(R.drawable.placeholder);//TODO сохранять изображения в кэш
 

@@ -25,7 +25,7 @@ public class SettingsActivity extends Activity {
 
         cacheSystem = new CacheSystem(this);
 
-        Log.d("CACHESYS", String.valueOf(cacheSystem.checkFile(Assets.FLAG_D)));
+      //  Log.d("CACHESYS", String.valueOf(cacheSystem.checkFile(Assets.FLAG_D)));
 
     }
 
