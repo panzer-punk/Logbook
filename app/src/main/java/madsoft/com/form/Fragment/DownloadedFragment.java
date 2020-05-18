@@ -108,8 +108,10 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         protected void onPostExecute(Boolean downloaded){
 
             swipeRefreshLayout.setRefreshing(false);
-            if(downloaded)
+            if(downloaded) {
+                downloadsAdapter.clear();
                 downloadsAdapter.appendList(cachedPages);
+            }
             else
                 Log.e("Error", "Couldn't load cache");
 

@@ -103,8 +103,10 @@ public class DownloadService extends Service {
                 page.modified = "";//TODO передать modified из ArticleWp
                 //TODO передать параметр category id
                 page.path = f.getAbsolutePath();
-                servicePageDao.insert(page);
-               FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
+                if(!f.exists()) {
+                    FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
+                    servicePageDao.insert(page);
+                }//TODO обновоить уже созданый файл
                Log.d("File path", f.getAbsolutePath());
 
 
