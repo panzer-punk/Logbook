@@ -22,6 +22,7 @@ import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.R;
 import madsoft.com.form.service.DownloadService;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -42,7 +43,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
 
     private Connector connector;
     private WebViewFragment articleFragment;
-    private String href;
+    private String href, shareLink;
     private Toolbar toolbar;
     private CacheSystem cacheSystem;
     private String filename;
@@ -78,6 +79,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
                     filename = articleWp.getTitle().getRendered();
                     href = articleWp.getLink();
                     readMode = intent.getBooleanExtra(READ_MODE, false);
+                    shareLink = intent.getStringExtra(Assets.LINK);
         }
 
 
@@ -121,6 +123,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 share();
                 return true;
             case R.id.action_download:
+                if(!readMode)
                askWritePermission();
                 return true;
             default:
@@ -184,7 +187,12 @@ public class SlidingThemeActivity extends AppCompatActivity{
     private void share() {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
+
+        if(shareLink == null)
         sendIntent.putExtra(Intent.EXTRA_TEXT, href);
+        else
+            sendIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
+        
         sendIntent.setType("text/plain");
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);

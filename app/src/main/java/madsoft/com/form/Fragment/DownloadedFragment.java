@@ -89,6 +89,7 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         intent.setAction(" ");
         intent.putExtra(DownloadService.BUNDLE_KEY, themeActivityBundle);
         intent.putExtra(SlidingThemeActivity.READ_MODE, true);//TODO если true то работать с локальным файлом
+        intent.putExtra(Assets.LINK, page.shareLink);
         startActivity(intent);
     }
 
