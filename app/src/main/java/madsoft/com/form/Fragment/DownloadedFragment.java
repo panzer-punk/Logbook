@@ -55,7 +55,7 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         View view = inflater.inflate(R.layout.fragment_downloaded, null);
         recyclerView = view.findViewById(R.id.recycler_view_downloaded);
         swipeRefreshLayout = view.findViewById(R.id.d_swipe_refresh);
-        downloadsAdapter = new PageRecyclerViewAdapter(this);
+        downloadsAdapter = new PageRecyclerViewAdapter(this, getString(R.string.action_delete));
         recyclerView.setAdapter(downloadsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

@@ -1,5 +1,6 @@
 package madsoft.com.form.Adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,11 +8,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Title;
@@ -22,13 +25,15 @@ import retrofit2.Response;
 public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
 
     private ArticleRecyclerViewAdapter.onClickListener onClickListener;
+    private String deleteBtnText;
 
     {
         list = new ArrayList<>();
     }
 
-    public PageRecyclerViewAdapter(ArticleRecyclerViewAdapter.onClickListener onClickListener) {
+    public PageRecyclerViewAdapter(ArticleRecyclerViewAdapter.onClickListener onClickListener, String deleteBtnText) {
         this.onClickListener = onClickListener;
+        this.deleteBtnText = deleteBtnText;
     }
 
     public static ArticleWp pageToArticle(Page page){
@@ -67,7 +72,7 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
 
         }
 
-        public PageRecyclerViewHolder(@NonNull View itemView, ArticleRecyclerViewAdapter.onClickListener listener) {
+        public PageRecyclerViewHolder(@NonNull View itemView, final ArticleRecyclerViewAdapter.onClickListener listener) {
             super(itemView);
             onClickListener = listener;
             imageView = itemView.findViewById(R.id.card_image);
@@ -75,6 +80,8 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
             descriptionTextView = itemView.findViewById(R.id.card_desc);
             share = itemView.findViewById(R.id.button_share);
             download = itemView.findViewById(R.id.button_download);
+            download.setText(deleteBtnText);
+            download.setTextColor(Color.RED);
             itemView.setOnClickListener(this);
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,7 +96,19 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
             download.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   //TODO удалить запись
+                    final int position = getAdapterPosition();
+                    final Page deletePage = list.get(position);
+                    list.remove(position);
+                    notifyDataSetChanged();
+                  Runnable delete =  new Runnable() {
+                        @Override
+                        public void run() {
+                            MyApplication.getDatabase().pageDao().delete(deletePage);//TODO уведомить пользователя
+                            File f = new File(deletePage.path);
+                            f.delete();
+                        }
+                    };
+                   new Thread(delete).start();
                 }
             });
         }
