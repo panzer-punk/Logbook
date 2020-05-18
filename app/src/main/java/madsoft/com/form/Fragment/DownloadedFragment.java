@@ -31,7 +31,7 @@ import java.util.List;
  * Created by Даниил on 27.09.2018.
  */
 
-public class DownloadedFragment extends Fragment implements Filterable, ArticleRecyclerViewAdapter.onClickListener {
+public class DownloadedFragment extends Fragment implements Filterable, ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.IntentCallback {
 
     private static DownloadedFragment instance;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -57,6 +57,7 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         swipeRefreshLayout = view.findViewById(R.id.d_swipe_refresh);
         downloadsAdapter = new PageRecyclerViewAdapter(this, getString(R.string.action_delete));
         recyclerView.setAdapter(downloadsAdapter);
+        downloadsAdapter.setIntentCallback(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -91,6 +92,23 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         intent.putExtra(SlidingThemeActivity.READ_MODE, true);//TODO если true то работать с локальным файлом
         intent.putExtra(Assets.LINK, page.shareLink);
         startActivity(intent);
+    }
+
+    @Override
+    public void onShareArticle(ArticleWp article) {
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getLink());
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
+    @Override
+    public void onDownloadArticle(ArticleWp article) {
+//TODO удалять записи здесь!!!
     }
 
 

@@ -192,7 +192,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
         sendIntent.putExtra(Intent.EXTRA_TEXT, href);
         else
             sendIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
-        
+
         sendIntent.setType("text/plain");
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);
