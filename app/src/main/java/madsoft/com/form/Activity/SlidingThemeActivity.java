@@ -33,6 +33,7 @@ import android.view.View;
 
 import android.webkit.JavascriptInterface;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static madsoft.com.form.Activity.MainActivity.WRITE_FILE_PERMISSION;
 
@@ -76,8 +77,13 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 filename = intent.getData().getPath().replace(getString(R.string.deeplink_prefix), " ");//TODO кэширование страниц которые открыли через браузер
                 break;
                 default:
-                    filename = articleWp.getTitle().getRendered();
-                    href = articleWp.getLink();
+                    if(articleWp != null) {
+                        filename = articleWp.getTitle().getRendered();
+                        href = articleWp.getLink();
+                    }else {
+                        filename = intent.getStringExtra(Assets.TITLE);
+                        href = intent.getStringExtra(Assets.LINK);
+                    }
                     readMode = intent.getBooleanExtra(READ_MODE, false);
                     shareLink = intent.getStringExtra(Assets.LINK);
         }
@@ -134,14 +140,14 @@ public class SlidingThemeActivity extends AppCompatActivity{
     private void download() {//TODO Загружка файла через Service
 
         if (articleWp == null){
+            Toast.makeText(this, R.string.download_error_not_supported, Toast.LENGTH_SHORT)
+                    .show();
             return;
     }
         Bundle serviceBundle = new Bundle();
         serviceBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, articleWp);
         Intent intent = new Intent(this, DownloadService.class);
         intent.putExtra(DownloadService.BUNDLE_KEY, serviceBundle);
-        //   intent.putExtra(DownloadService.URL_INTENT_KEY, downloadUrl.getLink());
-        //   intent.putExtra(DownloadService.MODIFIED_KEY, downloadUrl.getModified());
         startService(intent);
 
     }
