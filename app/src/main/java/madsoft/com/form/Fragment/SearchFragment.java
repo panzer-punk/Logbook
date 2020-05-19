@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import de.mateware.snacky.Snacky;
+import madsoft.com.form.Activity.MainActivity;
 import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Adapter.SearchResultsAdapter;
@@ -18,6 +20,7 @@ import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.ArticleWpListItem;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
+import madsoft.com.form.Network.reciever.NetworkConnectionReceiver;
 import madsoft.com.form.R;
 
 import android.view.KeyEvent;
@@ -38,8 +41,11 @@ import java.util.ArrayList;
  * Created by Даниил on 27.09.2018.
  */
 
-public class SearchFragment extends Fragment implements Filterable, ArticleRecyclerViewAdapter.onClickListener
-,ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback{
+public class SearchFragment extends Fragment
+        implements Filterable,
+        ArticleRecyclerViewAdapter.onClickListener,
+        ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback,
+        NetworkConnectionReceiver.Updatable {
 
     private static SearchFragment instance;
     private RecyclerView searchRecyclerView;
@@ -100,11 +106,13 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
     }
 
     private void search(String query){
-        searchSwipeRefreshLayout.setRefreshing(true);
-        NetworkService networkService = NetworkService.getInstance();
-        networkService.getWpApi().searchArticleWpCall(query).enqueue(searchFragmentResultsAdapter);
-        searchRecyclerView.setFocusable(true);
-    }
+        if(!query.isEmpty()) {
+            searchSwipeRefreshLayout.setRefreshing(true);
+            NetworkService networkService = NetworkService.getInstance();
+            networkService.getWpApi().searchArticleWpCall(query).enqueue(searchFragmentResultsAdapter);
+            searchRecyclerView.setFocusable(true);
+        }
+        }
 
     @Override
     public void applyFilter(Category category) {//Обработать запрос невозможно из-за такого устройства WP API
@@ -113,6 +121,8 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
       //  search(query);
 
     }
+
+
 
     @Override
     public void onItemClick(int position) {
@@ -132,6 +142,22 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
 
     @Override
     public void onFailure() {
+        searchSwipeRefreshLayout.setRefreshing(false);
 
+        Snacky.builder()
+                .setView(getView())
+                .setMaxLines(2)
+                .setTextSize(20)
+                .setDuration(Snacky.LENGTH_SHORT)
+                .setText(R.string.articlesLoadFail)
+                .error()
+                .show();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.checkConnection(this);
+    }
+
+    @Override
+    public void onNetworkConnection() {
+        search(searchEditText.getText().toString());
     }
 }

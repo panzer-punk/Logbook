@@ -3,6 +3,7 @@ package madsoft.com.form.Activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -30,6 +31,7 @@ import madsoft.com.form.Fragment.OnScrollNextPageListener;
 import madsoft.com.form.Fragment.PageFragment;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
+import madsoft.com.form.Network.reciever.NetworkConnectionReceiver;
 import madsoft.com.form.R;
 import madsoft.com.form.Fragment.SearchFragment;
 import madsoft.com.form.service.DownloadService;
@@ -37,9 +39,11 @@ import madsoft.com.form.service.DownloadService;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity implements ArticleRecyclerViewAdapter.onClickListener {
+public class MainActivity extends AppCompatActivity
+        implements ArticleRecyclerViewAdapter.onClickListener, NetworkConnectionReceiver.Updatable{
     private Toolbar toolbar;
     private DownloadedFragment downloadedFragment;
     private BackdropContainer backdropContainer;
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     private FloatingActionButton fab;
     private CategoriesRecyclerViewAdapter categoriesRecyclerViewAdapter;
     private  MyPagerAdapter pagerAdapter;
+    private    NetworkConnectionReceiver receiver;
     private OnScrollNextPageListener onScrollListener;
     public static final int WRITE_FILE_PERMISSION = 0;
 
@@ -86,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-
+        receiver = new NetworkConnectionReceiver(this);
         if(savedInstanceState != null){
             category = (Category) savedInstanceState.getSerializable(Category.BUNDLE_KEY);
         }else
@@ -193,11 +198,15 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
 
         bottomNavigationView.getMenu().getItem(1).setChecked(true);
         pager.setCurrentItem(1);
+      loadCategories();
+
+    }
+
+    public void loadCategories(){
         networkService
                 .getWpApi()
                 .getCategoriesWpCall()
                 .enqueue(categoriesRecyclerViewAdapter);
-
     }
 
 
@@ -223,6 +232,21 @@ public class MainActivity extends AppCompatActivity implements ArticleRecyclerVi
 
 
 
+    }
+
+    public void checkConnection(NetworkConnectionReceiver.Updatable updatable){
+        if(!receiver.isOrderedBroadcast())
+          registerReceiver(receiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+
+          receiver.subscribe(updatable);
+    }
+
+    @Override
+    public void onNetworkConnection() {
+
+        Toast.makeText(this, R.string.loading, Toast.LENGTH_LONG).show();
+        loadCategories();
+        unregisterReceiver(receiver);
     }
 
     public static class MyPagerAdapter extends FragmentPagerAdapter {

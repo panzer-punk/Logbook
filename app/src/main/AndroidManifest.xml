@@ -2,53 +2,63 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="madsoft.com.form">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
     <application
-        android:allowBackup="true"
         android:name=".Application.MyApplication"
+        android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".service.DownloadService">
-
-        </service>
-        <activity android:name=".Activity.MainActivity"
+        <activity
+            android:name=".Activity.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Launcher">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-       <activity
+
+        <activity
             android:name=".Activity.SettingsActivity"
             android:parentActivityName=".Activity.MainActivity" />
+
         <activity
             android:name=".Activity.AboutActivity"
             android:parentActivityName=".Activity.MainActivity" />
-        <activity android:name=".Activity.SlidingThemeActivity"
+        <activity
+            android:name=".Activity.SlidingThemeActivity"
             android:excludeFromRecents="true"
-            android:taskAffinity=""
-            android:parentActivityName=".Activity.MainActivity">
+            android:parentActivityName=".Activity.MainActivity"
+            android:taskAffinity="">
             <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW" />
 
-            <category android:name="android.intent.category.BROWSABLE"/>
-            <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
-            <data android:scheme="https"
-                android:host="@string/deeplink_host"
-                android:pathPrefix="@string/deeplink_prefix" />
-        </intent-filter>
+                <data
+                    android:host="@string/deeplink_host"
+                    android:pathPrefix="@string/deeplink_prefix"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
+        <receiver
+            android:name=".Network.reciever.NetworkConnectionReceiver"
+            android:enabled="false"
+            android:exported="false">
+            <intent-filter>
+            <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".service.DownloadService"></service>
     </application>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

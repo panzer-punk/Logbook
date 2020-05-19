@@ -3,8 +3,11 @@ package madsoft.com.form.Fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.Network;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,7 @@ import madsoft.com.form.Assets;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
+import madsoft.com.form.Network.reciever.NetworkConnectionReceiver;
 import madsoft.com.form.R;
 import madsoft.com.form.service.DownloadService;
 
@@ -31,6 +35,8 @@ import madsoft.com.form.service.DownloadService;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.sql.Connection;
 
 import static madsoft.com.form.Activity.MainActivity.WRITE_FILE_PERMISSION;
 
@@ -41,7 +47,8 @@ import static madsoft.com.form.Activity.MainActivity.WRITE_FILE_PERMISSION;
 public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener,
         ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback,
         ArticleRecyclerViewAdapter.IntentCallback,
-        Filterable{
+        Filterable,
+        NetworkConnectionReceiver.Updatable {
 
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -164,11 +171,16 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
             swipeRefreshLayout.setRefreshing(false);
     }
 
+
     @Override
     public void onFailure() {
         //проблемы при обновлнии адаптера
         stopRefreshLayout();
         buildSnack(3);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.checkConnection(this);
+      //  NetworkConnectionReceiver receiver = new NetworkConnectionReceiver((NetworkConnectionReceiver.Updatable) getActivity());
+     //   getActivity().registerReceiver(receiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
     private void buildSnack(int id){
@@ -253,5 +265,10 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         this.category = category;
         articleRecyclerViewAdapter.setArticlesCategory(category);
       download();
+    }
+
+    @Override
+    public void onNetworkConnection() {
+        download();
     }
 }
