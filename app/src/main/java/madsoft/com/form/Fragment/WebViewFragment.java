@@ -37,6 +37,11 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
         }
     }
 
+    @Override
+    public void onLoadFinished() {
+        parent.loadFinished();
+    }
+
 
     private WebView webView;
     private boolean readMode;
@@ -92,6 +97,11 @@ class AppWebClient extends WebViewClient{
     this.clientCallback = clientCallback;
     }
 
+    @Override
+    public void onPageFinished(WebView view, String url) {
+        // do your stuff here
+    }
+
     private void handleLink(String url){
        /* if( url.contains(WEB_CLIENT_BASE_URL) ){
             if(url.contains("/category/")){
@@ -143,5 +153,6 @@ class loadLocalFile extends AsyncTask<String, Integer, String>{
 }
 
 interface AppWebClientCallback{
-    public void update(String query);
+     void update(String query);
+     void onLoadFinished();
 }

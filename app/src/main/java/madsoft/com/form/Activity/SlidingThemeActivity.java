@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.webkit.JavascriptInterface;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +43,11 @@ public class SlidingThemeActivity extends AppCompatActivity{
 
     public static String READ_MODE = "READ_MODE";
 
-    private Connector connector;
+
     private WebViewFragment articleFragment;
     private String href, shareLink;
     private Toolbar toolbar;
-    private CacheSystem cacheSystem;
+    private ProgressBar progressBar;
     private String filename;
     private TextView title;
     private TextView content;
@@ -90,7 +91,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
 
 
 
-        cacheSystem = new CacheSystem(this);
+
 
         setTitle(filename);
 
@@ -107,9 +108,9 @@ public class SlidingThemeActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        progressBar = findViewById(R.id.theme_progressbar);
 
 
-        connector = new Connector();
 
 
     }
@@ -254,6 +255,9 @@ public class SlidingThemeActivity extends AppCompatActivity{
         transaction.commit();
     }
 
+    public void loadFinished() {
+        progressBar.setVisibility(View.GONE);
+    }
 }
 
 

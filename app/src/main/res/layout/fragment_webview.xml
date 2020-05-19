@@ -4,7 +4,7 @@
     <WebView
         android:id="@+id/activity_theme_webView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="?android:attr/actionBarSize"
         android:isScrollContainer="false"/>
 </RelativeLayout>
