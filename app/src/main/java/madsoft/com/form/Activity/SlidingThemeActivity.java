@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,7 +13,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.Assets;
+import madsoft.com.form.DataBase.PageDao;
+import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.FileSystem.CacheSystem;
 import madsoft.com.form.Fragment.PageFragment;
 import madsoft.com.form.Fragment.QuizFragment;
@@ -36,6 +40,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static madsoft.com.form.Activity.MainActivity.WRITE_FILE_PERMISSION;
 
 
@@ -52,6 +60,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
     private TextView title;
     private TextView content;
     private  ArticleWp articleWp;
+    private UpdateArticleInCache updateArticleInCache;
     private boolean readMode;
 
     @Override
@@ -111,9 +120,14 @@ public class SlidingThemeActivity extends AppCompatActivity{
         progressBar = findViewById(R.id.theme_progressbar);
 
 
-
+       if(articleWp != null) {
+           updateArticleInCache = new UpdateArticleInCache();
+           final int id = articleWp.getId();
+           updateArticleInCache.execute(id, -1);
+       }
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -258,7 +272,73 @@ public class SlidingThemeActivity extends AppCompatActivity{
     public void loadFinished() {
         progressBar.setVisibility(View.GONE);
     }
-}
 
+
+    class UpdateArticleInCache extends AsyncTask<Integer, String, Integer>{
+        private final int updateCode = 1,
+                loadCode = 0,
+                errorCode = -1,
+                upToDateCode = 2,
+                noToastCode = 3;
+
+        @Override
+        protected Integer doInBackground(Integer... id) {
+            if(readMode) {
+                return noToastCode;
+            }
+            PageDao dao = MyApplication.getDatabase().pageDao();
+            Page page = dao.loadById(id[0]);
+            if (page == null){
+                if(id[1] > 0) {
+                    return loadCode;
+                }
+                return noToastCode;
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String snewDate = articleWp.getModified().replace('T', ' ');
+            String soldDate = page.modified.replace('T', ' ');
+            try {
+                Date newDate = dateFormat.parse(snewDate);
+                Date oldDate = dateFormat.parse(soldDate);
+                if(newDate.compareTo(oldDate) > 0){
+                    return updateCode;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return errorCode;
+            }
+
+
+
+            return upToDateCode;
+        }
+
+        @Override
+        protected void onPostExecute(Integer code) {
+
+            switch (code){
+                case loadCode:
+                    download();
+                    break;
+                case updateCode:
+                    Toast.makeText(getApplicationContext(), R.string.cache_update, Toast.LENGTH_SHORT)
+                            .show();
+                    download();
+                    break;
+                case errorCode:
+                    Toast.makeText(getApplicationContext(), R.string.error_load, Toast.LENGTH_SHORT)
+                            .show();
+                    break;
+                case upToDateCode:
+                    Toast.makeText(getApplicationContext(), R.string.cache_uptodate, Toast.LENGTH_SHORT)
+                            .show();
+                    break;
+                case noToastCode:
+                    break;
+            }
+        }
+    }
+
+}
 
 

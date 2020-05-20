@@ -13,7 +13,7 @@ public class NetworkService {
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
+                .build();//TODO написать свой конвертер даты?
 
     }
 

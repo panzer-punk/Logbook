@@ -111,10 +111,10 @@ public class DownloadService extends Service {
                 page.shareLink = currentArticle.getLink();
                 page.title = currentArticle.getTitle().getRendered();
                 page.imagePath = currentArticle.getJetpackFeaturedMediaUrl();//TODO передать путь к картинке локальной!
-                if(!f.exists()) {
+               // if(!f.exists()) {
                     FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
                     servicePageDao.insert(page);
-                }//TODO обновоить уже созданый файл
+              //  }//TODO обновоить уже созданый файл
                Log.d("File path", f.getAbsolutePath());
 
 
