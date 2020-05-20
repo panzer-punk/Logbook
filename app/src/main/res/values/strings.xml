@@ -21,6 +21,6 @@
     <string name="cache_update">Обновляю кэш записи</string>
     <string name="cache_uptodate">Уже сохранена последняя версия</string>
     <string name="error_load">Ошибка загрузки</string>
-    <string name="deeplink_host">https://sanctumlogos.info/</string>
+    <string name="deeplink_host">sanctumlogos.info</string>
     <string name="quiz_title_placeholder">ТЕКСТ ВОПРОСА</string>
 </resources>
