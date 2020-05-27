@@ -1,8 +1,11 @@
 package madsoft.com.form.Fragment;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +19,7 @@ import madsoft.com.form.DataBase.PageDao;
 import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
+import madsoft.com.form.Network.reciever.DatabaseUpdateReceiver;
 import madsoft.com.form.R;
 import madsoft.com.form.service.DownloadService;
 
@@ -33,7 +37,10 @@ import java.util.List;
 
 public class DownloadedFragment extends Fragment implements Filterable, ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.IntentCallback {
 
+    public static String RECEIVER_ACTION = "com.madsoft.action.UPDATE_TABLE";
+
     private static DownloadedFragment instance;
+    private DatabaseUpdateReceiver updateReceiver;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private PageDao downloadedPageDao;
@@ -48,6 +55,12 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         return instance;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        updateReceiver = new DatabaseUpdateReceiver(this);
+        getActivity().registerReceiver(updateReceiver, new IntentFilter(RECEIVER_ACTION));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,11 +78,12 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
                 download();
             }
         });
+
         download();
         return view;
     }
 
-    private void download(){
+    public void download(){
 
         swipeRefreshLayout.setRefreshing(true);
         new loadCache().execute();

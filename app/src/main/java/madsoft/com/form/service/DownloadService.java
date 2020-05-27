@@ -37,6 +37,7 @@ import java.util.concurrent.SynchronousQueue;
 import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.DataBase.PageDao;
 import madsoft.com.form.DataBase.entity.Page;
+import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.Network.WpApi.WpApi;
@@ -114,6 +115,10 @@ public class DownloadService extends Service {
                // if(!f.exists()) {
                     FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
                     servicePageDao.insert(page);
+                    Intent updateCacheListIntent = new Intent();
+                    updateCacheListIntent.setAction(DownloadedFragment.RECEIVER_ACTION);
+                    updateCacheListIntent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                    sendBroadcast(updateCacheListIntent);
               //  }//TODO обновоить уже созданый файл
                Log.d("File path", f.getAbsolutePath());
 

@@ -24,7 +24,6 @@
         <activity
             android:name=".Activity.SettingsActivity"
             android:parentActivityName=".Activity.MainActivity" />
-
         <activity
             android:name=".Activity.AboutActivity"
             android:parentActivityName=".Activity.MainActivity" />
@@ -46,19 +45,29 @@
             </intent-filter>
         </activity>
         <receiver
+            android:name=".Network.reciever.DatabaseUpdateReceiver"
+            android:enabled="false"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.madsoft.action.UPDATE_TABLE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name=".Network.reciever.NetworkConnectionReceiver"
             android:enabled="false"
             android:exported="false">
             <intent-filter>
-            <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <service android:name=".service.DownloadService"></service>
+
+        <service android:name=".service.DownloadService" />
     </application>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>
