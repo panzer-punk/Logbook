@@ -125,6 +125,10 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
 //TODO удалять записи здесь!!!
     }
 
+    public void insertPage(Page newPage) {
+        downloadsAdapter.insertPage(newPage);
+    }
+
 
     public class loadCache extends AsyncTask<String, Void, Boolean> {
         List<Page> cachedPages;

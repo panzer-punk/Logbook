@@ -1,12 +1,8 @@
 package madsoft.com.form.service;
 
-
-import android.app.DownloadManager;
 import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -21,30 +17,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.jsoup.select.NodeTraversor;
-
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.concurrent.SynchronousQueue;
+
 
 import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.DataBase.PageDao;
 import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Network.Objects.ArticleWp;
-import madsoft.com.form.Network.WpApi.NetworkService;
-import madsoft.com.form.Network.WpApi.WpApi;
-import madsoft.com.form.R;
 
-import static java.nio.charset.StandardCharsets.UTF_16;
-import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DownloadService extends Service {
@@ -116,6 +98,9 @@ public class DownloadService extends Service {
                     FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
                     servicePageDao.insert(page);
                     Intent updateCacheListIntent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(BUNDLE_MESSAGE_KEY, page);
+                    updateCacheListIntent.putExtra(BUNDLE_KEY, bundle);
                     updateCacheListIntent.setAction(DownloadedFragment.RECEIVER_ACTION);
                     updateCacheListIntent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     sendBroadcast(updateCacheListIntent);

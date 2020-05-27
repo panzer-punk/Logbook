@@ -1,11 +1,13 @@
 package madsoft.com.form.DataBase.entity;
 
+import java.io.Serializable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Page {
+public class Page implements Serializable {
     @PrimaryKey
     public int id;
 
