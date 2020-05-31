@@ -3,6 +3,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ArticleWp implements Serializable {
 
@@ -18,6 +19,9 @@ public class ArticleWp implements Serializable {
     @SerializedName("title")
     @Expose
     private Title title;
+    @SerializedName("categories")
+    @Expose
+    private List<Integer> categories = null;
     @SerializedName("jetpack_featured_media_url")
     @Expose
     private String jetpackFeaturedMediaUrl;
@@ -61,4 +65,12 @@ public class ArticleWp implements Serializable {
     public void setJetpackFeaturedMediaUrl(String jetpackFeaturedMediaUrl) {
         this.jetpackFeaturedMediaUrl = jetpackFeaturedMediaUrl;
     }
+    public List<Integer> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Integer> categories) {
+        this.categories = categories;
+    }
+
 }

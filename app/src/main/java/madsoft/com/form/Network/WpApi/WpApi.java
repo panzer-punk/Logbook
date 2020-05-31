@@ -11,19 +11,19 @@ import retrofit2.http.Query;
 
 public interface WpApi {//TODO сделать общий метод, а не разные, например getArticleWpCall(category, page) и использовать его
 
-    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
+    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url,categories")//Поля для отбора см. Wordpress REST Api
      Call<List<ArticleWp>> getArticleWpCall();
 
-    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
+    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url,categories")//Поля для отбора см. Wordpress REST Api
     Call<List<ArticleWp>> getArticleWpCallWithCount(@Query("per_page") int itemCount);
 
-    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
+    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url,categories")//Поля для отбора см. Wordpress REST Api
     Call<List<ArticleWp>> getArticleWpCall(@Query("page") short page);
 
-    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
+    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url,categories")//Поля для отбора см. Wordpress REST Api
     Call<List<ArticleWp>> getArticleWpCall(@Query("categories") String categories);
 
-    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url")//Поля для отбора см. Wordpress REST Api
+    @GET("posts?_fields=id,modified,title,link,jetpack_featured_media_url,categories")//Поля для отбора см. Wordpress REST Api
     Call<List<ArticleWp>> getArticleWpCall(@Query("page") short page, @Query("categories") String categories);
 
     @GET("categories?_fileds=id,name")//Поля для отбора см. Wordpress REST Api
