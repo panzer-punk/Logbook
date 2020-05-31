@@ -36,7 +36,9 @@ import java.util.List;
  * Created by Даниил on 27.09.2018.
  */
 
-public class DownloadedFragment extends Fragment implements Filterable, ArticleRecyclerViewAdapter.onClickListener, ArticleRecyclerViewAdapter.IntentCallback {
+public class DownloadedFragment extends Fragment implements Filterable
+        , ArticleRecyclerViewAdapter.onClickListener
+        , ArticleRecyclerViewAdapter.IntentCallback {
 
     public static String RECEIVER_ACTION = "com.madsoft.action.UPDATE_TABLE";
 
@@ -98,6 +100,11 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         swipeRefreshLayout.setRefreshing(true);
         new loadCache().execute();
 
+    }
+
+    @Override
+    public Category getCategory() {
+        return category;
     }
 
     @Override

@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity
                 switch (position) {
                     case 0:
                         bottomNavigationView.getMenu().getItem(0).setChecked(true);
+
                         break;
                     case 1:
                         bottomNavigationView.getMenu().getItem(1).setChecked(true);
@@ -176,6 +177,11 @@ public class MainActivity extends AppCompatActivity
                     case 3:
                         bottomNavigationView.getMenu().getItem(3).setChecked(true);
                 }
+
+                    Filterable f = (Filterable) pagerAdapter.getItem(position);
+                    if(f.getCategory() != category)
+                    f.applyFilter(category);
+                
             }
 
             @Override

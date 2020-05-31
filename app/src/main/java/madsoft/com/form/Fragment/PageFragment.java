@@ -268,6 +268,11 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     }
 
     @Override
+    public Category getCategory() {
+        return category;
+    }
+
+    @Override
     public void onNetworkConnection() {
         download();
     }

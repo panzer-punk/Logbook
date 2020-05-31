@@ -123,6 +123,10 @@ public class SearchFragment extends Fragment
 
     }
 
+    @Override
+    public Category getCategory() {
+        return null;
+    }
 
 
     @Override
