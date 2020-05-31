@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +94,10 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
     @Override
     public void applyFilter(Category category) {
 
+        this.category = category;
+        swipeRefreshLayout.setRefreshing(true);
+        new loadCache().execute();
+
     }
 
     @Override
@@ -137,7 +142,12 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         protected  Boolean doInBackground(String ... arg){
 
             downloadedPageDao = MyApplication.getDatabase().pageDao();
-            cachedPages = downloadedPageDao.getAll();
+            if (category == null) {
+                cachedPages = downloadedPageDao.getAll();
+            }else {
+                cachedPages = downloadedPageDao.filterByCategory(category.getId());
+            }
+
             if(cachedPages == null)
                 return false;
             return true;
