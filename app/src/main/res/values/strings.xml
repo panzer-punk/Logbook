@@ -23,4 +23,6 @@
     <string name="error_load">Ошибка загрузки</string>
     <string name="deeplink_host">sanctumlogos.info</string>
     <string name="quiz_title_placeholder">ТЕКСТ ВОПРОСА</string>
+    <string name="channel_name">FormChannel</string>
+    <string name="channel_description">FormChannelDesc</string>
 </resources>

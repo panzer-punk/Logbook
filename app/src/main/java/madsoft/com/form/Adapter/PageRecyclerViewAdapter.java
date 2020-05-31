@@ -51,8 +51,11 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
     }
 
     public void insertPage(Page newPage) {
-        list.add(newPage);
-        notifyDataSetChanged();
+
+           list.add(newPage);
+            notifyDataSetChanged();
+
+
     }
 
     public class PageRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

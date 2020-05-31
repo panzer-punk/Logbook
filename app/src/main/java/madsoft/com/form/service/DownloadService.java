@@ -1,7 +1,11 @@
 package madsoft.com.form.service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -21,17 +25,21 @@ import java.io.File;
 import java.io.IOException;
 
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.DataBase.PageDao;
 import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Network.Objects.ArticleWp;
+import madsoft.com.form.R;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DownloadService extends Service {
 
-  //  public static String URL_INTENT_KEY = "URL";
+    private static final String CHANNEL_ID = "download_1";
+    //  public static String URL_INTENT_KEY = "URL";
     public static String HOST_URL = "https://sanctumlogos.info/";
   //  public static String MODIFIED_KEY = "MODIFIED";
     public static String BUNDLE_KEY = "BUNDLE";
@@ -104,6 +112,7 @@ public class DownloadService extends Service {
                     updateCacheListIntent.setAction(DownloadedFragment.RECEIVER_ACTION);
                     updateCacheListIntent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     sendBroadcast(updateCacheListIntent);
+                    throwNotificationDownloaded(page);
               //  }//TODO обновоить уже созданый файл
                Log.d("File path", f.getAbsolutePath());
 
@@ -131,9 +140,9 @@ public class DownloadService extends Service {
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         Bundle serviceBundle = intent.getBundleExtra(BUNDLE_KEY);
         ArticleWp articleWp = (ArticleWp) serviceBundle.get(BUNDLE_MESSAGE_KEY);
+        Toast.makeText(this, "Загружаю " + articleWp.getTitle().getRendered(), Toast.LENGTH_SHORT).show();//TODO загружаю как строковый ресурс
        // String url = intent.getStringExtra(URL_INTENT_KEY);
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
@@ -147,6 +156,28 @@ public class DownloadService extends Service {
 
     public void onDestroy() {
         super.onDestroy();
+
+    }
+
+    private void throwNotificationDownloaded(Page page){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Страница: " + page.title + " успешно загружена")
+                .setContentText("Страницу можно найти на вкладке загрузок")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+        }
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
+        notificationManagerCompat.notify(1,builder.build());
 
     }
 

@@ -126,7 +126,8 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
     }
 
     public void insertPage(Page newPage) {
-        downloadsAdapter.insertPage(newPage);
+       // downloadsAdapter.insertPage(newPage);
+        download();
     }
 
 
