@@ -226,10 +226,12 @@ public class MainActivity extends AppCompatActivity
         }else {
             fab.hide();
             category = null;
+            toolbar.setTitle(R.string.app_name);
         }
         Filterable filterable = (Filterable) pagerAdapter.getItem(pager.getCurrentItem());
         filterable.applyFilter(category);
-
+        if(category != null)
+        toolbar.setTitle(category.getName());
 
 
     }
