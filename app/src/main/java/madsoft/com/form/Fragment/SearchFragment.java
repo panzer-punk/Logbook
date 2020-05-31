@@ -111,7 +111,8 @@ public class SearchFragment extends Fragment
             NetworkService networkService = NetworkService.getInstance();
             networkService.getWpApi().searchArticleWpCall(query).enqueue(searchFragmentResultsAdapter);
             searchRecyclerView.setFocusable(true);
-        }
+        }else
+            searchSwipeRefreshLayout.setRefreshing(false);
         }
 
     @Override
