@@ -29,6 +29,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.DataBase.PageDao;
+import madsoft.com.form.DataBase.converter.CategoriesConverter;
 import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Network.Objects.ArticleWp;
@@ -48,6 +49,7 @@ public class DownloadService extends Service {
 
    // private Queue<String> downloadUrls;
     private ServiceHandler downloadHandler;
+    private CategoriesConverter categoriesConverter;
     private Looper mServiceLooper;
 
 
@@ -58,6 +60,7 @@ public class DownloadService extends Service {
         {
          //   mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
             servicePageDao = MyApplication.getDatabase().pageDao();
+            categoriesConverter = new CategoriesConverter();
 
         }
         public ServiceHandler(Looper looper) {
@@ -102,6 +105,7 @@ public class DownloadService extends Service {
                 page.shareLink = currentArticle.getLink();
                 page.title = currentArticle.getTitle().getRendered();
                 page.imagePath = currentArticle.getJetpackFeaturedMediaUrl();//TODO передать путь к картинке локальной!
+                page.categories = categoriesConverter.fromCategories(currentArticle.getCategories());
                // if(!f.exists()) {
                     FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
                     servicePageDao.insert(page);
