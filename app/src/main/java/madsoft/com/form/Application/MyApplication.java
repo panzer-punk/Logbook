@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.res.Configuration;
 
 import androidx.room.Room;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 import madsoft.com.form.DataBase.AppDatabase;
 
 public class MyApplication extends Application {
@@ -17,8 +19,17 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+         final Migration MIGRATION_1_2 = new Migration(2, 3) {
+            @Override
+            public void migrate(final SupportSQLiteDatabase database) {
+                database.execSQL("ALTER TABLE page ADD COLUMN categories TEXT");
+            }
+        };
         database = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "logos").enableMultiInstanceInvalidation().build();
+                AppDatabase.class, "logos")
+                .enableMultiInstanceInvalidation()
+                .addMigrations(MIGRATION_1_2)
+                .build();
         // Required initialization logic here!
     }
 

@@ -159,4 +159,10 @@ public class DownloadedFragment extends Fragment implements Filterable, ArticleR
         }
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(updateReceiver);
+    }
 }

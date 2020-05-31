@@ -21,6 +21,9 @@ public interface PageDao {
     @Query("SELECT path FROM page WHERE id LIKE :pageId")
     String getFilePath(int pageId);
 
+    @Query("SELECT * FROM page  WHERE instr(categories,:category) > 0")
+    List<Page> filterByCategory(int category);
+
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     void insert(Page page);
 

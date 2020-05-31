@@ -23,6 +23,8 @@ public class Page implements Serializable {
     @ColumnInfo(name = "shareLink")
     public String shareLink;
 
+    @ColumnInfo(name = "categories")
+    public String categories;
 
     @ColumnInfo(name = "modified")
     public String modified;
