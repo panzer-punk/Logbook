@@ -23,6 +23,8 @@ import madsoft.com.form.R;
 /**/
 
 public class WebViewFragment extends Fragment implements AppWebClientCallback {
+    private static final String READ_MODE_KEY = "READ_MODE";
+    private static final String URL_KEY = "URL";
     loadLocalFile loader;
     @Override
     public void update(String query) {
@@ -49,6 +51,8 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
     private String url;
     private AppWebClient fragmentWebClient;
 
+    public WebViewFragment(){}
+
     public WebViewFragment(SlidingThemeActivity parent, String url, boolean localFile) {
         this.parent = parent;
         this.url = url;
@@ -58,6 +62,11 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentWebClient = new AppWebClient(this);
+        if(savedInstanceState != null){
+            parent = (SlidingThemeActivity) getActivity();
+            readMode = savedInstanceState.getBoolean(READ_MODE_KEY);
+            url = savedInstanceState.getString(URL_KEY);
+        }
     }
 
     @Nullable
@@ -76,6 +85,13 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
        update(url);
         return view;
 
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(URL_KEY, url);
+        outState.putBoolean(READ_MODE_KEY, readMode);
     }
 
     public boolean canGoBack(){
