@@ -135,9 +135,10 @@ public class DownloadedFragment extends Fragment implements Filterable
 
     @Override
     public void onShareArticle(DataEntity article) {
+        Page page = (Page) article;
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getUrl());
+        sendIntent.putExtra(Intent.EXTRA_TEXT, page.shareLink);
         sendIntent.setType("text/plain");
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);
