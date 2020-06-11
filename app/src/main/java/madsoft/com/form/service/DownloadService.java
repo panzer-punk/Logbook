@@ -24,6 +24,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 import androidx.core.app.NotificationCompat;
@@ -35,9 +38,11 @@ import madsoft.com.form.DataBase.converter.CategoriesConverter;
 import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Fragment.DownloadedFragment;
 import madsoft.com.form.Network.Objects.ArticleWp;
+import madsoft.com.form.Network.Objects.DataEntity;
 import madsoft.com.form.R;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Calendar.getInstance;
 
 public class DownloadService extends Service {
 
@@ -53,6 +58,7 @@ public class DownloadService extends Service {
     private ServiceHandler downloadHandler;
     private CategoriesConverter categoriesConverter;
     private Looper mServiceLooper;
+    private  SimpleDateFormat dateFormat;
 
 
     private final class ServiceHandler extends Handler {
@@ -71,7 +77,7 @@ public class DownloadService extends Service {
         @Override
         public void handleMessage(Message msg) {
 
-            ArticleWp currentArticle = (ArticleWp) msg.obj;
+            DataEntity currentArticle = (DataEntity) msg.obj;
 
             File dir = getApplicationContext().getFilesDir();
             String path = dir.getAbsolutePath();
@@ -80,7 +86,7 @@ public class DownloadService extends Service {
             }
 
             try {
-                String murl = new String(currentArticle.getLink().getBytes(),UTF_8);
+                String murl = new String(currentArticle.getUrl().getBytes(),UTF_8);
                 Log.i("URL", murl);
 
                 mDoc = Jsoup.connect(murl + "?d=android")
@@ -101,14 +107,27 @@ public class DownloadService extends Service {
 
                 final File f = new File(dir.getAbsolutePath() + "/"+ mDoc.title() + ".html");
                 Page page = new Page();
-                page.modified = currentArticle.getModified();
+
+                if(currentArticle.getModified() != null) {
+                    page.modified = currentArticle.getModified();
+                }else {
+                     dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    String currrentDate = dateFormat.format(getInstance().getTime());
+                    page.modified = currrentDate;
+                }
+
                 page.id = currentArticle.getId();
                 page.path = f.getAbsolutePath();
-                page.shareLink = currentArticle.getLink();
-                page.title = currentArticle.getTitle().getRendered();
-                page.imagePath = currentArticle.getJetpackFeaturedMediaUrl();//TODO передать путь к картинке локальной!
-                page.categories = categoriesConverter.fromCategories(currentArticle.getCategories());
-               // if(!f.exists()) {
+                page.shareLink = currentArticle.getUrl();
+                page.title = currentArticle.getTitleS();
+                page.imagePath = currentArticle.getMediaUrl();//TODO передать путь к картинке локальной!
+
+                if(currentArticle.getCategories() != null) {
+                    page.categories = categoriesConverter.fromCategories(currentArticle.getCategories());
+                } else {
+                    page.categories = "0";
+                }
+                    // if(!f.exists()) {
                     FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
                     servicePageDao.insert(page);
                     Intent updateCacheListIntent = new Intent();
@@ -147,14 +166,14 @@ public class DownloadService extends Service {
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle serviceBundle = intent.getBundleExtra(BUNDLE_KEY);
-        ArticleWp articleWp = (ArticleWp) serviceBundle.get(BUNDLE_MESSAGE_KEY);
-        Toast.makeText(this, "Загружаю " + articleWp.getTitle().getRendered(), Toast.LENGTH_SHORT).show();//TODO загружаю как строковый ресурс
+        DataEntity article = (DataEntity) serviceBundle.get(BUNDLE_MESSAGE_KEY);
+        Toast.makeText(this, "Загружаю " + article.getTitleS(), Toast.LENGTH_SHORT).show();//TODO загружаю как строковый ресурс
        // String url = intent.getStringExtra(URL_INTENT_KEY);
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
         Message msg = downloadHandler.obtainMessage();
         msg.arg1 = startId;
-        msg.obj = articleWp;
+        msg.obj = article;
         downloadHandler.sendMessage(msg);
         // If we get killed, after returning from here, restart
         return START_STICKY;
@@ -165,12 +184,12 @@ public class DownloadService extends Service {
 
     }
 
-    private void throwNotificationDownloaded(Page page){
+    private void throwNotificationDownloaded(DataEntity page){
 
         Intent notifyIntent = new Intent(getApplicationContext(), SlidingThemeActivity.class);
         notifyIntent.setAction("default");
         Bundle notifyBundle = new Bundle();
-        notifyBundle.putSerializable(BUNDLE_MESSAGE_KEY, new ArticleWp(page));
+        notifyBundle.putSerializable(BUNDLE_MESSAGE_KEY, page);
         notifyIntent.putExtra(BUNDLE_KEY, notifyBundle);
         notifyIntent.putExtra(SlidingThemeActivity.READ_MODE, true);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -181,7 +200,7 @@ public class DownloadService extends Service {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("Страница: " + page.title + " успешно загружена")
+                .setContentTitle("Страница: " + page.getTitleS() + " успешно загружена")
                 .setContentText("Страницу можно найти на вкладке загрузок")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);

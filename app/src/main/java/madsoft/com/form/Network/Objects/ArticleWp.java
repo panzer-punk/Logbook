@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import madsoft.com.form.DataBase.entity.Page;
 
 public class ArticleWp implements DataEntity{
@@ -50,6 +51,12 @@ public class ArticleWp implements DataEntity{
 
     public String getModified() {
         return modified;
+    }
+
+    @Nullable
+    @Override
+    public String getMediaUrl() {
+        return jetpackFeaturedMediaUrl;
     }
 
     public void setModified(String modified) {

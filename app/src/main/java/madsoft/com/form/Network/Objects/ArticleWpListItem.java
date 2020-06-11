@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 
@@ -25,6 +26,17 @@ public class ArticleWpListItem implements DataEntity{
     @Nullable
     @Override
     public String getModified() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public String getMediaUrl() {
+        return null;
+    }
+
+    @Override
+    public List<Integer> getCategories() {
         return null;
     }
 

@@ -3,6 +3,7 @@ package madsoft.com.form.Adapter;
 import androidx.recyclerview.widget.RecyclerView;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
+import madsoft.com.form.Network.Objects.DataEntity;
 import madsoft.com.form.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,8 +50,8 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
     }
     public interface IntentCallback{
 
-        void onShareArticle(ArticleWp article);
-        void onDownloadArticle(ArticleWp article);
+        void onShareArticle(DataEntity article);
+        void onDownloadArticle(DataEntity article);
 
     }
     public ArticleViewHolder holder;

@@ -19,6 +19,7 @@ import madsoft.com.form.DataBase.PageDao;
 import madsoft.com.form.DataBase.entity.Page;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
+import madsoft.com.form.Network.Objects.DataEntity;
 import madsoft.com.form.Network.reciever.DatabaseUpdateReceiver;
 import madsoft.com.form.R;
 import madsoft.com.form.service.DownloadService;
@@ -111,7 +112,7 @@ public class DownloadedFragment extends Fragment implements Filterable
     public void onItemClick(int position) {
        Page page = downloadsAdapter.getItem(position);
         Bundle themeActivityBundle = new Bundle();
-        themeActivityBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, downloadsAdapter.pageToArticle(page));
+        themeActivityBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, downloadsAdapter.getItem(position));
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.setAction(" ");
         intent.putExtra(DownloadService.BUNDLE_KEY, themeActivityBundle);
@@ -120,26 +121,28 @@ public class DownloadedFragment extends Fragment implements Filterable
         startActivity(intent);
     }
 
-    @Override
-    public void onShareArticle(ArticleWp article) {
 
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getLink());
-        sendIntent.setType("text/plain");
 
-        Intent shareIntent = Intent.createChooser(sendIntent, null);
-        startActivity(shareIntent);
-    }
-
-    @Override
-    public void onDownloadArticle(ArticleWp article) {
-//TODO удалять записи здесь!!!
-    }
 
     public void insertPage(Page newPage) {
        // downloadsAdapter.insertPage(newPage);
         download();
+    }
+
+    @Override
+    public void onShareArticle(DataEntity article) {
+
+    }
+
+    @Override
+    public void onDownloadArticle(DataEntity article) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getUrl());
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
     }
 
 

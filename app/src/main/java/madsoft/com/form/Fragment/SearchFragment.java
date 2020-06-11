@@ -22,6 +22,7 @@ import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.Network.reciever.NetworkConnectionReceiver;
 import madsoft.com.form.R;
+import madsoft.com.form.service.DownloadService;
 
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -135,8 +136,11 @@ public class SearchFragment extends Fragment
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.setAction(" ");
-        intent.putExtra(Assets.LINK, listItem.getUrl());
-        intent.putExtra(Assets.TITLE, listItem.getTitle());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, listItem);
+        intent.putExtra(DownloadService.BUNDLE_KEY, bundle);
+      //  intent.putExtra(Assets.LINK, listItem.getUrl());
+     //   intent.putExtra(Assets.TITLE, listItem.getTitle());
         startActivity(intent);
     }
 

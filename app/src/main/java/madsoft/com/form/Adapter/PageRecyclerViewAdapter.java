@@ -65,21 +65,6 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
         public Button share, download;
 
 
-
-        private ArticleWp pageToArticle(Page page){
-
-            ArticleWp articleWp = new ArticleWp();
-            Title title = new Title();
-            title.setRendered(page.title);
-            articleWp.setId(page.id);
-            articleWp.setLink(page.shareLink);
-            articleWp.setJetpackFeaturedMediaUrl(null);
-            articleWp.setModified(page.modified);
-            articleWp.setTitle(title);
-            return articleWp;
-
-        }
-
         public PageRecyclerViewHolder(@NonNull View itemView, final ArticleRecyclerViewAdapter.onClickListener listener) {
             super(itemView);
             onClickListener = listener;
@@ -97,7 +82,7 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
 
                     if(intentCallback == null) return;
 
-                    intentCallback.onShareArticle(pageToArticle(list.get(getAdapterPosition())));//TODO переделать??
+                    intentCallback.onShareArticle(list.get(getAdapterPosition()));
 
                 }
             });

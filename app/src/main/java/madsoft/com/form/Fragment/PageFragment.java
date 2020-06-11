@@ -26,6 +26,7 @@ import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Assets;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
+import madsoft.com.form.Network.Objects.DataEntity;
 import madsoft.com.form.Network.WpApi.NetworkService;
 import madsoft.com.form.Network.reciever.NetworkConnectionReceiver;
 import madsoft.com.form.R;
@@ -220,11 +221,11 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     }
 
     @Override
-    public void onShareArticle(ArticleWp article) {
+    public void onShareArticle(DataEntity article) {
 
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getLink());
+        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getUrl());
         sendIntent.setType("text/plain");
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);
@@ -244,8 +245,8 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
 
     @Override
-    public void onDownloadArticle(ArticleWp articleWp) {
-        downloadUrl = articleWp;
+    public void onDownloadArticle(DataEntity articleWp) {
+        downloadUrl = (ArticleWp) articleWp;
        askWritePermission();
     }
 
