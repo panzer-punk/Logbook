@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
+import madsoft.com.form.DataBase.entity.Page;
+
 public class ArticleWp implements Serializable {
 
     @SerializedName("id")
@@ -25,6 +27,18 @@ public class ArticleWp implements Serializable {
     @SerializedName("jetpack_featured_media_url")
     @Expose
     private String jetpackFeaturedMediaUrl;
+
+    public ArticleWp(){}
+    public ArticleWp(Page page) {
+
+        id = page.id;
+        modified = page.modified;
+        link = page.path;
+        title = new Title();
+        title.setRendered(page.title);
+        jetpackFeaturedMediaUrl = page.imagePath;
+
+    }
 
     public Integer getId() {
         return id;

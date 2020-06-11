@@ -31,7 +31,7 @@
             android:name=".Activity.SlidingThemeActivity"
             android:excludeFromRecents="true"
             android:parentActivityName=".Activity.MainActivity"
-            android:launchMode="singleTask"
+
             android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -3,6 +3,7 @@ package madsoft.com.form.service;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
@@ -27,6 +28,7 @@ import java.io.IOException;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.DataBase.PageDao;
 import madsoft.com.form.DataBase.converter.CategoriesConverter;
@@ -164,11 +166,26 @@ public class DownloadService extends Service {
     }
 
     private void throwNotificationDownloaded(Page page){
+
+        Intent notifyIntent = new Intent(getApplicationContext(), SlidingThemeActivity.class);
+        notifyIntent.setAction("default");
+        Bundle notifyBundle = new Bundle();
+        notifyBundle.putSerializable(BUNDLE_MESSAGE_KEY, new ArticleWp(page));
+        notifyIntent.putExtra(BUNDLE_KEY, notifyBundle);
+        notifyIntent.putExtra(SlidingThemeActivity.READ_MODE, true);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Страница: " + page.title + " успешно загружена")
                 .setContentText("Страницу можно найти на вкладке загрузок")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+        builder.setContentIntent(notifyPendingIntent);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.channel_name);
