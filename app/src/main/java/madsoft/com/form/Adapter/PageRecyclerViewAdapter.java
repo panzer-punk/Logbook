@@ -75,19 +75,7 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
             download.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final int position = getAdapterPosition();
-                    final Page deletePage = list.get(position);
-                    list.remove(position);
-                    notifyDataSetChanged();
-                  Runnable delete =  new Runnable() {
-                        @Override
-                        public void run() {
-                            MyApplication.getDatabase().pageDao().delete(deletePage);//TODO уведомить пользователя
-                            File f = new File(deletePage.path);
-                            f.delete();
-                        }
-                    };
-                   new Thread(delete).start();
+                   intentCallback.onDownloadArticle(list.get(getAdapterPosition()));
                 }
             });
         }
@@ -132,6 +120,11 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
     @Override
     public void onResponse(Call<List<Page>> call, Response<List<Page>> response) {
 
+    }
+
+    public void remove(Page page){
+        list.remove(page);
+        notifyDataSetChanged();
     }
 
     @Override

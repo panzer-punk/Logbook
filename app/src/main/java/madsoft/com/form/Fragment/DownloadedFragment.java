@@ -24,12 +24,16 @@ import madsoft.com.form.Network.reciever.DatabaseUpdateReceiver;
 import madsoft.com.form.R;
 import madsoft.com.form.service.DownloadService;
 
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,6 +147,44 @@ public class DownloadedFragment extends Fragment implements Filterable
     @Override
     public void onDownloadArticle(DataEntity article) {
 
+        final Page deletePage = (Page) article;
+        final Snackbar mySnackbar = Snackbar.make(getView(),
+                "Запись " + article.getTitleS() + " будет удалена", Snackbar.LENGTH_INDEFINITE);
+
+        final Runnable delete =  new Runnable() {
+            @Override
+            public void run() {
+                MyApplication.getDatabase().pageDao().delete(deletePage);//TODO уведомить пользователя
+                File f = new File(deletePage.path);
+                f.delete();
+            }
+        };
+
+        final CountDownTimer myCountDownTimer = new CountDownTimer(6000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                mySnackbar.dismiss();
+                downloadsAdapter.remove(deletePage);
+            new Thread(delete).start();
+            }
+        };
+        myCountDownTimer.start();
+
+        mySnackbar.setAction(R.string.undo_string, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myCountDownTimer.cancel();
+            }
+        });
+        mySnackbar.setActionTextColor(getResources().getColor(R.color.colorSecondary));
+        mySnackbar.setAnchorView(getActivity().findViewById(R.id.bottom_navigation));
+        mySnackbar.show();
+       // new Thread(delete).start();
     }
 
 
