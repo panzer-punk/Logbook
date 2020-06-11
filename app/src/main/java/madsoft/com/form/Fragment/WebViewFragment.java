@@ -1,5 +1,6 @@
 package madsoft.com.form.Fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,12 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.File;
+import java.io.IOException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,27 +23,50 @@ import madsoft.com.form.R;
 /**/
 
 public class WebViewFragment extends Fragment implements AppWebClientCallback {
+    private static final String READ_MODE_KEY = "READ_MODE";
+    private static final String URL_KEY = "URL";
+    loadLocalFile loader;
     @Override
     public void update(String query) {
 
+        if(!readMode)
         webView.loadUrl(query+"?d=android");
+        else {
 
+        loader = new loadLocalFile(webView);
+        loader.execute(query);
+          //  webView.loadUrl("file:///android_asset/test.html");
+        }
+    }
+
+    @Override
+    public void onLoadFinished() {
+        parent.loadFinished();
     }
 
 
     private WebView webView;
+    private boolean readMode;
     private SlidingThemeActivity parent;
     private String url;
     private AppWebClient fragmentWebClient;
 
-    public WebViewFragment(SlidingThemeActivity parent, String url) {
+    public WebViewFragment(){}
+
+    public WebViewFragment(SlidingThemeActivity parent, String url, boolean localFile) {
         this.parent = parent;
         this.url = url;
+        readMode = localFile;
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentWebClient = new AppWebClient(this);
+        if(savedInstanceState != null){
+            parent = (SlidingThemeActivity) getActivity();
+            readMode = savedInstanceState.getBoolean(READ_MODE_KEY);
+            url = savedInstanceState.getString(URL_KEY);
+        }
     }
 
     @Nullable
@@ -57,6 +87,13 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
 
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(URL_KEY, url);
+        outState.putBoolean(READ_MODE_KEY, readMode);
+    }
+
     public boolean canGoBack(){
         return webView.canGoBack();
     }
@@ -74,6 +111,11 @@ class AppWebClient extends WebViewClient{
 
     public AppWebClient(AppWebClientCallback clientCallback) {
     this.clientCallback = clientCallback;
+    }
+
+    @Override
+    public void onPageFinished(WebView view, String url) {
+        // do your stuff here
     }
 
     private void handleLink(String url){
@@ -98,7 +140,38 @@ class AppWebClient extends WebViewClient{
 
     }
 
+
+
 }
+class loadLocalFile extends AsyncTask<String, Integer, String>{
+    private WebView webView;
+
+    public loadLocalFile(WebView webView) {
+        this.webView = webView;
+    }
+
+    @Override
+    protected String doInBackground(String... strings){
+        File f = new File(strings[0]);
+        Document document = null;
+        try {
+            document = Jsoup.parse(f, "UTF-8", "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(document == null || document.outerHtml() == null){
+            return "<h2>Невозможно отобразить файл, возможно, он был удален</h2>";
+        }
+        return document.outerHtml();
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+        webView.loadDataWithBaseURL("file:///android_asset/", s,"text/html", "UTF-8", null);
+    }
+}
+
 interface AppWebClientCallback{
-    public void update(String query);
+     void update(String query);
+     void onLoadFinished();
 }

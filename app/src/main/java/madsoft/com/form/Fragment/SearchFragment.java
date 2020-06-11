@@ -9,15 +9,20 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import de.mateware.snacky.Snacky;
+import madsoft.com.form.Activity.MainActivity;
 import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
 import madsoft.com.form.Adapter.SearchResultsAdapter;
+import madsoft.com.form.Assets;
 import madsoft.com.form.FileSystem.CacheSystem;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.ArticleWpListItem;
 import madsoft.com.form.Network.Objects.Category;
 import madsoft.com.form.Network.WpApi.NetworkService;
+import madsoft.com.form.Network.reciever.NetworkConnectionReceiver;
 import madsoft.com.form.R;
+import madsoft.com.form.service.DownloadService;
 
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -37,8 +42,11 @@ import java.util.ArrayList;
  * Created by Даниил on 27.09.2018.
  */
 
-public class SearchFragment extends Fragment implements Filterable, ArticleRecyclerViewAdapter.onClickListener
-,ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback{
+public class SearchFragment extends Fragment
+        implements Filterable,
+        ArticleRecyclerViewAdapter.onClickListener,
+        ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback,
+        NetworkConnectionReceiver.Updatable {
 
     private static SearchFragment instance;
     private RecyclerView searchRecyclerView;
@@ -99,11 +107,14 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
     }
 
     private void search(String query){
-        searchSwipeRefreshLayout.setRefreshing(true);
-        NetworkService networkService = NetworkService.getInstance();
-        networkService.getWpApi().searchArticleWpCall(query).enqueue(searchFragmentResultsAdapter);
-        searchRecyclerView.setFocusable(true);
-    }
+        if(!query.isEmpty()) {
+            searchSwipeRefreshLayout.setRefreshing(true);
+            NetworkService networkService = NetworkService.getInstance();
+            networkService.getWpApi().searchArticleWpCall(query).enqueue(searchFragmentResultsAdapter);
+            searchRecyclerView.setFocusable(true);
+        }else
+            searchSwipeRefreshLayout.setRefreshing(false);
+        }
 
     @Override
     public void applyFilter(Category category) {//Обработать запрос невозможно из-за такого устройства WP API
@@ -114,13 +125,22 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
     }
 
     @Override
+    public Category getCategory() {
+        return null;
+    }
+
+
+    @Override
     public void onItemClick(int position) {
         ArticleWpListItem listItem = searchFragmentResultsAdapter.getItem(position);
 
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.setAction(" ");
-        intent.putExtra(ArticleWp.LINK, listItem.getUrl());
-        intent.putExtra(ArticleWp.TITLE, listItem.getTitle());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, listItem);
+        intent.putExtra(DownloadService.BUNDLE_KEY, bundle);
+      //  intent.putExtra(Assets.LINK, listItem.getUrl());
+     //   intent.putExtra(Assets.TITLE, listItem.getTitle());
         startActivity(intent);
     }
 
@@ -131,6 +151,22 @@ public class SearchFragment extends Fragment implements Filterable, ArticleRecyc
 
     @Override
     public void onFailure() {
+        searchSwipeRefreshLayout.setRefreshing(false);
 
+        Snacky.builder()
+                .setView(getView())
+                .setMaxLines(2)
+                .setTextSize(20)
+                .setDuration(Snacky.LENGTH_SHORT)
+                .setText(R.string.articlesLoadFail)
+                .error()
+                .show();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.checkConnection(this);
+    }
+
+    @Override
+    public void onNetworkConnection() {
+        search(searchEditText.getText().toString());
     }
 }
