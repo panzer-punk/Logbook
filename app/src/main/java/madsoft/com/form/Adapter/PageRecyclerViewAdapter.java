@@ -36,20 +36,6 @@ public class PageRecyclerViewAdapter extends RetrofitWpPaginationAdapter <Page>{
         this.deleteBtnText = deleteBtnText;
     }
 
-    public static ArticleWp pageToArticle(Page page){
-
-        ArticleWp articleWp = new ArticleWp();
-        Title title = new Title();
-        title.setRendered(page.title);
-        articleWp.setId(page.id);
-        articleWp.setLink(page.path);
-        articleWp.setJetpackFeaturedMediaUrl(null);
-        articleWp.setModified(page.modified);
-        articleWp.setTitle(title);
-        return articleWp;
-
-    }
-
     public void insertPage(Page newPage) {
 
            list.add(newPage);
