@@ -2,11 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="madsoft.com.form">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <application
+        android:name=".Application.MyApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,9 +16,11 @@
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.SettingsActivity"
             android:parentActivityName=".Activity.MainActivity" />
@@ -31,18 +30,45 @@
         <activity
             android:name=".Activity.SlidingThemeActivity"
             android:excludeFromRecents="true"
-            android:taskAffinity=""
-            android:parentActivityName=".Activity.MainActivity">
+            android:parentActivityName=".Activity.MainActivity"
+
+            android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data
-                    android:scheme="https"
                     android:host="@string/deeplink_host"
-                    android:pathPrefix="@string/deeplink_prefix" />
+                    android:pathPrefix="@string/deeplink_prefix"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
+        <receiver
+            android:name=".Network.reciever.DatabaseUpdateReceiver"
+            android:enabled="false"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.madsoft.action.UPDATE_TABLE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".Network.reciever.NetworkConnectionReceiver"
+            android:enabled="false"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".service.DownloadService" />
     </application>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

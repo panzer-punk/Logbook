@@ -3,7 +3,9 @@ package madsoft.com.form.Network.Objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Title {
+import java.io.Serializable;
+
+public class Title implements Serializable {
 
     @SerializedName("rendered")
     @Expose

@@ -1,12 +1,19 @@
 package madsoft.com.form.Fragment;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.Network;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -16,16 +23,23 @@ import de.mateware.snacky.Snacky;
 import madsoft.com.form.Activity.MainActivity;
 import madsoft.com.form.Activity.SlidingThemeActivity;
 import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
+import madsoft.com.form.Assets;
 import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
+import madsoft.com.form.Network.Objects.DataEntity;
 import madsoft.com.form.Network.WpApi.NetworkService;
+import madsoft.com.form.Network.reciever.NetworkConnectionReceiver;
 import madsoft.com.form.R;
-
+import madsoft.com.form.service.DownloadService;
 
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.sql.Connection;
+
+import static madsoft.com.form.Activity.MainActivity.WRITE_FILE_PERMISSION;
 
 /**
  * Created by Даниил on 27.09.2018.
@@ -34,7 +48,9 @@ import android.view.ViewGroup;
 public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter.onClickListener,
         ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback,
         ArticleRecyclerViewAdapter.IntentCallback,
-        Filterable{
+        Filterable,
+        NetworkConnectionReceiver.Updatable {
+
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -45,6 +61,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     protected ArticleRecyclerViewAdapter articleRecyclerViewAdapter;
     private RecyclerView.OnScrollListener onScrollListener;
     private static PageFragment instance;
+    private static ArticleWp downloadUrl;
 
 
     public PageFragment(boolean loadFlag) {
@@ -129,10 +146,13 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     public void onItemClick(int position) {
         ArticleWp article = articleRecyclerViewAdapter.getItem(position);
 
+        Bundle themeActivityBundle = new Bundle();
+        themeActivityBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, article);
         Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
         intent.setAction(" ");
-        intent.putExtra(ArticleWp.LINK, article.getLink());
-        intent.putExtra(ArticleWp.TITLE, article.getTitle().getRendered());
+        intent.putExtra(DownloadService.BUNDLE_KEY, themeActivityBundle);
+       // intent.putExtra(Assets.LINK, article.getLink());
+      //  intent.putExtra(Assets.TITLE, article.getTitle().getRendered());
         startActivity(intent);
 
     }
@@ -152,11 +172,16 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
             swipeRefreshLayout.setRefreshing(false);
     }
 
+
     @Override
     public void onFailure() {
         //проблемы при обновлнии адаптера
         stopRefreshLayout();
         buildSnack(3);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.checkConnection(this);
+      //  NetworkConnectionReceiver receiver = new NetworkConnectionReceiver((NetworkConnectionReceiver.Updatable) getActivity());
+     //   getActivity().registerReceiver(receiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
     private void buildSnack(int id){
@@ -196,15 +221,43 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     }
 
     @Override
-    public void onShareArticle(ArticleWp article) {
+    public void onShareArticle(DataEntity article) {
 
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getLink());
+        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getUrl());
         sendIntent.setType("text/plain");
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
+    }
+
+    private void askWritePermission(){
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_FILE_PERMISSION);
+        }else
+            downloadArticle();
+
+    }
+
+
+    @Override
+    public void onDownloadArticle(DataEntity articleWp) {
+        downloadUrl = (ArticleWp) articleWp;
+       askWritePermission();
+    }
+
+    public void downloadArticle(){
+        Bundle serviceBundle = new Bundle();
+        serviceBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, downloadUrl);
+          Intent intent = new Intent(getActivity(), DownloadService.class);
+          intent.putExtra(DownloadService.BUNDLE_KEY, serviceBundle);
+       //   intent.putExtra(DownloadService.URL_INTENT_KEY, downloadUrl.getLink());
+       //   intent.putExtra(DownloadService.MODIFIED_KEY, downloadUrl.getModified());
+          getActivity().startService(intent);
     }
 
     @Override
@@ -213,5 +266,15 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         this.category = category;
         articleRecyclerViewAdapter.setArticlesCategory(category);
       download();
+    }
+
+    @Override
+    public Category getCategory() {
+        return category;
+    }
+
+    @Override
+    public void onNetworkConnection() {
+        download();
     }
 }

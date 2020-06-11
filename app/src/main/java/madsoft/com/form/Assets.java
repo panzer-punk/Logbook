@@ -11,10 +11,8 @@ import java.util.HashMap;
 
 public class Assets {
 
-    public static final String FILENAME = "filename";
-    public static final String PATH = "https://rpspn.000webhostapp.com/";//http://matankkep.ru/formul/";
-    public static final String CONTENT = "content";
-    public static final String FLAG_D = "DOWNLOADFLAG";
+    public static String LINK = "Link";
+    public static String TITLE = "Title";
 
 
 }

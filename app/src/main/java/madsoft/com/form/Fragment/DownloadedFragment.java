@@ -1,43 +1,55 @@
 package madsoft.com.form.Fragment;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import madsoft.com.form.Activity.SlidingThemeActivity;
+import madsoft.com.form.Adapter.ArticleRecyclerViewAdapter;
+import madsoft.com.form.Adapter.PageRecyclerViewAdapter;
+import madsoft.com.form.Application.MyApplication;
 import madsoft.com.form.Assets;
-import madsoft.com.form.FileSystem.CacheSystem;
+import madsoft.com.form.DataBase.PageDao;
+import madsoft.com.form.DataBase.entity.Page;
+import madsoft.com.form.Network.Objects.ArticleWp;
 import madsoft.com.form.Network.Objects.Category;
+import madsoft.com.form.Network.Objects.DataEntity;
+import madsoft.com.form.Network.reciever.DatabaseUpdateReceiver;
 import madsoft.com.form.R;
+import madsoft.com.form.service.DownloadService;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import org.jsoup.select.Elements;
-
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Даниил on 27.09.2018.
  */
 
-public class DownloadedFragment extends Fragment implements Filterable{
-    static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
+public class DownloadedFragment extends Fragment implements Filterable
+        , ArticleRecyclerViewAdapter.onClickListener
+        , ArticleRecyclerViewAdapter.IntentCallback {
 
-    private static  String LIST = "linkTextList";
+    public static String RECEIVER_ACTION = "com.madsoft.action.UPDATE_TABLE";
+
     private static DownloadedFragment instance;
-    private CacheSystem cacheSystem;
+    private DatabaseUpdateReceiver updateReceiver;
     private SwipeRefreshLayout swipeRefreshLayout;
-    public Elements links; // сохраняется в Assets
-    public static ArrayList<String> linkTextList;
-    private ArrayAdapter<String> adapter;
-    private ListView listView;
+    private RecyclerView recyclerView;
+    private PageDao downloadedPageDao;
+    private PageRecyclerViewAdapter downloadsAdapter;
+    private Category category;
 
 
 
@@ -47,91 +59,107 @@ public class DownloadedFragment extends Fragment implements Filterable{
         return instance;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        updateReceiver = new DatabaseUpdateReceiver(this);
+        getActivity().registerReceiver(updateReceiver, new IntentFilter(RECEIVER_ACTION));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_downloaded, null);
-
-        cacheSystem = new CacheSystem(getActivity());
-
-        listView = view.findViewById(R.id.d_list_view);
-
-        linkTextList = new ArrayList<>();
-
-
-        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener(){
-
-            @Override
-            public void onItemClick(AdapterView<?> lisView, View view, int position, long id) {
-
-                String linkHref;
-                String filename;
-
-                try {
-
-                        linkHref = null;
-                        filename = lisView.getItemAtPosition(position).toString();
-
-
-                    Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
-                    intent.putExtra(Assets.CONTENT, linkHref);
-                    intent.putExtra(Assets.FILENAME, filename);
-                    startActivity(intent);
-                }catch (Exception e){ Toast toast = Toast.makeText(getActivity(),
-                        e.toString(),
-                        Toast.LENGTH_SHORT);
-                    toast.show(); }
-
-            }
-        };
-
-
-
-        listView.setOnItemClickListener(itemClickListener);
-
+        recyclerView = view.findViewById(R.id.recycler_view_downloaded);
         swipeRefreshLayout = view.findViewById(R.id.d_swipe_refresh);
-
+        downloadsAdapter = new PageRecyclerViewAdapter(this, getString(R.string.action_delete));
+        recyclerView.setAdapter(downloadsAdapter);
+        downloadsAdapter.setIntentCallback(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 download();
-
             }
         });
 
-        adapter = new ArrayAdapter<>(
-                getActivity(),
-                R.layout.list_item,
-                R.id.category_text,
-                linkTextList);
-
         download();
-
-
         return view;
     }
 
-    private void download(){
+    public void download(){
 
         swipeRefreshLayout.setRefreshing(true);
-        new loadCahce().execute();
+        new loadCache().execute();
 
     }
 
     @Override
     public void applyFilter(Category category) {
 
+        this.category = category;
+        swipeRefreshLayout.setRefreshing(true);
+        new loadCache().execute();
+
+    }
+
+    @Override
+    public Category getCategory() {
+        return category;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+       Page page = downloadsAdapter.getItem(position);
+        Bundle themeActivityBundle = new Bundle();
+        themeActivityBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, downloadsAdapter.getItem(position));
+        Intent intent = new Intent(getActivity(), SlidingThemeActivity.class);
+        intent.setAction(" ");
+        intent.putExtra(DownloadService.BUNDLE_KEY, themeActivityBundle);
+        intent.putExtra(SlidingThemeActivity.READ_MODE, true);//TODO если true то работать с локальным файлом
+        intent.putExtra(Assets.LINK, page.shareLink);
+        startActivity(intent);
     }
 
 
-    public class loadCahce extends AsyncTask<String, Void, Boolean> {
+
+
+    public void insertPage(Page newPage) {
+       // downloadsAdapter.insertPage(newPage);
+        download();
+    }
+
+    @Override
+    public void onShareArticle(DataEntity article) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, article.getUrl());
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
+    @Override
+    public void onDownloadArticle(DataEntity article) {
+
+    }
+
+
+    public class loadCache extends AsyncTask<String, Void, Boolean> {
+        List<Page> cachedPages;
         @Override
         protected  Boolean doInBackground(String ... arg){
 
-            linkTextList = cacheSystem.loadListCachedFiles();
+            downloadedPageDao = MyApplication.getDatabase().pageDao();
+            if (category == null) {
+                cachedPages = downloadedPageDao.getAll();
+            }else {
+                cachedPages = downloadedPageDao.filterByCategory(category.getId());
+            }
 
+            if(cachedPages == null)
+                return false;
             return true;
 
         }
@@ -140,11 +168,21 @@ public class DownloadedFragment extends Fragment implements Filterable{
         protected void onPostExecute(Boolean downloaded){
 
             swipeRefreshLayout.setRefreshing(false);
-            adapter.clear();
-            adapter.addAll(linkTextList);
-            listView.setAdapter(adapter);
+            if(downloaded) {
+                downloadsAdapter.clear();
+                downloadsAdapter.appendList(cachedPages);
+            }
+            else
+                Log.e("Error", "Couldn't load cache");
+
 
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(updateReceiver);
     }
 }
