@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import madsoft.com.form.service.DownloadService;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.sql.Connection;
 
@@ -186,38 +189,48 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
 
     private void buildSnack(int id){
 
+       Snackbar snackbar;
+
+
         if(getView() == null)
             return;
 
-        Snacky.Builder builder = Snacky.builder()
+       /* Snacky.Builder builder = Snacky.builder()
                 .setView(getView())
                 .setMaxLines(2)
                 .setTextSize(20)
-                .setDuration(Snacky.LENGTH_SHORT);
+                .setDuration(Snacky.LENGTH_SHORT);*/
 
         switch (id){
 
             case 1:
-                 builder.setText(R.string.loadingArticles)
-                 .build()
-                 .show();
+                snackbar = Snackbar.make(getView(),R.string.loadingArticles,Snackbar.LENGTH_SHORT);
+               //  builder.setText(R.string.loadingArticles)
+               //  .build()
+             //    .show();
                  break;
             case 2:
-                builder.setText(R.string.articlesLoadSuccess)
-               .success()
-                .show();
+                snackbar = Snackbar.make(getView(),R.string.articlesLoadSuccess,Snackbar.LENGTH_SHORT);
+             //   builder.setText(R.string.articlesLoadSuccess)
+            //   .success()
+            //    .show();
                 break;
             case 3:
-                builder.setText(R.string.articlesLoadFail)
-                .error()
-                .show();
+                snackbar = Snackbar.make(getView(),R.string.articlesLoadFail,Snackbar.LENGTH_SHORT);
+                snackbar.getView().setBackgroundColor(Color.RED);
+             //   builder.setText(R.string.articlesLoadFail)
+             //   .error()
+           //     .show();
                 break;
                 default:
-                    builder.setText(R.string.app_name)
-                    .build()
-                    .show();
+                    snackbar = Snackbar.make(getView(),R.string.app_name,Snackbar.LENGTH_SHORT);
+             //       builder.setText(R.string.app_name)
+              //      .build()
+              //      .show();
 
         }
+        snackbar.setAnchorView(getActivity().findViewById(R.id.bottom_navigation));
+        snackbar.show();
     }
 
     @Override
