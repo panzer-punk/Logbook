@@ -23,6 +23,7 @@ import madsoft.com.form.Fragment.QuizFragment;
 import madsoft.com.form.Fragment.WebViewFragment;
 import madsoft.com.form.Network.Html.Connector;
 import madsoft.com.form.Network.Objects.ArticleWp;
+import madsoft.com.form.Network.Objects.DataEntity;
 import madsoft.com.form.R;
 import madsoft.com.form.service.DownloadService;
 
@@ -59,7 +60,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
     private String filename;
     private TextView title;
     private TextView content;
-    private  ArticleWp articleWp;
+    private DataEntity article;
     private UpdateArticleInCache updateArticleInCache;
     private boolean readMode;
 
@@ -76,7 +77,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(DownloadService.BUNDLE_KEY);
         if(bundle != null) {
-            articleWp = (ArticleWp) bundle.get(DownloadService.BUNDLE_MESSAGE_KEY);
+            article = (DataEntity) bundle.get(DownloadService.BUNDLE_MESSAGE_KEY);
         }
         String action = intent.getAction();
         switch (action){
@@ -87,9 +88,9 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 filename = intent.getData().getPath().replace(getString(R.string.deeplink_prefix), " ");//TODO кэширование страниц которые открыли через браузер
                 break;
                 default:
-                    if(articleWp != null) {
-                        filename = articleWp.getTitle().getRendered();
-                        href = articleWp.getLink();
+                    if(article != null) {
+                        filename = article.getTitleS();
+                        href = article.getUrl();
                     }else {
                         filename = intent.getStringExtra(Assets.TITLE);
                         href = intent.getStringExtra(Assets.LINK);
@@ -120,9 +121,9 @@ public class SlidingThemeActivity extends AppCompatActivity{
         progressBar = findViewById(R.id.theme_progressbar);
 
 
-       if(articleWp != null) {
+       if(article != null) {
            updateArticleInCache = new UpdateArticleInCache();
-           final int id = articleWp.getId();
+           final int id = article.getId();
            updateArticleInCache.execute(id, -1);
        }
 
@@ -154,13 +155,13 @@ public class SlidingThemeActivity extends AppCompatActivity{
 
     private void download() {//TODO Загружка файла через Service
 
-        if (articleWp == null){
+        if (article == null){
             Toast.makeText(this, R.string.download_error_not_supported, Toast.LENGTH_SHORT)
                     .show();
             return;
     }
         Bundle serviceBundle = new Bundle();
-        serviceBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, articleWp);
+        serviceBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, article);
         Intent intent = new Intent(this, DownloadService.class);
         intent.putExtra(DownloadService.BUNDLE_KEY, serviceBundle);
         startService(intent);
@@ -295,7 +296,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 return noToastCode;
             }
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String snewDate = articleWp.getModified().replace('T', ' ');
+            String snewDate = article.getModified().replace('T', ' ');
             String soldDate = page.modified.replace('T', ' ');
             try {
                 Date newDate = dateFormat.parse(snewDate);

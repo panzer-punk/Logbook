@@ -3,7 +3,11 @@ package madsoft.com.form.Network.Objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ArticleWpListItem {
+import java.io.Serializable;
+
+import androidx.annotation.Nullable;
+
+public class ArticleWpListItem implements DataEntity{
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -16,6 +20,17 @@ public class ArticleWpListItem {
 
     public Integer getId() {
         return id;
+    }
+
+    @Nullable
+    @Override
+    public String getModified() {
+        return null;
+    }
+
+    @Override
+    public String getTitleS() {
+        return title;
     }
 
     public void setId(Integer id) {

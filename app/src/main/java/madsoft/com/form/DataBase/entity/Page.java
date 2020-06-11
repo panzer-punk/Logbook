@@ -2,12 +2,14 @@ package madsoft.com.form.DataBase.entity;
 
 import java.io.Serializable;
 
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import madsoft.com.form.Network.Objects.DataEntity;
 
 @Entity
-public class Page implements Serializable {
+public class Page implements DataEntity {
     @PrimaryKey
     public int id;
 
@@ -28,4 +30,25 @@ public class Page implements Serializable {
 
     @ColumnInfo(name = "modified")
     public String modified;
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Nullable
+    @Override
+    public String getModified() {
+        return null;
+    }
+
+    @Override
+    public String getTitleS() {
+        return title;
+    }
+
+    @Override
+    public String getUrl() {
+        return path;
+    }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 import madsoft.com.form.DataBase.entity.Page;
 
-public class ArticleWp implements Serializable {
+public class ArticleWp implements DataEntity{
 
     @SerializedName("id")
     @Expose
@@ -66,6 +66,16 @@ public class ArticleWp implements Serializable {
 
     public Title getTitle() {
         return title;
+    }
+
+    @Override
+    public String getTitleS() {
+        return title.getRendered();
+    }
+
+    @Override
+    public String getUrl() {
+        return getLink();
     }
 
     public void setTitle(Title title) {
