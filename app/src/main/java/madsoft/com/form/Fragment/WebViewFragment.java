@@ -159,6 +159,9 @@ class loadLocalFile extends AsyncTask<String, Integer, String>{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if(document == null || document.outerHtml() == null){
+            return "<h2>Невозможно отобразить файл, возможно, он был удален</h2>";
+        }
         return document.outerHtml();
     }
 
