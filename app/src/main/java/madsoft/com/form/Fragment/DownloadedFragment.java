@@ -131,11 +131,6 @@ public class DownloadedFragment extends Fragment implements Filterable
 
     @Override
     public void onShareArticle(DataEntity article) {
-
-    }
-
-    @Override
-    public void onDownloadArticle(DataEntity article) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, article.getUrl());
@@ -143,6 +138,11 @@ public class DownloadedFragment extends Fragment implements Filterable
 
         Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
+    }
+
+    @Override
+    public void onDownloadArticle(DataEntity article) {
+
     }
 
 
