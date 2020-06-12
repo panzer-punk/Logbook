@@ -18,6 +18,7 @@ import retrofit2.Response;
 
 public class CategoriesRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Category>{
     public CategoriesViewHolder holder;
+    private boolean nextPageReadyFlag = true;
     public CategoriesRecyclerViewAdapter(ArticleRecyclerViewAdapter.onClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
@@ -84,12 +85,16 @@ public class CategoriesRecyclerViewAdapter extends RetrofitWpPaginationAdapter<C
     {return list.get(position);}
     @Override
     public void nextPage() {
-        if(!hasNextPage()) return;
+        if(!hasNextPage() || !nextPageReadyFlag) return;
+
+        nextPageReadyFlag = false;
+
         networkService.getWpApi().getCategoriesWpCall(++curPage).enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
                 List<Category> list = response.body();
                 appendList(list);
+                nextPageReadyFlag = true;
                 if(callback != null)
                     callback.onResponse();
             }
@@ -97,6 +102,7 @@ public class CategoriesRecyclerViewAdapter extends RetrofitWpPaginationAdapter<C
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
                 curPage--;
+                nextPageReadyFlag = true;
                 if(callback!=null)
                     callback.onFailure();
             }

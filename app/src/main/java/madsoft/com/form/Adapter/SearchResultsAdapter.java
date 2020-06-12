@@ -17,6 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchResultsAdapter extends RetrofitWpPaginationAdapter<ArticleWpListItem> {
+    private boolean nextPageReadyFlag = true;
     ArticleRecyclerViewAdapter.onClickListener adapterOnClickListener;
     String query;
     SearchResultsViewHolder searchViewHolder;
@@ -83,12 +84,15 @@ public class SearchResultsAdapter extends RetrofitWpPaginationAdapter<ArticleWpL
 
     @Override
     public void nextPage() {
-        if(!hasNextPage()) return;
+        if(!hasNextPage() || !nextPageReadyFlag) return;
+        nextPageReadyFlag = false;
+
         networkService.getWpApi().searchArticleWpCall(query,++curPage).enqueue(new Callback<List<ArticleWpListItem>>() {
             @Override
             public void onResponse(Call<List<ArticleWpListItem>> call, Response<List<ArticleWpListItem>> response) {
                 List<ArticleWpListItem> list = response.body();
                 appendList(list);
+                nextPageReadyFlag = true;
                 if(callback != null)
                     callback.onResponse();
             }
@@ -96,6 +100,7 @@ public class SearchResultsAdapter extends RetrofitWpPaginationAdapter<ArticleWpL
             @Override
             public void onFailure(Call<List<ArticleWpListItem>> call, Throwable t) {
                 curPage--;
+                nextPageReadyFlag = true;
                 if(callback!=null)
                     callback.onFailure();
             }

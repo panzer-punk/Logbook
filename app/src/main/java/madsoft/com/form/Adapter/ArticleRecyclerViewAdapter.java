@@ -22,6 +22,7 @@ import java.util.List;
 
 public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<ArticleWp> {
     private Category articlesCategory;
+    private boolean nextPageReadyFlag = true;
 
     public void setArticlesCategory(Category category) {
         this.articlesCategory = category;
@@ -73,7 +74,9 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
     }
 
     public void nextPage() {
-        if(!hasNextPage()) return;
+        if(!hasNextPage() || !nextPageReadyFlag) return;
+
+        nextPageReadyFlag = false;
 
         if(articlesCategory == null)
         networkService.getWpApi().getArticleWpCall(++curPage).enqueue(new Callback<List<ArticleWp>>() {
@@ -81,6 +84,7 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
             public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
                 List<ArticleWp> list = response.body();
                 appendList(list);
+                nextPageReadyFlag = true;
                 if(callback != null)
                 callback.onResponse();
             }
@@ -89,6 +93,7 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
             public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
                 curPage--;
                 if(callback!=null)
+                    nextPageReadyFlag = true;
             callback.onFailure();
             }
         });
@@ -98,6 +103,7 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
                 public void onResponse(Call<List<ArticleWp>> call, Response<List<ArticleWp>> response) {
                     List<ArticleWp> list = response.body();
                     appendList(list);
+                    nextPageReadyFlag = true;
                     if(callback != null)
                         callback.onResponse();
                 }
@@ -105,6 +111,7 @@ public class ArticleRecyclerViewAdapter extends RetrofitWpPaginationAdapter<Arti
                 @Override
                 public void onFailure(Call<List<ArticleWp>> call, Throwable t) {
                     curPage--;
+                    nextPageReadyFlag = true;
                     if(callback!=null)
                         callback.onFailure();
                 }
