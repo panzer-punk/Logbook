@@ -78,7 +78,9 @@ public class SearchFragment extends Fragment
         searchEditText = view.findViewById(R.id.search_field);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         searchRecyclerView.setAdapter(searchFragmentResultsAdapter);
-        nextPageListener = new OnScrollNextPageListener((LinearLayoutManager) searchRecyclerView.getLayoutManager(), searchFragmentResultsAdapter);
+        nextPageListener =
+                new OnScrollNextPageListener((LinearLayoutManager) searchRecyclerView.getLayoutManager(),
+                        searchFragmentResultsAdapter, getActivity());
         searchRecyclerView.addOnScrollListener(nextPageListener);
         searchSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_search);
         searchSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

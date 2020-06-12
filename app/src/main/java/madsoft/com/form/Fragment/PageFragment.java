@@ -102,7 +102,9 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
         }
 
         recyclerView.setAdapter(articleRecyclerViewAdapter);
-        onScrollListener = new OnScrollNextPageListener((LinearLayoutManager) recyclerView.getLayoutManager(), articleRecyclerViewAdapter);
+        onScrollListener =
+                new OnScrollNextPageListener((LinearLayoutManager) recyclerView.getLayoutManager(),
+                        articleRecyclerViewAdapter, getActivity());
 
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
@@ -167,7 +169,7 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
     public void onResponse() {
        //загрузка успешно завершена
         stopRefreshLayout();
-        buildSnack(2);
+      //  buildSnack(2);
     }
 
     private void stopRefreshLayout(){
@@ -209,12 +211,12 @@ public class PageFragment extends Fragment implements ArticleRecyclerViewAdapter
                //  .build()
              //    .show();
                  break;
-            case 2:
-                snackbar = Snackbar.make(getView(),R.string.articlesLoadSuccess,Snackbar.LENGTH_SHORT);
+           // case 2:
+             //   snackbar = Snackbar.make(getView(),R.string.articlesLoadSuccess,Snackbar.LENGTH_SHORT);
              //   builder.setText(R.string.articlesLoadSuccess)
             //   .success()
             //    .show();
-                break;
+          //      break;
             case 3:
                 snackbar = Snackbar.make(getView(),R.string.articlesLoadFail,Snackbar.LENGTH_SHORT);
                 snackbar.getView().setBackgroundColor(Color.RED);

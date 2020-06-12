@@ -127,7 +127,9 @@ public class MainActivity extends AppCompatActivity
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         categoriesRecyclerView.setAdapter(categoriesRecyclerViewAdapter);
 
-        onScrollListener = new OnScrollNextPageListener((LinearLayoutManager) categoriesRecyclerView.getLayoutManager(), categoriesRecyclerViewAdapter);
+        onScrollListener =
+                new OnScrollNextPageListener((LinearLayoutManager) categoriesRecyclerView.getLayoutManager(),
+                        categoriesRecyclerViewAdapter, this);
         categoriesRecyclerView.addOnScrollListener(onScrollListener);
 
         BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationView_OnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {

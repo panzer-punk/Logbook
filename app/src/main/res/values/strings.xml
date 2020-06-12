@@ -18,6 +18,7 @@
     <string name="download_error_not_supported">Данную страницу невозможно загрузить</string>
     <string name="action_download">Скачать</string>
     <string name="deeplink_prefix">/posts/</string>
+    <string name="nextpage_loading">Загружаю следующую страницу...</string>
     <string name="cache_update">Обновляю кэш записи</string>
     <string name="cache_uptodate">Уже сохранена последняя версия</string>
     <string name="error_load">Ошибка загрузки</string>
