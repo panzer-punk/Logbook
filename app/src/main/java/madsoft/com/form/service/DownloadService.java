@@ -199,7 +199,7 @@ public class DownloadService extends Service {
         );
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("Страница: " + page.getTitleS() + " успешно загружена")
                 .setContentText("Страницу можно найти на вкладке загрузок")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
