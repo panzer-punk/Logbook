@@ -11,7 +11,7 @@ import madsoft.com.form.R;
 
 public class SettingsActivity extends Activity {
 
-    private CacheSystem cacheSystem;
+    //private CacheSystem cacheSystem;
 
     private CheckBox checkBox;
 
@@ -19,11 +19,11 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setTitle(R.string.text_settings);
+       // getActionBar().setDisplayHomeAsUpEnabled(true);
+      //  getActionBar().setHomeButtonEnabled(true);
+      //  getActionBar().setTitle(R.string.text_settings);
 
-        cacheSystem = new CacheSystem(this);
+      //  cacheSystem = new CacheSystem(this);
 
       //  Log.d("CACHESYS", String.valueOf(cacheSystem.checkFile(Assets.FLAG_D)));
 
