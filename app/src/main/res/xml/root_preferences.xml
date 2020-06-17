@@ -33,4 +33,22 @@
 
        </PreferenceCategory>
 
+    <PreferenceCategory
+        app:title="@string/notifications_header"
+        app:icon="@drawable/ic_empty_24dp">
+
+        <!-- <EditTextPreference
+               app:key="text_size"
+               app:title="@string/text_size" />-->
+
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:defaultValue="true"
+            app:icon="@drawable/ic_empty_24dp"
+            app:summaryOff="@string/notifications_summary_off"
+            app:summaryOn="@string/notifications_summary_on"
+            app:title="@string/notifications_title" />
+
+    </PreferenceCategory>
+
    </PreferenceScreen>
