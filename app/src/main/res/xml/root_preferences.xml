@@ -29,6 +29,7 @@
                app:icon="@drawable/baseline_get_app_black_18"
                app:summaryOff="@string/auto_download_summary_off"
                app:summaryOn="@string/auto_download_summary_on"
+               app:defaultValue="false"
                app:title="@string/auto_download_title" />
 
        </PreferenceCategory>
