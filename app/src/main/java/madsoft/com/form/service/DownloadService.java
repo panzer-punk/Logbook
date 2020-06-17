@@ -203,8 +203,18 @@ public class DownloadService extends Service {
                 .setContentTitle("Страница: " + page.getTitleS() + " успешно загружена")
                 .setContentText("Страницу можно найти на вкладке загрузок")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setGroup("madsoft.com.form.DOWNLOADS")
                 .setAutoCancel(true);
         builder.setContentIntent(notifyPendingIntent);
+
+        NotificationCompat.Builder builderGroup = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+              //  .setContentTitle("Страница: " + page.getTitleS() + " успешно загружена")
+             //   .setContentText("Страницу можно найти на вкладке загрузок")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setGroup("madsoft.com.form.DOWNLOADS")
+                .setGroupSummary(true)
+                .setAutoCancel(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.channel_name);
@@ -217,8 +227,8 @@ public class DownloadService extends Service {
 
         }
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-        notificationManagerCompat.notify(1,builder.build());
-
+        notificationManagerCompat.notify(page.getId(),builder.build());
+        notificationManagerCompat.notify(-100,builderGroup.build());
     }
 
     public IBinder onBind(Intent intent) {
