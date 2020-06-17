@@ -27,4 +27,10 @@
     <string name="channel_name">FormChannel</string>
     <string name="channel_description">FormChannelDesc</string>
     <string name="undo_string">Отменить</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="reading_header">Чтение и просмотр</string>
+    <string name="text_size">Размер текста</string>
+    <string name="auto_download_summary_off">Страницы будут загружены только после нажатия на кнопку загрузки.</string>
+    <string name="auto_download_summary_on">Все открываемые страницы будут загружаться</string>
+    <string name="auto_download_title">Автозагрузка открываемых страниц</string>
 </resources>
