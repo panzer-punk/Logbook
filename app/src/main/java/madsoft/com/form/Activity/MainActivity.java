@@ -146,9 +146,9 @@ public class MainActivity extends AppCompatActivity
                     case R.id.action_search:
                         pager.setCurrentItem(2);
                         break;
-                    case R.id.action_settings:
-                        pager.setCurrentItem(3);
-                        break;
+                  //  case R.id.action_settings:
+               //         pager.setCurrentItem(3);
+                //        break;
                 }
 
                 return true;
@@ -176,8 +176,8 @@ public class MainActivity extends AppCompatActivity
                     case 2:
                         bottomNavigationView.getMenu().getItem(2).setChecked(true);
                         break;
-                    case 3:
-                        bottomNavigationView.getMenu().getItem(3).setChecked(true);
+                 //   case 3:
+                //        bottomNavigationView.getMenu().getItem(3).setChecked(true);
                 }
 
                     Filterable f = (Filterable) pagerAdapter.getItem(position);
