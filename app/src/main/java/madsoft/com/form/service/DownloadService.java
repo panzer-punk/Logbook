@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -185,6 +187,11 @@ public class DownloadService extends Service {
     }
 
     private void throwNotificationDownloaded(DataEntity page){
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(!sharedPreferences.getBoolean("notifications", true)){
+            return;
+        }
 
         Intent notifyIntent = new Intent(getApplicationContext(), SlidingThemeActivity.class);
         notifyIntent.setAction("default");

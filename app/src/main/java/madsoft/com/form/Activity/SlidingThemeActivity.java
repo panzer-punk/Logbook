@@ -4,6 +4,7 @@ package madsoft.com.form.Activity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -30,6 +31,7 @@ import madsoft.com.form.Network.Objects.DataEntity;
 import madsoft.com.form.R;
 import madsoft.com.form.service.DownloadService;
 
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -66,6 +68,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
     private DataEntity article;
     private UpdateArticleInCache updateArticleInCache;
     private boolean readMode;
+    private SharedPreferences appSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +132,10 @@ public class SlidingThemeActivity extends AppCompatActivity{
 
         progressBar = findViewById(R.id.theme_progressbar);
 
+        appSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if(appSharedPreferences.getBoolean("auto_download", false))
+            download();
 
        if(article != null) {
            updateArticleInCache = new UpdateArticleInCache();

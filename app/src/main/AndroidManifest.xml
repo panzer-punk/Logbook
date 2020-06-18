@@ -11,6 +11,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".Activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".Activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="madsoft.com.form.Activity.MainActivity" />
+        </activity>
+        <activity
             android:name=".Activity.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Launcher">
@@ -20,10 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".Activity.SettingsActivity"
-            android:parentActivityName=".Activity.MainActivity" />
         <activity
             android:name=".Activity.AboutActivity"
             android:parentActivityName=".Activity.MainActivity" />
@@ -31,7 +35,6 @@
             android:name=".Activity.SlidingThemeActivity"
             android:excludeFromRecents="true"
             android:parentActivityName=".Activity.MainActivity"
-
             android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -45,6 +48,7 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
+
         <receiver
             android:name=".Network.reciever.DatabaseUpdateReceiver"
             android:enabled="false"
@@ -53,7 +57,6 @@
                 <action android:name="com.madsoft.action.UPDATE_TABLE" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".Network.reciever.NetworkConnectionReceiver"
             android:enabled="false"
@@ -65,10 +68,10 @@
 
         <service android:name=".service.DownloadService" />
     </application>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>
