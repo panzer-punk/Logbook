@@ -307,7 +307,10 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 return noToastCode;
             }
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String snewDate = article.getModified().replace('T', ' ');
+            String snewDate = article.getModified();
+            if(snewDate == null)
+                return noToastCode;
+            snewDate = snewDate.replace('T', ' ');
             String soldDate = page.modified.replace('T', ' ');
             try {
                 Date newDate = dateFormat.parse(snewDate);
