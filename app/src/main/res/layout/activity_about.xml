@@ -4,7 +4,7 @@
     android:id="@+id/activity_about"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="madsoft.com.form.Activity.AboutActivity">
+    tools:context="info.logos.form.Activity.AboutActivity">
 
     <TextView
         android:layout_width="match_parent"

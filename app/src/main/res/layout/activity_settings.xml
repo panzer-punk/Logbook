@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     android:columnCount="2"
     android:rowCount="1"
-    tools:context="madsoft.com.form.Activity.SettingsActivity">
+    tools:context="info.logos.form.Activity.SettingsActivity">
 
 </GridLayout>

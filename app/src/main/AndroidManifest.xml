@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="madsoft.com.form">
+    package="info.logos.form">
 
     <application
-        android:name=".Application.MyApplication"
+        android:name="info.logos.form.Application.MyApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,15 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activity.SettingsActivity"
+            android:name="info.logos.form.Activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".Activity.MainActivity">
+            android:parentActivityName="info.logos.form.Activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="madsoft.com.form.Activity.MainActivity" />
+                android:value="info.logos.form.Activity.MainActivity" />
         </activity>
         <activity
-            android:name=".Activity.MainActivity"
+            android:name="info.logos.form.Activity.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
@@ -29,12 +29,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.AboutActivity"
-            android:parentActivityName=".Activity.MainActivity" />
+            android:name="info.logos.form.Activity.AboutActivity"
+            android:parentActivityName="info.logos.form.Activity.MainActivity" />
         <activity
-            android:name=".Activity.SlidingThemeActivity"
+            android:name="info.logos.form.Activity.SlidingThemeActivity"
             android:excludeFromRecents="true"
-            android:parentActivityName=".Activity.MainActivity"
+            android:parentActivityName="info.logos.form.Activity.MainActivity"
             android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -50,7 +50,7 @@
         </activity>
 
         <receiver
-            android:name=".Network.reciever.DatabaseUpdateReceiver"
+            android:name="info.logos.form.Network.reciever.DatabaseUpdateReceiver"
             android:enabled="false"
             android:exported="false">
             <intent-filter>
@@ -58,7 +58,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".Network.reciever.NetworkConnectionReceiver"
+            android:name="info.logos.form.Network.reciever.NetworkConnectionReceiver"
             android:enabled="false"
             android:exported="false">
             <intent-filter>
@@ -66,7 +66,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.DownloadService" />
+        <service android:name="info.logos.form.service.DownloadService" />
     </application>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
