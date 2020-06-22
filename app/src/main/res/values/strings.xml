@@ -37,4 +37,5 @@
     <string name="notifications_summary_off">Уведомления не будут показываться</string>
     <string name="notifications_summary_on">Уведомления будут показываться.</string>
     <string name="notifications_title">Показывать уведомления о загрузке</string>
+    <string name="string_about">О проекте</string>
 </resources>
