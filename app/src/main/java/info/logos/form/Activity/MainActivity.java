@@ -39,7 +39,9 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity
-        implements ArticleRecyclerViewAdapter.onClickListener, NetworkConnectionReceiver.Updatable{
+        implements ArticleRecyclerViewAdapter.onClickListener,
+        NetworkConnectionReceiver.Updatable,
+        ArticleRecyclerViewAdapter.ArticleAdapterNextPageCallback {
     private Toolbar toolbar;
     private DownloadedFragment downloadedFragment;
     private BackdropContainer backdropContainer;
@@ -122,6 +124,7 @@ public class MainActivity extends AppCompatActivity
         categoriesRecyclerView = categoriesLayout.findViewById(R.id.categories_recyclerView);
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         categoriesRecyclerView.setAdapter(categoriesRecyclerViewAdapter);
+        categoriesRecyclerViewAdapter.setCallback(this);
 
         onScrollListener =
                 new OnScrollNextPageListener((LinearLayoutManager) categoriesRecyclerView.getLayoutManager(),
@@ -270,6 +273,16 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(this, R.string.loading, Toast.LENGTH_LONG).show();
         loadCategories();
         unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResponse() {
+
+    }
+
+    @Override
+    public void onFailure() {
+        checkConnection(this);
     }
 
     public static class MyPagerAdapter extends FragmentPagerAdapter {
