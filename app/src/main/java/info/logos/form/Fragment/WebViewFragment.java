@@ -1,10 +1,12 @@
 package info.logos.form.Fragment;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -124,26 +126,11 @@ class AppWebClient extends WebViewClient{
         // do your stuff here
     }
 
-    private void handleLink(String url){
-       /* if( url.contains(WEB_CLIENT_BASE_URL) ){
-            if(url.contains("/category/")){
-                url = url.replace(WEB_CLIENT_BASE_URL, "");
-                query = url.replace("/category/", "").replace("-", " ");
-                clientCallback.setCategoryFragment(query);
-            }else if(url.contains("/author/")){
-                url = url.replace(WEB_CLIENT_BASE_URL, "");
-                query = url.replace("/author/", "").replace("-", " ");
-                clientCallback.setAuthorFragment(query);
-            }
-        }*/
-        clientCallback.update(url);
-    }
-
     @Override
-    public boolean shouldOverrideUrlLoading(WebView  view, String  url){
-            handleLink(url);
-            return true;
-
+    public boolean shouldOverrideUrlLoading(WebView  view, WebResourceRequest request){
+        Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+        view.getContext().startActivity(intent);
+        return true;
     }
 
 
