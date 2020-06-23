@@ -198,7 +198,7 @@ public class DownloadService extends Service {
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(
-                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                this, page.getId(), notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
