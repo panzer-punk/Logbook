@@ -13,6 +13,7 @@
         <activity
             android:name="info.logos.form.Activity.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.ThemeActivity"
             android:parentActivityName="info.logos.form.Activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -35,6 +36,7 @@
             android:name="info.logos.form.Activity.SlidingThemeActivity"
             android:excludeFromRecents="true"
             android:parentActivityName="info.logos.form.Activity.MainActivity"
+            android:theme="@style/AppTheme.ThemeActivity"
             android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
