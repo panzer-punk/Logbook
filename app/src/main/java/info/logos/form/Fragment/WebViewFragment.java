@@ -103,6 +103,12 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
     }
 
 
+    public void update() {
+        if(readMode)
+            return;
+
+        webView.loadUrl(url+"?d=android");
+    }
 }
 class AppWebClient extends WebViewClient{
     public static String WEB_CLIENT_BASE_URL = "https://rpspn.000webhostapp.com/posts";

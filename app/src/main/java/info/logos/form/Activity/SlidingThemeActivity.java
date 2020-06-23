@@ -159,6 +159,11 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 if(!readMode)
                askWritePermission();
                 return true;
+            case R.id.action_update:
+                articleFragment.update();
+                Toast.makeText(this, R.string.theme_update_action_toast, Toast.LENGTH_SHORT)
+                        .show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

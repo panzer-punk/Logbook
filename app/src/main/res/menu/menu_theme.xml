@@ -18,6 +18,13 @@
         android:title="@string/text_download"
         app:actionProviderClass="androidx.core.view.ActionProvider"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_update"
+        android:enabled="true"
+        android:icon="@drawable/ic_update"
+        android:title="@string/update"
+        app:actionProviderClass="androidx.core.view.ActionProvider"
+        app:showAsAction="ifRoom"/>
 
 
 </menu>
