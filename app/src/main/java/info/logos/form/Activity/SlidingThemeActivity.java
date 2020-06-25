@@ -28,7 +28,6 @@ import info.logos.form.R;
 import info.logos.form.service.DownloadService;
 
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -206,7 +205,6 @@ public class SlidingThemeActivity extends AppCompatActivity{
                     //  Intent intent = new Intent(getActivity(), DownloadService.class);
                     //  intent.putExtra(DownloadService.URL_INTENT_KEY, url);
                     //      getActivity().startService(intent);
-                    Log.d("P", "granted");
                     download();
                    // pageFragment = (PageFragment) pagerAdapter.getItem(pager.getCurrentItem());
                   //  pageFragment.downloadArticle();

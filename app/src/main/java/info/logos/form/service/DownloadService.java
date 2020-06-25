@@ -85,7 +85,6 @@ public class DownloadService extends Service {
 
             try {
                 String murl = new String(currentArticle.getUrl().getBytes(),UTF_8);
-                Log.i("URL", murl);
 
                 mDoc = Jsoup.connect(murl + "?d=android")
                         .get();
@@ -137,7 +136,7 @@ public class DownloadService extends Service {
                     sendBroadcast(updateCacheListIntent);
                     throwNotificationDownloaded(page);
               //  }//TODO обновоить уже созданый файл
-               Log.d("File path", f.getAbsolutePath());
+
 
 
             } catch (IOException e) {
