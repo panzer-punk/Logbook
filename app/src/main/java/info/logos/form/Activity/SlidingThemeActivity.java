@@ -61,7 +61,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
     private TextView content;
     private DataEntity article;
     private UpdateArticleInCache updateArticleInCache;
-    private boolean readMode;
+    private boolean readMode, titleSet;
     private SharedPreferences appSharedPreferences;
 
     @Override
@@ -85,9 +85,11 @@ public class SlidingThemeActivity extends AppCompatActivity{
             case Intent.ACTION_VIEW:
 
                 href = intent.getData().toString();
-                filename = intent.getData().getPath().replace(getString(R.string.deeplink_prefix), " ");//TODO кэширование страниц которые открыли через браузер
+                filename = getString(R.string.loading);// intent.getData().getPath().replace(getString(R.string.deeplink_prefix), " ");//TODO кэширование страниц которые открыли через браузер
+                titleSet = false;
                 break;
                 default:
+                    titleSet = true;
                     if(article != null) {
                         filename = article.getTitleS();
                         href = article.getUrl();
@@ -258,6 +260,8 @@ public class SlidingThemeActivity extends AppCompatActivity{
         QuizFragment.display(getSupportFragmentManager(), toast);
     }
 
+    public boolean isTitleSet()
+    {return titleSet;}
 
     public void dialogMaker(String titleS, String contentS) {
 
@@ -330,6 +334,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
 
             return upToDateCode;
         }
+
 
         @Override
         protected void onPostExecute(Integer code) {

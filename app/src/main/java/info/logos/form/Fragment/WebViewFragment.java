@@ -28,6 +28,12 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
     private static final String READ_MODE_KEY = "READ_MODE";
     private static final String URL_KEY = "URL";
     loadLocalFile loader;
+    private WebView webView;
+    private boolean readMode;
+    private SlidingThemeActivity parent;
+    private String url;
+    private AppWebClient fragmentWebClient;
+
     @Override
     public void update(String query) {
 
@@ -46,12 +52,14 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
         parent.loadFinished();
     }
 
+    @Override
+    public void setTitle() {
 
-    private WebView webView;
-    private boolean readMode;
-    private SlidingThemeActivity parent;
-    private String url;
-    private AppWebClient fragmentWebClient;
+        if(!parent.isTitleSet())
+        parent.setTitle(webView.getTitle());
+
+    }
+
 
     public WebViewFragment(){}
 
@@ -117,6 +125,8 @@ class AppWebClient extends WebViewClient{
     private String query;
     private AppWebClientCallback clientCallback;
 
+
+
     public AppWebClient(AppWebClientCallback clientCallback) {
     this.clientCallback = clientCallback;
     }
@@ -124,6 +134,7 @@ class AppWebClient extends WebViewClient{
     @Override
     public void onPageFinished(WebView view, String url) {
         // do your stuff here
+        clientCallback.setTitle();
     }
 
     @Override
@@ -167,4 +178,5 @@ class loadLocalFile extends AsyncTask<String, Integer, String>{
 interface AppWebClientCallback{
      void update(String query);
      void onLoadFinished();
+     void setTitle();
 }
