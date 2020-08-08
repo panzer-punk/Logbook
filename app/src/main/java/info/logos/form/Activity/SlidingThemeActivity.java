@@ -292,6 +292,12 @@ public class SlidingThemeActivity extends AppCompatActivity{
         progressBar.setVisibility(View.GONE);
     }
 
+    public void updateUrl(String url) {
+
+        href = url;
+
+    }
+
 
     class UpdateArticleInCache extends AsyncTask<Integer, String, Integer>{
         private final int updateCode = 1,

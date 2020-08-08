@@ -117,6 +117,7 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
         if(readMode)
             return;
 
+        parent.updateUrl(url);
         webView.loadUrl(url+"?d=android");
     }
 }
