@@ -56,7 +56,7 @@ public class WebViewFragment extends Fragment implements AppWebClientCallback {
     public void setTitle() {
 
         if(!parent.isTitleSet())
-        parent.setTitle(webView.getTitle());
+            parent.setTitle(webView.getTitle());
 
     }
 

@@ -11,6 +11,8 @@ import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -23,6 +25,7 @@ import info.logos.form.DataBase.PageDao;
 import info.logos.form.DataBase.entity.Page;
 import info.logos.form.Fragment.QuizFragment;
 import info.logos.form.Fragment.WebViewFragment;
+import info.logos.form.Network.Objects.ArticleWp;
 import info.logos.form.Network.Objects.DataEntity;
 import info.logos.form.R;
 import info.logos.form.service.DownloadService;
@@ -42,7 +45,9 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static info.logos.form.Activity.MainActivity.WRITE_FILE_PERMISSION;
 
@@ -157,7 +162,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
                 share();
                 return true;
             case R.id.action_download:
-                if(!readMode)
+                if(!readMode && !getTitle().toString().equals(getString(R.string.loading)))
                askWritePermission();
                 return true;
             case R.id.action_update:
@@ -173,9 +178,18 @@ public class SlidingThemeActivity extends AppCompatActivity{
     private void download() {//TODO Загружка файла через Service
 
         if (article == null){
-            Toast.makeText(this, R.string.download_error_not_supported, Toast.LENGTH_SHORT)
-                    .show();
-            return;
+        //    Toast.makeText(this, R.string.download_error_not_supported, Toast.LENGTH_SHORT)
+      //              .show();
+            Page page = new Page();
+            page.id = -1;
+            page.categories = "0";
+            page.modified = " ";
+            page.shareLink = href;
+            page.imagePath = " ";
+            page.title = getTitle().toString().replace(" — Logos", " ");
+            page.path = href;
+            article = page;
+         //   return;
     }
         Bundle serviceBundle = new Bundle();
         serviceBundle.putSerializable(DownloadService.BUNDLE_MESSAGE_KEY, article);
@@ -195,6 +209,7 @@ public class SlidingThemeActivity extends AppCompatActivity{
             download();
 
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,

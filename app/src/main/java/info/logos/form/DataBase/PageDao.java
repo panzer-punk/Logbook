@@ -27,6 +27,9 @@ public interface PageDao {
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     void insert(Page page);
 
+    @Query("SELECT * FROM page WHERE id = :id")
+    List<Page> findPagesByID(int id);
+
     @Delete
     void delete(Page page);
 
