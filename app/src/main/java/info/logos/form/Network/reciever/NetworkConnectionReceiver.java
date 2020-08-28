@@ -20,6 +20,8 @@ public class NetworkConnectionReceiver extends BroadcastReceiver {
         observers.add(updatable);
     }
 
+    public NetworkConnectionReceiver (){}
+
     public interface Updatable{
         void onNetworkConnection();
     }

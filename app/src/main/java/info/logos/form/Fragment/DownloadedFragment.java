@@ -212,8 +212,8 @@ public class DownloadedFragment extends Fragment implements Filterable
                 downloadsAdapter.clear();
                 downloadsAdapter.appendList(cachedPages);
             }
-            else
-                Log.e("Error", "Couldn't load cache");
+            else{}
+
 
 
         }

@@ -16,6 +16,10 @@ public class DatabaseUpdateReceiver extends BroadcastReceiver {
         this.downloadedFragment = downloadedFragment;
     }
 
+    public DatabaseUpdateReceiver(){
+
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Page newPage = (Page) intent.getBundleExtra(DownloadService.BUNDLE_KEY).getSerializable(DownloadService.BUNDLE_MESSAGE_KEY);

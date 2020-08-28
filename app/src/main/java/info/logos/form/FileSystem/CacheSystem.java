@@ -37,7 +37,6 @@ public class CacheSystem {
 
         filename = prepare(filename);
 
-        Log.d("Check", filename);
 
 
         try {
@@ -61,7 +60,7 @@ public class CacheSystem {
         BufferedWriter bw;
         filename = prepare(filename);
 
-        Log.d("WriteArrayList", filename);
+
 
         try{
             bw = new BufferedWriter(new OutputStreamWriter(
@@ -81,7 +80,7 @@ public class CacheSystem {
         BufferedWriter bw;
         filename = prepare(filename);
 
-        Log.d("Write", filename);
+
 
         try{
             bw = new BufferedWriter(new OutputStreamWriter(
@@ -112,7 +111,6 @@ public class CacheSystem {
         String str2 = " ";
         filename = prepare(filename);
 
-        Log.d("Load", filename);
 
         try {
 
@@ -140,7 +138,6 @@ public class CacheSystem {
 
         filename = prepare(filename);
 
-        Log.d("LoadArrayList", filename);
 
         try {
 
@@ -182,7 +179,7 @@ public class CacheSystem {
 
             filenames.add(f.getName().replace(file_extension,""));
 
-            Log.d("LoadList", f.getName());
+
 
         }
 

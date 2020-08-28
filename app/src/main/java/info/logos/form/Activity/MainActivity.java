@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity
                   //  Intent intent = new Intent(getActivity(), DownloadService.class);
                     //  intent.putExtra(DownloadService.URL_INTENT_KEY, url);
                     //      getActivity().startService(intent);
-                    Log.d("P", "granted");
                   pageFragment = (PageFragment) pagerAdapter.getItem(pager.getCurrentItem());
                   pageFragment.downloadArticle();
                 } else {

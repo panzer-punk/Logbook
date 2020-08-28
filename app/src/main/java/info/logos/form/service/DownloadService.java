@@ -26,6 +26,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 
 import androidx.core.app.NotificationCompat;
@@ -85,7 +86,6 @@ public class DownloadService extends Service {
 
             try {
                 String murl = new String(currentArticle.getUrl().getBytes(),UTF_8);
-                Log.i("URL", murl);
 
                 mDoc = Jsoup.connect(murl + "?d=android")
                         .get();
@@ -126,6 +126,20 @@ public class DownloadService extends Service {
                     page.categories = "0";
                 }
                     // if(!f.exists()) {
+
+
+                if(f.exists()){ //Удалить уже загруженную по ссылке запись, чтобы перезаписать новой
+                    if(page.id == -1)
+                        return; //Вызвать метод и показать пользователю сообщение о том, что страница уже скачана
+
+                    ArrayList<Page> downloaded = (ArrayList<Page>) servicePageDao.findPagesByID(-1);
+                    if(downloaded != null)
+                    for(Page p : downloaded){
+                        if(p.getTitleS().equals(page.title))//TODO проверить дату, чтобы не записывать в файл зря
+                            servicePageDao.delete(p);
+                    }
+
+                }
                     FileUtils.writeStringToFile(f, mDoc.outerHtml(), "UTF-8");
                     servicePageDao.insert(page);
                     Intent updateCacheListIntent = new Intent();
@@ -134,10 +148,12 @@ public class DownloadService extends Service {
                     updateCacheListIntent.putExtra(BUNDLE_KEY, bundle);
                     updateCacheListIntent.setAction(DownloadedFragment.RECEIVER_ACTION);
                     updateCacheListIntent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+
+
                     sendBroadcast(updateCacheListIntent);
                     throwNotificationDownloaded(page);
               //  }//TODO обновоить уже созданый файл
-               Log.d("File path", f.getAbsolutePath());
+
 
 
             } catch (IOException e) {
