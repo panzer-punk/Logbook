@@ -374,8 +374,8 @@ public class SlidingThemeActivity extends AppCompatActivity{
                             .show();
                     break;
                 case upToDateCode:
-                    Toast.makeText(getApplicationContext(), R.string.cache_uptodate, Toast.LENGTH_SHORT)
-                            .show();
+                   /* Toast.makeText(getApplicationContext(), R.string.cache_uptodate, Toast.LENGTH_SHORT)
+                            .show();*/
                     break;
                 case noToastCode:
                     break;
